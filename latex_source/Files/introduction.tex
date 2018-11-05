@@ -1,0 +1,164 @@
+
+\subsection{Purpose}
+The purpose of this document is to give a detailed specification for the \companyName{} software product. Along the following pages the goals, requirements, constraints and interfaces of the project will be explained. The intention of this document is not only to be proposed to the customer but to be used as the ground for the development of the product.
+
+This document could be used as a contractual basis for the realisation of the project. 
+\subsection{Scope}
+\companyName{} enhances the flowing of data from the users to the clients, enabling the companies to make right choices about their users thanks to the analysis of the data. These data may encompass location, heart rate, age and so. The data needs to be recollected in a time basis, allowing the clients to analyse their evolution trough the time.
+
+The recollection of the data should be carried out in an automated fashion, using the sensors available in mobile devices such as mobiles (smartphones) and smart-watches. 
+
+Such automation should not undermine the privacy rights of the users. The system should provide mechanism for the users to grant or deny their approval for the recollection and treatment of their data.
+
+The main goal of the system is to provide tools for the analysis of the recollected data. Therefore, the system should provide a dashboard and an API to the clients, allowing them to navigate and query the available data.
+
+%The recollection of the data will be carried out by the mobile devices of the users, upon installation of the application of \companyName{}. Before the recollection of data takes place, the users have to register to the system and give their approval.
+
+%To enable the analysis of the data to the clients, \companyName{} provides centralised tools by means of an online dashboard and an API endpoint. The latter is intended to facilitate the integration of \companyName{} platform with client's ones.
+
+%Privacy issues that may arise. The recollection of private data is subject to a strong regulation in the European Union and therefore, mechanism to enforce a fair usage of the platform may be in place.
+
+%As a general rule, the querying of information should never return data that enable the differentiation of individuals. Returning a few records for a query may expose the individuals behind that data, and therefore is not allowed.
+
+%The only option for a client to access to individual data is to request permission to the specific user. This will be done by mean of the system. The client should provide the unique identifier of the user, for example the codice fiscale. 
+
+The goals of the system are summarised in table \ref{table:goals}.
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{14cm}}
+    \toprule
+    ID & Goal \\
+    \midrule
+    
+    \goallabel{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should provide registration
+    \end{tabular} \\
+    \hline
+    \goallabel{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store data recollected from different sensors of the mobile devices of the user.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data from the users at time intervals.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store and display the data in a time series format, allowing the client to consult the changes in the parameters along the time.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to easily query the already recollected data of the users. 
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to query the data of an specific user.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to subscribe to a query, providing new data as arrives.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should protect the privacy of the users. A data batch displayed to a client should not enable the differentiation between individuals.
+        \end{tabular} \\
+    \hline
+    \goallabel{gl:emergency} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow users to monitor some of their parameters, alerting the emergency system when any of these parameter gets out of a threshold.
+        \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Goals}
+  \label{table:goals}
+\end{table}
+
+
+
+%\begin{table}[H]
+%  \centering
+%    \begin{adjustbox}{max width=\textwidth}
+%  \begin{tabular}{cp{14cm}}
+%    \toprule
+%    ID & Goal \\
+%    \midrule
+%    
+%    GL\label{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should recollect and store the data of the users who have give their consent.
+%    \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:fixedtime} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should recollect the data of the users at fixed time intervals.
+%    \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:parameters} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should recollect the data in an organised way, classifying the data in different parameters. 
+%    \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should allow the clients to query the data of an specific user.
+%    \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:dashboard} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should provide a dashboard to the clients where the data will be displayed.
+%        \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should show the data as are available to the clients.
+%        \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:api} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should provide an API to the clients where the data can be queried.
+%        \end{tabular} \\
+%    \hline
+%    
+%    GL\label{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+%    The system should protect the privacy of the users. A data batch displayed to the client should not enable the differentiation between individuals.
+%        \end{tabular} \\
+%    \hline
+%    
+% \end{tabular}
+%  \end{adjustbox}
+%  \caption{Goals}
+%\end{table}
+\subsection{Definitions, acronyms and abbreviations}
+\subsubsection{Definitions}\label{sec:definitions}
+\begin{itemize}
+     \item \textbf{Administrator}: Worker of \companyName{} with access to the entire platform without restrictions.
+  
+    \item \textbf{Client}: Individual or company that pays \companyName{} to get access to the data of the users of \companyName{}.
+    
+    \item \textbf{User}: Individual that installs the \companyName{} application and give \companyName{} permission to collect and sell their personal data.
+    
+    \item \textbf{Data batch}: Collection of data from different users that comply with a query based on parameters made by a client.
+    
+    \item \textbf{Emergency system}: 
+    
+    \item \textbf{Parameter}: Type of data in which the recollected data is organised. These parameters may include blood pressure, location
+    
+    \item \textbf{Payment system}: 
+    
+    
+
+\end{itemize}
+\subsubsection{Acronyms}
+\begin{itemize}
+    \item \textbf{API}: Application program interface.
+\end{itemize}
+\subsubsection{Abbreviations}
+\subsection{Revision history}
+\subsection{Reference Documents}
+\subsection{Document Structure}

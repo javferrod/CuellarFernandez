@@ -1,0 +1,115 @@
+
+\subsection{Product perspective}
+The recollection of the data will be carried out by the mobile devices of the users, upon installation of the application of \companyName{}. Before the recollection of data takes place, the users have to register to the system and give their approval.
+
+To enable the analysis of the data to the clients, \companyName{} provides centralised tools by means of an online dashboard and an API endpoint. The latter is intended to facilitate the integration of \companyName{} platform with client's ones.
+
+The payment of the clients for accessing the data is handle by a third party system and integrated in \companyName{}. The request of ambulances is performed by a third party service, presumably an public service offered by the government.
+
+\begin{figure}[H]
+
+\centering
+\begin{tikzpicture}[node distance=3cm]
+
+\node (server) [cuadrado] {Server};
+\node (dashboard) [cuadrado, right =3cm of server] {Dashboard};
+\node (external) [cuadrado, below of=dashboard] {Client system};
+\node (mobile) [cuadrado, left =3cm of server] {Mobile};
+\node (smartwatch) [cuadrado, below of=mobile] {Smartwatch};
+
+\node (payment) [cuadrado, above of=dashboard] {Payment system};
+\node (sos) [cuadrado, above of=mobile] {Emergence system};
+
+\draw[dashed, ->] (mobile) -- (server) node [midway, above] {\footnotesize \companyName{} API};
+\draw[dashed, ->] (smartwatch) -- (mobile);
+\draw[dashed, <->] (server) -- (dashboard) node [midway, above] {\footnotesize \companyName{} API};
+\draw[solid, <->] (server) |- (external) node [midway, below] {\footnotesize \companyName{} API};
+\draw[solid, <->] ([xshift=2cm]server) |- (payment) node [midway, right, yshift=.3cm] {\footnotesize Payment API};
+\draw[solid, <->] ([xshift=-2cm]server) |- (sos) node [midway, left, yshift=.3cm] {\footnotesize Emergence API};
+\end{tikzpicture}
+    \caption{Overview of the system}
+    \label{fig:overview-system}
+\end{figure}
+
+%The recollected data is organised in parameters. Each parameter corresponds with the data collected from a type of sensor of the user device. 
+
+An overview of the system is shown in figure \ref{fig:overview-system}. The dashed lines represents connections between elements of the \companyName{} system while the solid ones corresponds to outside ones. These connections are discussed more profoundly in section \ref{sec:interfaces}.
+
+
+%Privacy issues may arise. The recollection of private data is subject to a strong regulation in the European Union and therefore, mechanism to enforce a fair usage of the platform may be in place.
+
+%As a general rule, the querying of information should never return data that enable the differentiation of individuals. Returning a few records for a query may expose the individuals behind that data, and therefore is not allowed.
+
+%The only option for a client to access to individual data is to request permission to the specific user. This will be done by mean of the system. The client should provide the unique identifier of the user, for example the codice fiscale. 
+
+\subsection{Product functions}
+The main functions of the product are detailed below. The requirements stated later pursue the implementation of these functions.
+
+\subsubsection{Recollection of users' data}
+The related goals are \goalref{gl:registration}, \goalref{gl:recollect} and \goalref{gl:intervals}.
+
+The recollection of the users' data will be carried out by the users' devices\footnote{i.e. smartwatch and smartphone} and stored by the server of \companyName{}. The data will be grouped by parameters. The parameters will be defined in the technical requirements (section \ref{sect:requirements}). 
+
+An important distinction has to be made between fixed parameters and temporary ones. The former includes data that not changes, like the birth of date, codice fiscale, name, residence and so on. The latter will be recollected at a fixed interval of time and stored with a time-stamp associated with them. Location and heart rate are in this group.
+
+This function is the cornerstone of the entire system, as the rest of the functionalities are devoted to consuming the recollected data. 
+
+\subsubsection{Querying data}
+The related goals are \goalref{gl:time}, \goalref{gl:query}, \goalref{gl:individuals}, \goalref{gl:privacy} and \goalref{gl:privacy}.
+
+The data stored in the server will be available to the clients. The system should allow clients to build a query based on the available parameters. This query will return a data batch\footnote{See data batch definition on \ref{sec:definitions}}.
+
+The clients will be provided with two ways of accessing the data. The first one will be by mean of an online dashboard\footnote{i.e. a web page} and an API.
+
+The latter is intended to erase the interconnection between the system of the client and the \companyName{} one. Because of this, the API functionalities will be limited to querying data.
+
+No matter what way the client use, two access of the data should be distinguish:
+
+\begin{itemize}
+    \item \textbf{Anonymous query}: Query that return a data batch with enough entries to be considered anonymous, i.e. not individuals can be distinguish.
+    
+    \item \textbf{Individual query}: Query by an identifier related univocally to an user. The client must elicit the permission of the user before getting the data. 
+\end{itemize}
+
+This distinction is tightly related to goals \goalref{gl:individuals} and \goalref{gl:privacy}.
+The related goal is \goalref{gl:emergency}.
+
+The charge to the clients for the access will be by means of a subscription.
+
+\subsubsection{Ambulance service (AutomatedSOS)}
+AutomatedSOS is an extra service offered to the users. The system will monitor a set of parameters further detailed in \ref{sect:requirements}. When some of these parameters goes out of a threshold predefined by \companyName{}, an alarm will be raised to the Emergency System, attaching the location of the user.
+
+The aforementioned alarm will be communicated to the Emergency System by electronic means, using an API offered by the Emergency System.
+
+\subsection{User characteristics}
+
+There are three different types of actors in the system. Their definitions can be found in \ref{sec:definitions}. Through these sections, each type will be analysed and an attempt of characterising them based on demographics will be made.
+
+\subsubsection{Users}
+The potential users can be segmented by age:
+\begin{itemize}
+    \item \textbf{Generation Z}: 
+    \item \textbf{Millennials}:  Born between 1980 and 2000's, the so-called \textit{digital natives} are very confident in their abilities with digital interfaces and are used to fast-paced interactions.\cite{digital-natives}. They read less than the average user \cite{digital-natives}, which leads to a rapid acceptation of the terms of usage of any application.
+    \item \textbf{Generation X}: Born between 1980 and 1960. According to \cite{generation-x}, 85\% of \textit{Gen Xers} owns a smartphone, which makes this generation a good segment for \companyName{} product. They are generally influenced by convenient purposes and will keep aside digital products \cite{convenience-generation-x} if they do not feel comfortable with them.
+    
+    \item \textbf{Baby boomers}: Born between 1946 and 1964. The market segment of \textit{Boomers} is very interesting since they have a great acquisition power. However, the penetration of fitness tracking devices are very scarce in this demographic interval. In fact, \textit{Boomers} usually found difficulties in using the health monitor devices \cite{boomers-fitness}.  
+\end{itemize}
+
+Niños: Personas comprendidas entre los 10 y los 18, estos usuarios conocen el uso de las aplicaciones móviles y no presentan problemas en su uso, por su temprana edad necesitan mejores explicaciones de todo lo presente para su entendimiento.
+
+
+\subsection{Assumptions, dependencies and constrains}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+    \item The location given by the user is correct at every moment.
+    \item The user use real data.
+    \item The user has a continuous and correct internet connection.
+    \item The user gives permission to the app for the different services.
+    \item The user that is using the smart-watch or the mobile phone is the user that is log in.
+\end{itemize}
+\subsubsection{Constraints}:
+\begin{itemize}
+    \item The international and Italian regulation about the use of data by third parties.
+    \item The user has smart-watch and phone powered by Android.
+\end{itemize}

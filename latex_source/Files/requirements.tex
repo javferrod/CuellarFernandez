@@ -1,0 +1,224 @@
+\subsection{External Interface Requirements}
+\subsection{User Interfaces}
+\subsection{Hardware Interfaces}
+Specify the logical characteristics of each interface between the software product and the hardware elements
+of the system. This includes configuration characteristics (number of ports, instruction sets, etc.). It also covers
+such matters as what devices are to be supported, how they are to be supported, and protocols. For example,
+terminal support may specify full-screen support as opposed to line-by-line support. 
+\subsection{Functional Requirements}
+
+Specify all of the software requirements to a level of detail sufficient to enable designers to design a software
+system to satisfy those requirements.
+
+Specify all of the software requirements to a level of detail sufficient to enable testers to test that the software system satisfies those requirements.
+At a minimum, describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
+
+The specific requirements should:
+
+a) Be stated in conformance with all the characteristics described in subclause 5.2 of this International Standard.
+
+b) Be cross-referenced to earlier documents that relate.
+
+c) Be uniquely identifiable
+
+The functional requirements are divided in three categories. The requirements of the user application, table \ref{table:user-reqs}; the requirements related with clients, table \ref{table:client-dashboard-reqs} and \ref{table:client-api-reqs}, and finally the AutomatedSOS requirements, table \ref{table:automatedsos-reqs}.
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{ccp{14cm}}
+    \toprule
+    ID & Goal & Description \\
+    \midrule
+    
+    \reqlabel{req:welcome} &
+    \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    When an user opens the application and no login had been performed, the system shall show the welcome page.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:login} &
+    \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    When the welcome page is shown, the system shall show two buttons. When clicked, one of them shall redirect to the login page and the other to the registration page.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:terms-conditions} &
+    \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    When the registration page is completed, the system shall show the terms and conditions page and only users that accept the terms and conditions will successfully registered.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-permissions} &
+    \goalref{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    When the user logs in for the first time in the application, the application shall check what sensors are available an issue an Android Permission Request for each of them.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-permissions-no} &
+    \goalref{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    If the user declines an \comment{Android Permission Request}, the application shall issue again an Android Permission Request for the same sensor.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-functioning} &
+    \goalref{gl:recollect} \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall poll \comment{each 5 minutes} the available sensors in the background and send the value of each sensor to the server using the interface. \comment{intref{}}
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:allow-individual-tracking} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    \comment{Cuando recive una solicitud de permiso para tracking individual, mostrarselo al user.}
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Functional requirements of user application}
+  \label{table:user-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{ccp{14cm}}
+    \toprule
+    ID & Goal & Description \\
+    \midrule
+    \reqlabel{req:query-format} &
+    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    A search consists of a set of parameters with associated thresholds. This association can be equal (=), greater (>), greater or equal (=>), smaller (<) and smaller or equal (=<).
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-query} &
+    \goalref{gl:query} \goalref{gl:privacy}& \begin{tabular}{@{}p{14cm}@{}}
+    When the client introduces a query from the dashboard page \comment{ref al mockup} and the number of entries that fullfil the query are equal or more than 1000, the system shall show the data in page \comment{ref al mockup}.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-query-few} &
+    \goalref{gl:query} \goalref{gl:privacy}& \begin{tabular}{@{}p{14cm}@{}}
+    When the client introduces a query from the dashboard page \comment{ref al mockup} and the number of entries that fullfil the query are less than 1000, the system shall warn the client about the impossibility to show the results in page \comment{ref al mockup}.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-query-few} &
+    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    When the system is showing a data batch in the dashboard that fullfils a query (\comment{ref a mockup}) and new data that also fullfils the query arrives, the system shall update the view of the data without intervention of the client.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-query-one} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos (ref)}, the user exists and the client have already obtained the permission of the user, the system shall return the data associated to the individual.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-codice-permission} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos (ref)}, the user exists and the client do not have the permission of the user, the system shall prompt the client to ask permission to the user.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-codice-noexist} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos (ref)}, and the user do not exists, the system shall prompt the client to ask permission to the user\footnote{This is done to prevent the clients to poll if a codice fiscale is in the system or not}.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-ask-permissions} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When the client is requesting permission to a concrete user in page \comment{ref a la page} and clicks on \textit{Yes}, the system shall emit a \comment{Ref a la interfaz} to the appropriate user application requesting their permission.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-ask-permissions} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When the client is requesting permission to a concrete user in page \comment{ref a la page} and clicks on \textit{Yes}, the system shall emit a \comment{Ref a la interfaz} to the appropriate user application requesting their permission.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-gets-permission} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When a user approves the request of access made by a client, the system shall store that permission.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:client-list-permissions} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall show the client a list of all users that had give their permission of access in page \comment{ref a mock} in descending alphabetical order.
+    \end{tabular} \\
+    \hline
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Functional requirements of the client dashboard}
+  \label{table:client-dashboard-reqs}
+\end{table}
+
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{ccp{14cm}}
+    \toprule
+    ID & Goal & Description \\
+    \midrule
+    \reqlabel{req:query-format} &
+    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    \comment{Pendiente}
+    \end{tabular} \\
+    \hline
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Functional requirements of the client API}
+  \label{table:client-api-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{ccp{14cm}}
+    \toprule
+    ID & Goal & Description \\
+    \midrule
+    \reqlabel{req:query-format} &
+    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    \comment{Pendiente}
+    \end{tabular} \\
+    \hline
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Functional requirements of the AutomatedSOS service}
+  \label{table:automatedsos-reqs}
+\end{table}
+
+
+\subsection{Performance Requirements}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{14cm}}
+    \toprule
+    ID & Description \\
+    \midrule
+    \perflabel{perf:max-clients} & \begin{tabular}{@{}p{14cm}@{}}
+    \comment{Pendiente}
+    \end{tabular} \\
+    \hline
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Performance requirement}
+  \label{table:automatedsos-reqs}
+\end{table}
+
