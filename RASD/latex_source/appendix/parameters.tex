@@ -1,0 +1,32 @@
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccccc}
+    \toprule
+    ID & Parameter & Units & Type & Query & Individual search\\
+    \midrule
+    \paramlabel{pm:codice}& Codice fiscale & String & Fixed, manual & \cross & \checkmark \\
+    \hline
+    \paramlabel{pm:name}& Name & String & Fixed, manual & \cross & \checkmark \\
+    \hline
+    \paramlabel{pm:surname}& Surname & String & Fixed, manual & \cross & \checkmark \\
+    \hline
+    \paramlabel{pm:age}& Birth date & dd/mm/yyyy & Fixed, manual & year & \checkmark \\
+    \hline
+    \paramlabel{pm:sex}& Genre & M/F & Fixed, manual & \checkmark & \checkmark \\
+    \hline
+    \paramlabel{pm:residence}& Residence & Latitude, longitude & Fixed, manual & {\footnotesize Searchable, not shown}& \checkmark \\
+    \hline
+    \paramlabel{pm:location}& Location & Latitude, longitude & Temporal, automatic & \checkmark & \checkmark\\
+    \hline
+    \paramlabel{pm:hearthrate}& Hearth rate & bpm & Temporal, automatic & \checkmark & \checkmark\\
+    \hline
+    \paramlabel{pm:weight}& Weight & Kilograms & Temporal, manual & \checkmark & \checkmark \\
+    \hline
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{List of parameters and its type}
+  \label{table:parameters-list}
+\end{table}

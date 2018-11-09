@@ -37,7 +37,12 @@ The goals of the system are summarised in table \ref{table:goals}.
     \end{tabular} \\
     \hline
     \goallabel{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
-    The system should store data recollected from different sensors of the mobile devices of the user.
+    The system should store the recollected data.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data using the sensors available in the users' devices, asking the user directly the information when no sensor is available for recollecting the information (for example, weight). 
     \end{tabular} \\
     \hline
     
@@ -145,10 +150,11 @@ The goals of the system are summarised in table \ref{table:goals}.
     
     \item \textbf{Data batch}: Collection of data from different users that comply with a query based on parameters made by a client.
     
+    \item \textbf{Parameter}: Type of data in which the recollected data is organised. These parameters may include blood pressure, location.
+    
+    \item \textbf{Measure}: Data obtained by the users' devices and communicated to the server. It is classified in parameters.
+    
     \item \textbf{Emergency system}: 
-    
-    \item \textbf{Parameter}: Type of data in which the recollected data is organised. These parameters may include blood pressure, location
-    
     \item \textbf{Payment system}: 
     
     
@@ -159,6 +165,11 @@ The goals of the system are summarised in table \ref{table:goals}.
     \item \textbf{API}: Application program interface.
 \end{itemize}
 \subsubsection{Abbreviations}
+\begin{itemize}
+    \item \textbf{M/F}: Male/Female.
+    \item \textbf{bpm}: Beats per minute.
+    \item \textbf{403 error}: Forbidden HTTP error code
+\end{itemize}
 \subsection{Revision history}
 \subsection{Reference Documents}
 \subsection{Document Structure}

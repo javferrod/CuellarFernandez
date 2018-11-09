@@ -1,26 +1,337 @@
 \subsection{External Interface Requirements}
-\subsection{User Interfaces}
-\subsection{Hardware Interfaces}
-Specify the logical characteristics of each interface between the software product and the hardware elements
-of the system. This includes configuration characteristics (number of ports, instruction sets, etc.). It also covers
-such matters as what devices are to be supported, how they are to be supported, and protocols. For example,
-terminal support may specify full-screen support as opposed to line-by-line support. 
+\subsubsection{User Interfaces}
+
+%Log in on the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/LoginWebApp}
+  \caption{Log in on the Web Application}
+  \label{fig:LoginWebApp}
+\end{figure}
+
+%Principal page of the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/PrincipalPageWebApp2}
+  \caption{Principal page of the Web Application}
+  \label{fig:PrincipalPageWebApp}
+\end{figure}
+
+%Search for individual data in the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/SearchIndividualWebApp}
+  \caption{Search for individual data in the Web Application}
+  \label{fig:SearchIndividualWebApp}
+\end{figure}
+
+%Result of the individual search in the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultIndividualSearch1}
+  \caption{Results of the individual search in the Web Application (First part)}
+  \label{fig:ResultIndividualSearch1}
+\end{figure}
+
+%Result of the individual search in the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultIndividualSearch2}
+  \caption{Results of the individual search in the Web Application (Second part)}
+  \label{fig:ResultIndividualSearch2}
+\end{figure}
+
+%Result of the individual search in the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultIndividualSearch3}
+  \caption{Results of the individual search in the Web Application (Third part)}
+  \label{fig:ResultIndividualSearch3}
+\end{figure}
+
+%Contact zone of the Web App
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ContactWebApp}
+  \caption{Contact zone of the web application}
+  \label{fig:ContactWebApp}
+\end{figure}
+
+\subsubsection{Software Interfaces}\label{sec:interfaces}
+In this section, the API offered by \companyName{} will be detailed. This API is intended to be use for the clients who seeks an integration with their own systems.
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    ID & Method & URL & Parameters & Return & Description \\
+    \midrule
+    
+    \silabel{si:api-login} & POST &
+    /login
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Username, password
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Client token
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Returns a token that will be use to authenticate the user in the next API calls.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:api-query} & POST &
+    /query
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Client token, query
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Data batch
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Return a data batch containing all the entries that corresponds to the query.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:api-search} & POST &
+    /search-user
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Client token, User ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Data of the user
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Returns the available data of the searched user if the client has permission
+    \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of \companyName{} API for the client}
+  \label{table:api-client}
+\end{table}
+
+\subsubsection{Hardware Interfaces}
+The system will run on any off-the-shelf hardware that supports Linux x64. Therefore, no special requirements and interfaces are needed. The relevant constraints for the users' devices are stated in section \ref{sec:constraints}.
+
+TrackMe is presented as a software that is based on an Android application, because of it does not require special hardware other than the one named above, this hardware is more than anything a mobile device such as a Smartphone or a Smartwach. As discussed below it is necessary that the mobile device has an Internet connection as well as Bluethoot (if Smartwatch is used) and GPS (for tracking the location).
+
+\subsection{Use cases}
+This section is meant to clarify the normal usage of the platform by the different actors of the system.
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{rp{14cm}}
+    \toprule
+    ID & \uselabel{use:login}\\
+    \hline
+    Name & Sing up\\
+    \hline
+    Actor & Client\\
+    \hline
+    Entry conditions & The client have to be on the web application\\
+    \hline
+    Events flow &
+    \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item The client have to click on the button of sing up of the web application
+            [\ref{fig:LoginWebApp}]
+            \item Fill in the necessary information requested in the form that will appear as well as a form of payment
+            \item After the confirmation the system will save the data and the client will be registered
+        \end{enumerate} 
+    \end{tabular} \\ 
+    \hline
+    Exit conditions & The client will be registered and able to work with TrackMe\\
+   
+    \hline
+    Exceptions & 
+     \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item The form of payment is not accepted or is incorrect
+            \item The client is already registered
+            \item The client has not filled in one of the necessary information fields or a field is not filled in correctly
+        \end{enumerate} 
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Sing up use case }
+  \label{table:user-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{rp{14cm}}
+    \toprule
+    ID & \uselabel{use:login}\\
+    \hline
+    Name & Log in\\
+    \hline
+    Actor & Client\\
+    \hline
+    Entry conditions & 
+    \begin{tabular}{@{}p{14cm}@{}}
+         \begin{enumerate}
+             \item The client have to be registered on TrackMe
+             \item The client have to be on the web application
+         \end{enumerate}  \\
+    \end{tabular}\\
+    \hline
+    Events flow &
+    \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item Press the log in button in the web application [\ref{fig:LoginWebApp}]
+            \item Complete the username and password sections of the log in window
+            \item After clicking on the log in button, if it is correct the username and password will access to your account and the system will redirect to the main window [\ref{fig:PrincipalPageWebApp}]
+        \end{enumerate} 
+    \end{tabular} \\ 
+    \hline
+    Exit conditions & The client will access his account\\
+   
+    \hline
+    Exceptions & Username and password do not match or do not exist\\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Log in use case }
+  \label{table:user-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{rp{14cm}}
+    \toprule
+    ID & \uselabel{use:login}\\
+    \hline
+    Name & Log in\\
+    \hline
+    Actor & User\\
+    \hline
+    Entry conditions & 
+    \begin{tabular}{@{}p{14cm}@{}}
+         \begin{enumerate}
+             \item The user have to be registered on TrackMe
+             \item The user needs to have the application installed
+         \end{enumerate}  \\
+    \end{tabular}\\
+    \hline
+    Events flow &
+    \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item Press the log in button in the application
+            \item Complete the username and password sections of the log in window
+            \item After clicking on the log in button, if it is correct the username and password will access to your account and the system will redirect to the main window
+        \end{enumerate} 
+    \end{tabular} \\ 
+    \hline
+    Exit conditions & The user will access his account\\
+   
+    \hline
+    Exceptions & Username and password do not match or do not exist\\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Log in use case }
+  \label{table:user-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{rp{14cm}}
+    \toprule
+    ID & \uselabel{use:login}\\
+    \hline
+    Name & Search for an individual data\\
+    \hline
+    Actor & Client\\
+    \hline
+    Entry conditions & The client have to be registered on TrackMe and log in on the web application\\
+    \hline
+    Events flow &
+    \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item Click on the individual data search button
+            [\ref{fig:PrincipalPageWebApp}]
+            \item Enter the "codice fiscale" in the search area that appears on the new page (in the area where it is requested) [\ref{fig:SearchIndividualWebApp}]
+            \item The system will redirect you to one page where you can view all that person's information (if you have the necessary permissions) or you can do another search
+           [\ref{fig:ResultIndividualSearch1}, \ref{fig:ResultIndividualSearch2}, \ref{fig:ResultIndividualSearch3}]
+        \end{enumerate} 
+    \end{tabular} \\ 
+    \hline
+    Exit conditions & The client will be able to see the information of the requested user\\
+   
+    \hline
+    Exceptions & 
+    \begin{tabular}{@{}p{14cm}@{}}
+         \begin{enumerate} [leftmargin=*]
+             \item The "codice fiscale" does not exist
+             \item The codice fiscale is misspelled
+             \item The client does not have the permissions to view that person's data
+         \end{enumerate}  \\
+    \end{tabular}\\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Case of use of individual data search }
+  \label{table:user-reqs}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{rp{14cm}}
+    \toprule
+    ID & \uselabel{use:login}\\
+    \hline
+    Name & Search for a group data\\
+    \hline
+    Actor & Client\\
+    \hline
+    Entry conditions & \\
+    \hline
+    Events flow &
+    \begin{tabular}{@{}p{14cm}@{}}
+        \begin{enumerate}[leftmargin=*]
+            \item Click on the group data search button
+            \item
+            \item 
+        \end{enumerate} 
+    \end{tabular} \\ 
+    \hline
+    Exit conditions & \\
+   
+    \hline
+    Exceptions & 
+    \begin{tabular}{@{}p{14cm}@{}}
+         \begin{enumerate} [leftmargin=*]
+             \item 
+             \item 
+             \item 
+         \end{enumerate}  \\
+    \end{tabular}\\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Case of use of group data search }
+  \label{table:user-reqs}
+\end{table}
+
+
+
+
 \subsection{Functional Requirements}
-
-Specify all of the software requirements to a level of detail sufficient to enable designers to design a software
-system to satisfy those requirements.
-
-Specify all of the software requirements to a level of detail sufficient to enable testers to test that the software system satisfies those requirements.
-At a minimum, describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
-
-The specific requirements should:
-
-a) Be stated in conformance with all the characteristics described in subclause 5.2 of this International Standard.
-
-b) Be cross-referenced to earlier documents that relate.
-
-c) Be uniquely identifiable
-
 The functional requirements are divided in three categories. The requirements of the user application, table \ref{table:user-reqs}; the requirements related with clients, table \ref{table:client-dashboard-reqs} and \ref{table:client-api-reqs}, and finally the AutomatedSOS requirements, table \ref{table:automatedsos-reqs}.
 
 \begin{table}[H]
@@ -50,26 +361,44 @@ The functional requirements are divided in three categories. The requirements of
     \hline
     
     \reqlabel{req:recollection-data-permissions} &
-    \goalref{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    \goalref{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
     When the user logs in for the first time in the application, the application shall check what sensors are available an issue an Android Permission Request for each of them.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:recollection-data-permissions-no} &
-    \goalref{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    \goalref{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
     If the user declines an \comment{Android Permission Request}, the application shall issue again an Android Permission Request for the same sensor.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:recollection-data-functioning} &
-    \goalref{gl:recollect} \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
-    The system shall poll \comment{each 5 minutes} the available sensors in the background and send the value of each sensor to the server using the interface. \comment{intref{}}
+    \goalref{gl:how-recollect} \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall poll the available sensors in the background at fixed time intervals and store the measures in the server. 
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-intervals} &
+    \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The fixed intervals at which each sensor shall be polled are stated in \ref{table:parameters-intervals}.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-manual-functioning} &
+    \goalref{gl:how-recollect} \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall prompt the user to introduce the manual parameters at fixed time intervals and store the measures in the server. 
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:recollection-data-intervals} &
+    \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The fixed intervals at which the manual parameters shall be asked to the user are stated in \ref{table:parameters-intervals}.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:allow-individual-tracking} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    \comment{Cuando recive una solicitud de permiso para tracking individual, mostrarselo al user.}
+    When a client has sent a request for access, the system shall display a notification in the user's device showing the name of the client which requires the permission and a button to accept.
     \end{tabular} \\
     
     \bottomrule
@@ -86,9 +415,28 @@ The functional requirements are divided in three categories. The requirements of
     \toprule
     ID & Goal & Description \\
     \midrule
+    
     \reqlabel{req:query-format} &
-    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
-    A search consists of a set of parameters with associated thresholds. This association can be equal (=), greater (>), greater or equal (=>), smaller (<) and smaller or equal (=<).
+    \goalref{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    A query consists of a set of parameters with associated logical constraints. The result of the query must comply all the logical constraint in the query.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:logical-constraints-format} &
+    \goalref{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The numerical parameters' logical constraints can be equal (=), greater (>), greater or equal (=>), smaller (<) and smaller or equal (=<). The \paramref{pm:location} parameter do not follow this requirement.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:location-query} &
+    \goalref{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The \paramref{pm:location} parameter's logical constraint is expressed as a set of points in which the searched values are geographically inside.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:easy-query} &
+    \goalref{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should provide specific inputs adapted to the type of data to introduce the logical constraints of the query. Table \ref{table:parameters-inputs} states the parameters and its inputs.
     \end{tabular} \\
     \hline
     
@@ -159,6 +507,7 @@ The functional requirements are divided in three categories. The requirements of
   \label{table:client-dashboard-reqs}
 \end{table}
 
+In table \ref{table:client-api-reqs} the phrase \textit{When a message with a correct format reach} is used often. The correct format reefers to the one stated in section \ref{sec:interfaces} for each corresponding SI interface.
 
 \begin{table}[H]
   \centering
@@ -167,9 +516,27 @@ The functional requirements are divided in three categories. The requirements of
     \toprule
     ID & Goal & Description \\
     \midrule
-    \reqlabel{req:query-format} &
-    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
-    \comment{Pendiente}
+    \reqlabel{req:api-login} &
+    \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    When a message with a correct format reach the interface \siref{si:api-login} with an existing pair of username and password, the system shall replay with a token that will identify the client in the next api calls. The token have a validity of \comment{3 days}.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:api-query} &
+    \goalref{gl:query}, \goalref{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+    When a message with a correct format reach the interface \siref{si:api-query} with a well form query and the result of the query have 1000 entries or more, the system shall replay with a data batch that complies the logical constraints expressed in the query.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:api-query} &
+    \goalref{gl:query}, \goalref{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+    When a message with a correct format reach the interface \siref{si:api-query} with a well form query and the result of the query have less than 1000 entries, the system shall replay with a 403 error.
+    \end{tabular} \\
+    \hline
+    
+    \reqlabel{req:api-search} &
+    \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    When a message with a correct format reach the interface \siref{si:api-search} with a valid codice fiscale, the user exists and the client have already obtained the permission of the user, the system shall return the data associated to the individual.
     \end{tabular} \\
     \hline
     
@@ -187,9 +554,9 @@ The functional requirements are divided in three categories. The requirements of
     \toprule
     ID & Goal & Description \\
     \midrule
-    \reqlabel{req:query-format} &
-    \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
-    \comment{Pendiente}
+    \reqlabel{req:automated-sos-client} &
+    \goalref{gl:emergency} & \begin{tabular}{@{}p{14cm}@{}}
+    When a parameter sent by an user's application arrives at the server and is below a defined threshold and the user is sign up in AmbulanceSOS, the system shall rise an alarm to the Emergency System using interface \siref{si:emergency-alarm} within 5 seconds.
     \end{tabular} \\
     \hline
     
@@ -210,8 +577,24 @@ The functional requirements are divided in three categories. The requirements of
     \toprule
     ID & Description \\
     \midrule
-    \perflabel{perf:max-clients} & \begin{tabular}{@{}p{14cm}@{}}
-    \comment{Pendiente}
+    \perflabel{perf:req-per-second} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall be able to process at least 500 request per second.
+    \end{tabular} \\
+    \hline
+    \perflabel{perf:response-time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall be able to respond to a query made by a client within 5 seconds in an optimum internet connection between client and system scenario.
+    \end{tabular} \\
+    \hline
+    \perflabel{perf:storage-capacity} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall be able to store all the data gathered from the users at least during 3 months. 
+    \end{tabular} \\
+    \hline
+    \perflabel{perf:number-of-users} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall be able to handle at least \comment{10000 active users}.
+    \end{tabular} \\
+    \hline
+    \perflabel{perf:number-of-clients} & \begin{tabular}{@{}p{14cm}@{}}
+    The system shall be able to handle at least \comment{100 active clients}.
     \end{tabular} \\
     \hline
     
@@ -222,3 +605,45 @@ The functional requirements are divided in three categories. The requirements of
   \label{table:automatedsos-reqs}
 \end{table}
 
+
+\subsection{Design Constraints}
+
+\subsubsection{Standards compliance}
+
+\begin{itemize}
+    \item The application will be installed in the internal memory of the terminal and will store all the information in it.
+    \item The application will request and need the acceptance of some permissions for access to the terminal, if not accepted the application can not work or show a proper operation.
+    \item The app will be kept in the background with a minimum consumption for the use of notifications if necessary.
+\end{itemize}
+
+\subsubsection{Hardware limitations}
+
+There are no hardware limitations, it is only necessary for the user to present a mobile phone with the possibility of installing mobile applications (a smartphone) and if a health check is required, the user must have a Smartwatch.
+
+In addition to what has been said for the mobile phone, it is also necessary that the user has:
+ \begin{itemize}
+        \item Stable Internet connection (2G, 3G, 4G)
+        \item Bluetooth for connection to the Smartwatch if required
+        \item GPS for user location
+        \item Possibility of receiving calls
+ \end{itemize}
+ 
+The Smartwatch the only requirement is to be able to measure the heart rate as well as the different parameters to perform health monitoring.
+
+\subsubsection{Any other constraint}
+
+\subsection{Software System Attributes}
+
+\subsubsection{Reliability}
+The system shall preserve the integrity of the saved data no matter what circumstances may happen.
+\subsubsection{Availability}
+The system will operate continuously and must be operational at all times, in the event of a system crash by any internal or external problem services will be redirected to secondary servers that will be present in support format for abnormal situations to perform the continuous running.
+
+\subsubsection{Security}
+For security, the HTTPS protocol will be used, which applies SSL/TLS cryptography that will allow the passage between the server and the different services in a secure way, not allowing attacks or loss of information from TrackMe clients and users.
+
+\subsubsection{Maintainability}
+The maintenance of TrackMe services will be performed by the system administrators, this maintenance will be designed to be as simple as possible using general programming formats as well as a worked documentation in which the system is explained as accurately as possible to save any doubt to the administrators about the operation of the various services.
+
+\subsubsection{Portability}
+The portability degree depends on each system's component. The mobile application shall be portable between Android platforms that fullfills the requirements stated in section \ref{sec:constraints}. The server component shall be portable between Linux platforms that fullfills the requirements stated in section \ref{sec:constraints}. The online dashboard  shall work in any browser that fullfills the rules stated in section \ref{sec:constraints}

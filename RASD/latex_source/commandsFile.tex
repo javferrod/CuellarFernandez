@@ -3,6 +3,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{notoccite}
 
+\usepackage[title]{appendix}
+
 %Page margins, header and footer positions
 \usepackage{geometry}
  \geometry{
@@ -25,8 +27,8 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\color{Gray}{\small{Travlendar+ project by YOUR NAMES}}}
-\lfoot{\textcolor{Gray}{\small{Copyright © 2017, YOUR NAMES – All rights reserved}}}
+\lhead{\color{Gray}{\small{TrackMe project by Julián Cuéllar, Javier Fernández}}}
+\lfoot{\textcolor{Gray}{\small{Copyright © 2017, Julián Cuéllar, Javier Fernández – All rights reserved}}}
 \rfoot{\textcolor{Gray}{\thepage}}
 \renewcommand{\headrulewidth}{0pt}
 
@@ -153,8 +155,28 @@
 \newcommand*{\perflabel}[1]{PR\refstepcounter{perfcounter}\theperfcounter\label{#1}}
 \newcommand*{\perfref}[1]{PR\ref{#1}}
 
+% interface refs
+\newcounter{sicounter}
+\newcommand*{\silabel}[1]{SI\refstepcounter{sicounter}\thesicounter\label{#1}}
+\newcommand*{\siref}[1]{SI\ref{#1}}
+
+% use case refs
+\newcounter{usecounter}
+\newcommand*{\uselabel}[1]{UC\refstepcounter{usecounter}\theusecounter\label{#1}}
+\newcommand*{\useref}[1]{UC\ref{#1}}
+
+% parameters refs
+\newcounter{paramcounter}
+\newcommand*{\paramlabel}[1]{PM\refstepcounter{paramcounter}\theparamcounter\label{#1}}
+\newcommand*{\paramref}[1]{PM\ref{#1}}
+
+
 \newcommand{\companyName}{TrackMe}
 \newcommand{\emergencyProduct}{AutomatedSOS}
+
+% Checkmark
+\def\checkmark{\tikz\fill[scale=0.35](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+\def\cross{$\times$}
 
 
 \date{}

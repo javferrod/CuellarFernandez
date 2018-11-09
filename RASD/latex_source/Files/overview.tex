@@ -33,7 +33,9 @@ The payment of the clients for accessing the data is handle by a third party sys
 
 %The recollected data is organised in parameters. Each parameter corresponds with the data collected from a type of sensor of the user device. 
 
-An overview of the system is shown in figure \ref{fig:overview-system}. The dashed lines represents connections between elements of the \companyName{} system while the solid ones corresponds to outside ones. These connections are discussed more profoundly in section \ref{sec:interfaces}.
+An overview of the system is shown in figure \ref{fig:overview-system}. The dashed lines represents connections between elements of the \companyName{} system while the solid ones corresponds to outside ones. These connections are discussed more profoundly in sections \ref{sec:dependencies} and \ref{sec:interfaces}.
+
+The components connected by dashed lines are internal of the system and therefore no requirements will be impose on these interfaces. However, stating the general architecture of the solution removes vagueness and allows the requirements to be specified in a more concise way.
 
 
 %Privacy issues may arise. The recollection of private data is subject to a strong regulation in the European Union and therefore, mechanism to enforce a fair usage of the platform may be in place.
@@ -46,11 +48,13 @@ An overview of the system is shown in figure \ref{fig:overview-system}. The dash
 The main functions of the product are detailed below. The requirements stated later pursue the implementation of these functions.
 
 \subsubsection{Recollection of users' data}
-The related goals are \goalref{gl:registration}, \goalref{gl:recollect} and \goalref{gl:intervals}.
+The related goals are \goalref{gl:registration}, \goalref{gl:recollect}, \goalref{gl:how-recollect} and \goalref{gl:intervals}.
 
 The recollection of the users' data will be carried out by the users' devices\footnote{i.e. smartwatch and smartphone} and stored by the server of \companyName{}. The data will be grouped by parameters. The parameters will be defined in the technical requirements (section \ref{sect:requirements}). 
 
 An important distinction has to be made between fixed parameters and temporary ones. The former includes data that not changes, like the birth of date, codice fiscale, name, residence and so on. The latter will be recollected at a fixed interval of time and stored with a time-stamp associated with them. Location and heart rate are in this group.
+
+These temporary parameters are not limited to the information recollected by the sensors of the users' devices. Some parameters, as for example the weight, may need the manual collaboration of the user to be recollected. This may be accomplished by promping the user to introduce the information in the application by himself. These kind of parameters will be called manual parameters.
 
 This function is the cornerstone of the entire system, as the rest of the functionalities are devoted to consuming the recollected data. 
 
@@ -77,6 +81,8 @@ The related goal is \goalref{gl:emergency}.
 The charge to the clients for the access will be by means of a subscription.
 
 \subsubsection{Ambulance service (AutomatedSOS)}
+The related goal is \goalref{gl:emergency}.
+
 AutomatedSOS is an extra service offered to the users. The system will monitor a set of parameters further detailed in \ref{sect:requirements}. When some of these parameters goes out of a threshold predefined by \companyName{}, an alarm will be raised to the Emergency System, attaching the location of the user.
 
 The aforementioned alarm will be communicated to the Emergency System by electronic means, using an API offered by the Emergency System.
@@ -88,15 +94,16 @@ There are three different types of actors in the system. Their definitions can b
 \subsubsection{Users}
 The potential users can be segmented by age:
 \begin{itemize}
-    \item \textbf{Generation Z}: 
+    \item \textbf{Generation Z}: Born between 2000's and onwards. 95\% of persons in this age interval have a smartphone. They prefer the smartphone over the laptop \cite{smartphones-z}. They are comfortable sharing personal data in order to get a more personalised experience \cite{privacy-z}.
     \item \textbf{Millennials}:  Born between 1980 and 2000's, the so-called \textit{digital natives} are very confident in their abilities with digital interfaces and are used to fast-paced interactions.\cite{digital-natives}. They read less than the average user \cite{digital-natives}, which leads to a rapid acceptation of the terms of usage of any application.
     \item \textbf{Generation X}: Born between 1980 and 1960. According to \cite{generation-x}, 85\% of \textit{Gen Xers} owns a smartphone, which makes this generation a good segment for \companyName{} product. They are generally influenced by convenient purposes and will keep aside digital products \cite{convenience-generation-x} if they do not feel comfortable with them.
     
     \item \textbf{Baby boomers}: Born between 1946 and 1964. The market segment of \textit{Boomers} is very interesting since they have a great acquisition power. However, the penetration of fitness tracking devices are very scarce in this demographic interval. In fact, \textit{Boomers} usually found difficulties in using the health monitor devices \cite{boomers-fitness}.  
 \end{itemize}
 
-Niños: Personas comprendidas entre los 10 y los 18, estos usuarios conocen el uso de las aplicaciones móviles y no presentan problemas en su uso, por su temprana edad necesitan mejores explicaciones de todo lo presente para su entendimiento.
+With these segments in mind, \companyName{} system will be target to the three first segments. Specially taking into account that Generation Z and Millennials are not concerned about the lack of privacy. Generation X users have a great purchase power, but will be more reticent to the acceptation of the terms of usage. 
 
+AutomatedSOS will be oriented to Baby Boomers. Since they usually found difficulties in the usage of the fitness tracking devices, the application should be simple and concise. 
 
 \subsection{Assumptions, dependencies and constrains}
 
@@ -108,7 +115,115 @@ Niños: Personas comprendidas entre los 10 y los 18, estos usuarios conocen el u
     \item The user gives permission to the app for the different services.
     \item The user that is using the smart-watch or the mobile phone is the user that is log in.
 \end{itemize}
+\subsubsection{Dependencies}\label{sec:dependencies}
+\companyName{} system relies in two external systems to perform several tasks:
+\begin{itemize}
+    \item \textbf{Stripe}: Payment system that allows \companyName{} system to charge the clients a monthly fee for the access to the data. Stripe stands out over the competitors because its API, which is recognized as one of the best in the business \cite{stripe}.
+    \item \textbf{Emergency system}: To offer AutomatedSOS, \companyName{} system needs a programmatic way to reach the emergency institutions. Therefore, an API is needed to rise an alarm when is needed.
+\end{itemize}
+Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and endpoints needed for the proper functioning of \companyName{} product.
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    ID & Method & URL & Parameters & Return & Description \\
+    \midrule
+    
+    \silabel{si:emergency-alarm} & POST &
+    /ambulance
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    location, phone, triggered parameter 
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+     estimated time 
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Call when an emergency service is needed, the important data of the customer is send to the Emergency system
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of Emergency API}
+  \label{table:api-emergency}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    ID & Method & URL & Parameters & Return & Description \\
+    \midrule
+    
+    \silabel{si:pay-create-card} & POST &
+    /v1/tokens
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Card Nº, Card expiration, CVC
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Card ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a card to be used in \siref{si:pay-create-customer}. One time use.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-create-customer} & POST &
+    /v1/customer
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Card ID, email
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Customer ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a client in the payment system, returns the ID that identifies the client in the payment system.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-subscribe-customer} & POST &
+    /v1/subscriptions
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Customer ID, Plan ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Starts charging the client the amont indicated by the Plan ID
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-cancel-customer} & DELETE &
+    /v1/subscriptions
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a client in the payment system, returns the ID that identifies the client in the payment system.
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of Payment API}
+  \label{table:api-pay}
+\end{table}
+
+
+
 \subsubsection{Constraints}:
+\label{sec:constraints}
 \begin{itemize}
     \item The international and Italian regulation about the use of data by third parties.
     \item The user has smart-watch and phone powered by Android.
