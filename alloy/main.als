@@ -41,14 +41,14 @@ sig Query {
 	users_matched in database.users
 	
 	// Minimun number of users to protect privacy
-	#users_matched > 3
+	#users_matched > 1
 
 	//If and only if a constraint is present, the user who owns the parameters needs to be matched
-	all c:constraints | all u:User|
-		u -> c in database.has => u in users_matched
+//	all c:constraints | all u:User|
+//		u -> c in database.has => u in users_matched
 
-	all u:users_matched | some c:Parameter|
-		u -> c in database.has => c in constraints
+	all u:users_matched| some c:constraints | 
+		u->c  in database.has
 
 
 	//If an user is matched, all the allowed parameters are in the results
@@ -62,9 +62,26 @@ sig Query {
 
 }
 
+//All users and parameters must belong to a database
 fact {
 	all p:Parameter | some d:Database | p in d.parameters
 	all u:User | some d:Database | u in d.users
 }
+
+//The querys shall not result in forbidden parameters
+
+check noForbiddenParameters{
+	all p:( Codice+Name+Surname+Residence) |no q:Query | p in q.results
+} for 10
+
+check queryWellBuild {
+	all q:Query | q.users_matched->q.constraints in q.database.has
+	//all q:Query, u:User, c:Parameter | u in q.users_matched and c in q.constraints and (c->u) in q.database.belongs 
+} for 10
+
+/*check usersHaveParamenters {
+	all u:User,d:Database | u->Parameter in d.has
+} for 4*/
+
 
 
