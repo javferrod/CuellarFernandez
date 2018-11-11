@@ -468,7 +468,7 @@ In figure \ref{fig:StatechartGroupSearch} it can be saw the state chart diagram 
 
 In figure \ref{fig:StatechartIndividualSearch} it can be saw the state chart diagram of the group search which is assigned to the use case \useref{table:UseCaseIndividualSearch} and figures \ref{fig:SearchIndividualWebApp}, \ref{fig:ResultIndividualSearch1}, \ref{fig:ResultIndividualSearch2} and \ref{fig:ResultIndividualSearch3}.
 
-\comment{Añadir introducción a los diagramas de secuencia}
+The following sequence diagram attempts to show the main workings of the application for better understanding.
 
 \begin{figure}[H]
   \centering
@@ -477,7 +477,18 @@ In figure \ref{fig:StatechartIndividualSearch} it can be saw the state chart dia
   \label{fig:TrackSequenceDiagram}
 \end{figure}
 
-\comment{Añadir información sobre el diagrama de secuencia de trackeo}
+Figure \ref{fig:TrackSequenceDiagram} shows the sequence diagram of the tracking carried out by the application each time interval and as in the case of parameters below what is necessary, an alarm is sent to the user and to the emergency services.
+
+The following class diagram summarizes how the system is organized and what main structures it contains.
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.95\textwidth]{Images/ClassDiagram}
+  \caption{Class diagram of the system}
+  \label{fig:ClassDiagram}
+\end{figure}
+
+Figure \ref{fig:ClassDiagram} shows the main structures of the system as they are related to each other and how the main functions (Search and Track) are related to the system to be performed.
 
 \subsection{Functional Requirements}
 The functional requirements are divided in three categories. The requirements of the user application, table \ref{table:user-reqs}; the requirements related with clients, table \ref{table:client-dashboard-reqs} and \ref{table:client-api-reqs}, and finally the AutomatedSOS requirements, table \ref{table:automatedsos-reqs}. 
