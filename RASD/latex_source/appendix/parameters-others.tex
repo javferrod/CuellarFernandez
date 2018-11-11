@@ -7,7 +7,17 @@
     \midrule
     \paramref{pm:location} & 5 minutes & 
     \begin{tabular}{@{}p{14cm}@{}}
-    \comment{rellenar esto}
+    Necessary interval for a correct control of the state of health. 
+    \end{tabular} \\
+    \hline
+    \paramref{pm:hearthrate} & 5 minutes & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    Since AutomatedSOS is build on top of the data recollected by \companyName{}, 5 minutes allows the system monitor the health state of the user.
+    \end{tabular} \\
+    \hline
+    \paramref{pm:weight} & 7 days& 
+    \begin{tabular}{@{}p{14cm}@{}}
+    Since this parameters is entered manually by the user, 7 days is a period long enough to not disturb users and to collect enough data to be useful.
     \end{tabular} \\
     \hline
     
@@ -25,11 +35,43 @@
     \toprule
     Parameter & Input & Description of input\\
     \midrule
+    
+    \paramref{pm:age} & Slider (8 to 100) & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    An slider with a minimum of 8 and a maximum of 100 years. The client will be able to select two numbers using two handlers. The input will formulate a query in which all the dates between the 1º of January of the actual year minus the second number and the 1º of January of the actual year minus the first number are included.
+    \end{tabular} \\
+    \hline
+    
+    \paramref{pm:sex} & Dropdown & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    A dropdown with two options. The first option is M and the second F. The input will formulate a query in which if the first option is selected, the query will return data from male users. If the second option is selected, the query will return data from female users.
+    \end{tabular} \\
+    \hline
+    
+    \paramref{pm:residence} & Map & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    An interactive map centred in the city of Milan. The map should allow the drawing of an area. The input will formulate a query in which all the points inside the aforementioned area are include. 
+    \end{tabular} \\
+    \hline
+    
     \paramref{pm:location} & Map & 
     \begin{tabular}{@{}p{14cm}@{}}
     An interactive map centred in the city of Milan. The map should allow the drawing of an area. The input will formulate a query in which all the points inside the aforementioned area are include. 
     \end{tabular} \\
     \hline
+    
+    \paramref{pm:hearthrate} & Slider (40 to 120) & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    An slider with a minimum of 40 and a maximum of 120 bpm, these values are based on \cite{normal-bpm}. The client will be able to select two numbers using two handlers. The input will formulate a query in which all the numbers between the first number and the second number are included.
+    \end{tabular} \\
+    \hline
+    
+    \paramref{pm:weight} & Slider (40 to 300) & 
+    \begin{tabular}{@{}p{14cm}@{}}
+    An slider with a minimum of 40 and a maximum of 300 kg. The client will be able to select two numbers using two handlers. The input will formulate a query in which all the numbers between the first number and the second number are included.
+    \end{tabular} \\
+    \hline
+    
     
     \bottomrule
   \end{tabular}

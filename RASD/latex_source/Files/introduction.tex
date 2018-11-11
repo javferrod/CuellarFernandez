@@ -3,8 +3,10 @@
 The purpose of this document is to give a detailed specification for the \companyName{} software product. Along the following pages the goals, requirements, constraints and interfaces of the project will be explained. The intention of this document is not only to be proposed to the customer but to be used as the ground for the development of the product.
 
 This document could be used as a contractual basis for the realisation of the project. 
-\subsection{Scope}
+
 \companyName{} enhances the flowing of data from the users to the clients, enabling the companies to make right choices about their users thanks to the analysis of the data. These data may encompass location, heart rate, age and so. The data needs to be recollected in a time basis, allowing the clients to analyse their evolution trough the time.
+
+\subsection{Scope}
 
 The recollection of the data should be carried out in an automated fashion, using the sensors available in mobile devices such as mobiles (smartphones) and smart-watches. 
 
@@ -29,11 +31,11 @@ The goals of the system are summarised in table \ref{table:goals}.
     \begin{adjustbox}{max width=\textwidth}
   \begin{tabular}{cp{14cm}}
     \toprule
-    ID & Goal \\
+    \textbf{ID} & \textbf{Goal} \\
     \midrule
     
     \goallabel{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
-    The system should provide registration
+    The system should provide accounting and authorisation for users and clients.
     \end{tabular} \\
     \hline
     \goallabel{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
@@ -85,91 +87,82 @@ The goals of the system are summarised in table \ref{table:goals}.
   \label{table:goals}
 \end{table}
 
-
-
-%\begin{table}[H]
-%  \centering
-%    \begin{adjustbox}{max width=\textwidth}
-%  \begin{tabular}{cp{14cm}}
-%    \toprule
-%    ID & Goal \\
-%    \midrule
-%    
-%    GL\label{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should recollect and store the data of the users who have give their consent.
-%    \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:fixedtime} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should recollect the data of the users at fixed time intervals.
-%    \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:parameters} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should recollect the data in an organised way, classifying the data in different parameters. 
-%    \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should allow the clients to query the data of an specific user.
-%    \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:dashboard} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should provide a dashboard to the clients where the data will be displayed.
-%        \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should show the data as are available to the clients.
-%        \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:api} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should provide an API to the clients where the data can be queried.
-%        \end{tabular} \\
-%    \hline
-%    
-%    GL\label{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
-%    The system should protect the privacy of the users. A data batch displayed to the client should not enable the differentiation between individuals.
-%        \end{tabular} \\
-%    \hline
-%    
-% \end{tabular}
-%  \end{adjustbox}
-%  \caption{Goals}
-%\end{table}
 \subsection{Definitions, acronyms and abbreviations}
 \subsubsection{Definitions}\label{sec:definitions}
 \begin{itemize}
-     \item \textbf{Administrator}: Worker of \companyName{} with access to the entire platform without restrictions.
+    \item \textbf{Administrator:} Worker of \companyName{} with access to the entire platform without restrictions.
+     
+    \item \textbf{Alarm:} A warning given to the user and emergency services when health parameters are lower than necessary.
   
-    \item \textbf{Client}: Individual or company that pays \companyName{} to get access to the data of the users of \companyName{}.
+    \item \textbf{Client:} Individual or company that pays \companyName{} to get access to the data of the users of \companyName{}.
     
-    \item \textbf{User}: Individual that installs the \companyName{} application and give \companyName{} permission to collect and sell their personal data.
+    \item \textbf{Data batch:} Collection of data from different users that comply with a query based on parameters made by a client.
     
-    \item \textbf{Data batch}: Collection of data from different users that comply with a query based on parameters made by a client.
+    \item \textbf{Emergency system:} External system that performs the emergency warning functions for the AutomatedSOS service.
     
-    \item \textbf{Parameter}: Type of data in which the recollected data is organised. These parameters may include blood pressure, location.
+    \item \textbf{Measure:} Data obtained by the users' devices and communicated to the server. It is classified in parameters.
     
-    \item \textbf{Measure}: Data obtained by the users' devices and communicated to the server. It is classified in parameters.
+    \item \textbf{Parameter:} Type of data in which the recollected data is organised. These parameters may include blood pressure, location.
     
-    \item \textbf{Emergency system}: 
-    \item \textbf{Payment system}: 
+    \item \textbf{Payment system:} External system that allows us to make the different payments to clients.
     
+    \item \textbf{Plan ID:} \comment {Añadir definición}
+    
+    \item \textbf{Subscription ID:} \comment{Añadir definición}
+    
+    \item \textbf{Track:} \comment{Aádir definición}
+    
+    \item \textbf{Token:} \comment{Añadir definición}
+    
+    \item \textbf{User:} Individual that installs the \companyName{} application and give \companyName{} permission to collect and sell their personal data.
     
 
 \end{itemize}
 \subsubsection{Acronyms}
 \begin{itemize}
-    \item \textbf{API}: Application program interface.
+    \item \textbf{API}: Application Program Interface.
+    \item \textbf{GPS}: Global Positioning System.
+    \item \textbf{HTTPS}: Hyper Text Transfer Protocol Secure.
+    \item \textbf{SSL}: Secure Sockets Layer.
+    \item \textbf{TLS}: Transport Layer Security.
 \end{itemize}
 \subsubsection{Abbreviations}
 \begin{itemize}
-    \item \textbf{M/F}: Male/Female.
+    \item \textbf{403 error}: Forbidden HTTP error code.
     \item \textbf{bpm}: Beats per minute.
-    \item \textbf{403 error}: Forbidden HTTP error code
+    \item \textbf{CVC}:Card Verification Code
+    \item \textbf{M/F}: Male/Female.
 \end{itemize}
 \subsection{Revision history}
 \subsection{Reference Documents}
+
+The various pages and documents referred to in this document can be found in page \pageref{sect:references}.
+
+During the reading of the document you will find notation to the different references that have been used.
+
 \subsection{Document Structure}
+
+The document has been structured in different sections and subsections as can be seen on page \pageref{sect:contents}.
+
+During this section we will try to explain in more detail what is dealt with in each section or subsection.
+
+The document is divided into 5 large sections which are divided into multiple subsections, some subsections are further divided into subsections.
+
+\begin{itemize}
+    \item The first section, is based on an introduction in which talk about the idea that is followed to carry out this document and the project, the objectives that are wanted to reach and that must fulfill the final project as well as different definitions, acronyms or abbreviations that are going to be found throughout the project so that no doubt is generated in the reader.
+    
+    You can start by reading this section on page \pageref{sect:introduction}.
+    
+    \item The second section make a more in-depth perspective of the product by treating in a very exact way which users the application is going to be aimed at, dividing them into different groups to name and observe in a more detailed way their different characteristics, we observe the different functions that the project is going to present and how these are fulfilling the different objectives, also observe in detail what external systems are going to be used and what external problems are found to fulfill these objectives.
+    
+    You can start by reading this section on page \pageref{sect:overview}.
+
+
+    \item The third section gets more into how the application is inside, leaving behind the aerial view of the previous sections.
+    In this section we talk about how the application will look using different designs to see the final idea of both the mobile application and the web application as well as the smartwatch. It also deals with the hardware and software interfaces as well as the different requirements expected from the project at a functional and performance level.
+    It presents the reader with different use cases and diagrams so that he or she has no doubt when using the different services, it deals with the different limitations observed when trying to adapt the applications and services to the different devices and finally it is observed how the system is going to be maintained at the level of security, maintenance, portability and different factors.
+    
+    You can start by reading this section on page \pageref{sect:requirements}.
+    
+\end{itemize}
+

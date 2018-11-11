@@ -50,7 +50,7 @@ The main functions of the product are detailed below. The requirements stated la
 \subsubsection{Recollection of users' data}
 The related goals are \goalref{gl:registration}, \goalref{gl:recollect}, \goalref{gl:how-recollect} and \goalref{gl:intervals}.
 
-The recollection of the users' data will be carried out by the users' devices\footnote{i.e. smartwatch and smartphone} and stored by the server of \companyName{}. The data will be grouped by parameters. The parameters will be defined in the technical requirements (section \ref{sect:requirements}). 
+The recollection of the users' data will be carried out by the users' devices\footnote{i.e. smartwatch and smartphone} and stored by the server of \companyName{}. The data will be grouped by parameters. The parameters are defined in section \ref{sec:parameters-appendix}.
 
 An important distinction has to be made between fixed parameters and temporary ones. The former includes data that not changes, like the birth of date, codice fiscale, name, residence and so on. The latter will be recollected at a fixed interval of time and stored with a time-stamp associated with them. Location and heart rate are in this group.
 
@@ -70,7 +70,7 @@ The latter is intended to erase the interconnection between the system of the cl
 No matter what way the client use, two access of the data should be distinguish:
 
 \begin{itemize}
-    \item \textbf{Anonymous query}: Query that return a data batch with enough entries to be considered anonymous, i.e. not individuals can be distinguish.
+    \item \textbf{Anonymous query (Group search)}: Query that return a data batch with enough entries to be considered anonymous, i.e. not individuals can be distinguish.
     
     \item \textbf{Individual query}: Query by an identifier related univocally to an user. The client must elicit the permission of the user before getting the data. 
 \end{itemize}
@@ -83,7 +83,7 @@ The charge to the clients for the access will be by means of a subscription.
 \subsubsection{Ambulance service (AutomatedSOS)}
 The related goal is \goalref{gl:emergency}.
 
-AutomatedSOS is an extra service offered to the users. The system will monitor a set of parameters further detailed in \ref{sect:requirements}. When some of these parameters goes out of a threshold predefined by \companyName{}, an alarm will be raised to the Emergency System, attaching the location of the user.
+AutomatedSOS is an extra service offered to the users. The system will monitor a set of parameters further detailed in \ref{sect:requirements}. When some of these parameters goes out of a threshold predefined by \companyName{}, an alarm will be raised to the Emergency System, attaching the location of the user, the phone number and the phone number of a family member.
 
 The aforementioned alarm will be communicated to the Emergency System by electronic means, using an API offered by the Emergency System.
 
@@ -104,6 +104,16 @@ The potential users can be segmented by age:
 With these segments in mind, \companyName{} system will be target to the three first segments. Specially taking into account that Generation Z and Millennials are not concerned about the lack of privacy. Generation X users have a great purchase power, but will be more reticent to the acceptation of the terms of usage. 
 
 AutomatedSOS will be oriented to Baby Boomers. Since they usually found difficulties in the usage of the fitness tracking devices, the application should be simple and concise. 
+\subsection{Clients}
+Clients are assumed to be companies interested in offering a better service through the use of data. The main sectors in which the \companyName{} system shall focus are:
+\begin{itemize}
+    \item \textbf{Insurance:} \comment{Pendiente}
+    \item \textbf{Marketing:} \comment{Pendiente}
+    \item \textbf{Banks:} \comment{Pendiente}
+    \item \textbf{Wellness and health applications:} \comment{Pendiente}
+    \item \textbf{} \comment{Añadir alguno más}
+\end{itemize}
+
 
 \subsection{Assumptions, dependencies and constrains}
 
@@ -114,12 +124,15 @@ AutomatedSOS will be oriented to Baby Boomers. Since they usually found difficul
     \item The user has a continuous and correct internet connection.
     \item The user gives permission to the app for the different services.
     \item The user that is using the smart-watch or the mobile phone is the user that is log in.
+    \item The devices (mobile phone and smartwatch) work correctly.
 \end{itemize}
+\comment{Ver si se nos ocurre alguna más}
+
 \subsubsection{Dependencies}\label{sec:dependencies}
 \companyName{} system relies in two external systems to perform several tasks:
 \begin{itemize}
     \item \textbf{Stripe}: Payment system that allows \companyName{} system to charge the clients a monthly fee for the access to the data. Stripe stands out over the competitors because its API, which is recognized as one of the best in the business \cite{stripe}.
-    \item \textbf{Emergency system}: To offer AutomatedSOS, \companyName{} system needs a programmatic way to reach the emergency institutions. Therefore, an API is needed to rise an alarm when is needed.
+    \item \textbf{Emergency system}: To offer AutomatedSOS, \companyName{} system needs a programmatic way to reach the emergency institutions. Therefore, an API is needed to rise an alarm when required.
 \end{itemize}
 Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and endpoints needed for the proper functioning of \companyName{} product.
 \begin{table}[H]
@@ -127,14 +140,14 @@ Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and
     \begin{adjustbox}{max width=\textwidth}
   \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
     \toprule
-    ID & Method & URL & Parameters & Return & Description \\
+    \textbf{ID} & \textbf{Method} & \textbf{URL} & \textbf{Parameters} & \textbf{Return} & \textbf{Description}\\
     \midrule
     
     \silabel{si:emergency-alarm} & POST &
     /ambulance
     &
     \begin{tabular}{@{}p{4cm}@{}}
-    location, phone, triggered parameter 
+    location, phone number, phone number of a family member, triggered parameter 
     \end{tabular} &
     \begin{tabular}{@{}p{2cm}@{}}
      estimated time 
@@ -155,7 +168,7 @@ Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and
     \begin{adjustbox}{max width=\textwidth}
   \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
     \toprule
-    ID & Method & URL & Parameters & Return & Description \\
+    \textbf{ID} & \textbf{Method} & \textbf{URL} & \textbf{Parameters} & \textbf{Return} & \textbf{Description} \\
     \midrule
     
     \silabel{si:pay-create-card} & POST &
@@ -220,11 +233,154 @@ Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and
   \label{table:api-pay}
 \end{table}
 
+\comment{Añadir enlace o referencia a la documentación oficial de Stripe}
 
 
-\subsubsection{Constraints}:
+
+\subsubsection{Constraints}
 \label{sec:constraints}
-\begin{itemize}
-    \item The international and Italian regulation about the use of data by third parties.
-    \item The user has smart-watch and phone powered by Android.
-\end{itemize}
+To ensure the proper work of \companyName{} system, several constraints will be in place. The constraints will be formulated upon the different components of the system stated in figure \ref{fig:overview-system}.
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{10cm}}
+    \toprule
+    \textbf{ID} & \textbf{Element} & \textbf{Value} &\textbf{Motivation} \\
+    \midrule
+    
+    \conslabel{cons:android-version} & 
+    Operating system
+    & Android 7.0 to 9.0 &
+    \begin{tabular}{@{}p{10cm}@{}}
+    These versions agglutinate the 54\% of the Android users \cite{versions-android}. The versions left behind are not supported anymore by Google.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:android-ram} & 
+    Minimum RAM 
+    & 1GB &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The application will not be very demanding in terms of RAM. However, the proper functioning is only ensure to devices with 1GB of RAM or more.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:android-space} & 
+    Minimum free space 
+    & 50MB &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The application will occupy 50MB or less in the internal storage of the users' devices.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:android-orientation} & 
+    Orientation
+    & Vertical &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The application will not adapt to a change in device orientation. Will be always in vertical.
+    \end{tabular} \\
+    \hline
+    
+    \conslabel{cons:android-background} & 
+    Background activity
+    & Yes &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The application will only work properly if background activity is allowed by the users' devices. 
+    \end{tabular} \\
+    \hline
+    
+    \conslabel{cons:android-orientation} &
+    Smartwatch
+    & AndroidWear &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The application will only recollect health status data if the smartwatch paired with the user device is powered by AndroidWear.
+    \end{tabular} \\
+    \bottomrule
+    
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Mobile application}
+  \label{table:mobile-constraints}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{10cm}}
+    \toprule
+    \textbf{ID} & \textbf{Element} & \textbf{Value} &\textbf{Motivation} \\
+    \midrule
+    
+    \conslabel{cons:server-os} & 
+    Operating system
+    & Ubuntu Server 16.04 &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The proper functioning of the server will be only ensure in Ubuntu Server 16.04. Other operating systems may be consider upon approval of JJ Software.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:server-ram} & 
+    Minimum RAM
+    & 32 GB &
+    \begin{tabular}{@{}p{10cm}@{}}
+    The server will need to withstand an important workload, therefore 32GB of RAM is needed.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:server-space} & 
+    Minimum disk space
+    & 200 GB &
+    \begin{tabular}{@{}p{10cm}@{}}
+    This space will be needed to store all the data of the users in a secure way.
+    \end{tabular} \\
+    \hline 
+    
+    \conslabel{cons:server-bw} & 
+    Minimum bandwidth
+    & 500 Mb/s &
+    \begin{tabular}{@{}p{10cm}@{}}
+    To offer a good throughput, 500 Mb/s are needed to coupe with the users and clients request.
+    \end{tabular} \\
+    \bottomrule
+    
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Server}
+  \label{table:server-constraints}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{ccp{4cm}p{8cm}}
+    \toprule
+    \textbf{ID} & \textbf{Element} & \textbf{Value} &\textbf{Motivation} \\
+    \midrule
+    
+    \conslabel{cons:browsers} & 
+    Supported browsers &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Safari 10, Firefox 50, Chrome 60, IE 11, Edge 10, Opera
+    \end{tabular} &
+    \begin{tabular}{@{}p{8cm}@{}}
+    The dashboard will properly work in all modern browsers, from the versions stated on the left and above.
+    \end{tabular} \\
+    \hline 
+    \bottomrule
+    
+    
+    \conslabel{cons:display} & 
+    Minimum display &
+    \begin{tabular}{@{}p{4cm}@{}}
+    1024px x 784px
+    \end{tabular} &
+    \begin{tabular}{@{}p{8cm}@{}}
+    This is the minimun display resolution in which the dashboard will look as in the mockups.
+    \end{tabular} \\
+    \bottomrule
+    
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Clients' Dashboard}
+  \label{table:dashboard-constraints}
+\end{table}
