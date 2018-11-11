@@ -96,27 +96,34 @@ The goals of the system are summarised in table \ref{table:goals}.
   
     \item \textbf{Client:} Individual or company that pays \companyName{} to get access to the data of the users of \companyName{}.
     
-    \item \textbf{Data batch:} Collection of data from different users that comply with a query based on parameters made by a client.
+    \item \textbf{Data batch:} Collection of data from different users that comply with a query based on logical constraints made by a client.
     
     \item \textbf{Emergency system:} External system that performs the emergency warning functions for the AutomatedSOS service.
     
+    \item \textbf{JJ Software:} Software company responsable of the implementation, operation and maintenance of \companyName{} software.
+    
+    \item \textbf{Logical constraint:} Boolean sentence made upon a Parameter, the queries are formulated as a set of constraints. The data batch ensuing of a query complies with all the logical constraints of the query.
+    
     \item \textbf{Measure:} Data obtained by the users' devices and communicated to the server. It is classified in parameters.
+    
+    \item \textbf{Optimum internet connection:} Connection with at least 10 Mb/s and a latency below 20 ms.
     
     \item \textbf{Parameter:} Type of data in which the recollected data is organised. These parameters may include blood pressure, location.
     
     \item \textbf{Payment system:} External system that allows us to make the different payments to clients.
     
-    \item \textbf{Plan ID:} \comment {Añadir definición}
+    \item \textbf{Plan ID:} Unique identifier of a Plan. A Plan is  an object of Stripe which represents a monthly cost associated to the services offered by \companyName{}.
     
-    \item \textbf{Subscription ID:} \comment{Añadir definición}
+    \item \textbf{Subscription ID:} Unique identifier of a Subscription. A Subscription is an object of Stripe representing the association of a Client with a Plan. When a subscription is created, the client is charged the amount of the Plan in a monthly basis.
     
-    \item \textbf{Track:} \comment{Aádir definición}
+    \item \textbf{Android Permission Request:} Message presented to an Android user requesting allowance of the user to collect data from some sensor, as the location.
     
-    \item \textbf{Token:} \comment{Añadir definición}
+    \item \textbf{Track:} This is the tracking of data, people or any type of item that can be traced and tracked.
+    
+    \item \textbf{Token:} Unique identifier which replace username and password, have a limited duration in time. 
     
     \item \textbf{User:} Individual that installs the \companyName{} application and give \companyName{} permission to collect and sell their personal data.
     
-
 \end{itemize}
 \subsubsection{Acronyms}
 \begin{itemize}
@@ -133,7 +140,15 @@ The goals of the system are summarised in table \ref{table:goals}.
     \item \textbf{CVC}:Card Verification Code
     \item \textbf{M/F}: Male/Female.
 \end{itemize}
+
 \subsection{Revision history}
+
+\begin{itemize}
+    \item \textbf{V 1.0:} First version of the document directed at consumers and developers.
+\end{itemize}
+
+
+
 \subsection{Reference Documents}
 
 The various pages and documents referred to in this document can be found in page \pageref{sect:references}.
@@ -151,18 +166,29 @@ The document is divided into 5 large sections which are divided into multiple su
 \begin{itemize}
     \item The first section, is based on an introduction in which talk about the idea that is followed to carry out this document and the project, the objectives that are wanted to reach and that must fulfill the final project as well as different definitions, acronyms or abbreviations that are going to be found throughout the project so that no doubt is generated in the reader.
     
-    You can start by reading this section on page \pageref{sect:introduction}.
+    This section begins on page \pageref{sect:introduction}.
     
     \item The second section make a more in-depth perspective of the product by treating in a very exact way which users the application is going to be aimed at, dividing them into different groups to name and observe in a more detailed way their different characteristics, we observe the different functions that the project is going to present and how these are fulfilling the different objectives, also observe in detail what external systems are going to be used and what external problems are found to fulfill these objectives.
     
-    You can start by reading this section on page \pageref{sect:overview}.
-
+    This section begins on page \pageref{sect:overview}.
 
     \item The third section gets more into how the application is inside, leaving behind the aerial view of the previous sections.
     In this section we talk about how the application will look using different designs to see the final idea of both the mobile application and the web application as well as the smartwatch. It also deals with the hardware and software interfaces as well as the different requirements expected from the project at a functional and performance level.
     It presents the reader with different use cases and diagrams so that he or she has no doubt when using the different services, it deals with the different limitations observed when trying to adapt the applications and services to the different devices and finally it is observed how the system is going to be maintained at the level of security, maintenance, portability and different factors.
     
-    You can start by reading this section on page \pageref{sect:requirements}.
+    This section begins on page \pageref{sect:requirements}.
     
-\end{itemize}
+    \item The fourth section contains the alloy model of the services which will be used in their future development.
+    
+    This section begins on page \pageref{sect:alloy}.
+    
+    \item The last section contains the times used for the development of this document.
+    
+    This section begins on page \pageref{sect:effort}.
+    
+\end{itemize}    
+    
+    At the end of the document the references used are included as well as two appendices on the parameters and intervals used by \companyName{}.
+    
+
 

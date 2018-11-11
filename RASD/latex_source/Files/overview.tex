@@ -107,26 +107,104 @@ AutomatedSOS will be oriented to Baby Boomers. Since they usually found difficul
 \subsection{Clients}
 Clients are assumed to be companies interested in offering a better service through the use of data. The main sectors in which the \companyName{} system shall focus are:
 \begin{itemize}
-    \item \textbf{Insurance:} \comment{Pendiente}
-    \item \textbf{Marketing:} \comment{Pendiente}
-    \item \textbf{Banks:} \comment{Pendiente}
-    \item \textbf{Wellness and health applications:} \comment{Pendiente}
-    \item \textbf{} \comment{Añadir alguno más}
+    \item \textbf{Insurance:} They will be able to present to the users insurances more adapted to them (for example thanks to their location if they make many trips they will be able to offer them insurances more dedicated to it) as well as discounts by the state of health that the users may present. 
+    
+    It is also presented as an advantage for the insurer since thanks to the different data they can calculate the profitability that a user presents to them.
+
+    \item \textbf{Marketing:} They allow companies to provide more personalised marketing and advertising services for each user thanks to the lifestyle data of each one.
+    
+    \item \textbf{Banks:} They can offer better offers in mortgages or loans to the users thanks to the different data that \companyName{} offers since they are able to know the state of health and the type of life that their clients have.
+    
+    Thanks to \companyName{}, the bank has an advantage since it can calculate the situation in which its clients will find themselves during the repayment of the loan or mortgage.
+    \item \textbf{Wellness and health applications:} They can use \companyName{}'s data for a better control of their clients and thus present a more personalised information to each user.
 \end{itemize}
 
 
 \subsection{Assumptions, dependencies and constrains}
 
 \subsubsection{Assumptions}
-\begin{itemize}
-    \item The location given by the user is correct at every moment.
-    \item The user use real data.
-    \item The user has a continuous and correct internet connection.
-    \item The user gives permission to the app for the different services.
-    \item The user that is using the smart-watch or the mobile phone is the user that is log in.
-    \item The devices (mobile phone and smartwatch) work correctly.
-\end{itemize}
-\comment{Ver si se nos ocurre alguna más}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{14cm}}
+    \toprule
+    \textbf{ID} & \textbf{Description}\\
+    \midrule
+    
+    \assumlabel{as:gps} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users' mobile have GPS sensor.
+    \end{tabular}\\
+    \hline 
+    
+    \assumlabel{as:smarthwatch} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users' smarthwatch have an accurate hearth rate sensor.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:sensor-permission} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users eventually accepts Android Permission Request of the necessary sensors.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:answers} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users will answer the questions prompted by the application with reliable information.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:background} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users will grant permissions to the application to work in the background.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:internet} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Users's devices will have internet connection when the application will send the data to the server.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:use-smartwatch} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    The user that owns the smarthphone in which the application is installed is the same user which wears the smarthwatch.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:real-data} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    The users provides veridic data when registering.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:clients-pay} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    Clients provides a card account with enough funds.
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:emergency} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    The emergency system API process a request in less than one second. 
+    \end{tabular}\\
+    \hline
+    
+    \assumlabel{as:location} &
+    \begin{tabular}{@{}p{14cm}@{}}
+    The user do not move more than 20 meters between the call to the emergency API an the arrival of the ambulance.
+    \end{tabular}\\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Domain assumptions}
+  \label{table:assumptions}
+\end{table}
+
+
 
 \subsubsection{Dependencies}\label{sec:dependencies}
 \companyName{} system relies in two external systems to perform several tasks:
@@ -233,8 +311,7 @@ Tables \ref{table:api-emergency} and \ref{table:api-pay} contains the format and
   \label{table:api-pay}
 \end{table}
 
-\comment{Añadir enlace o referencia a la documentación oficial de Stripe}
-
+The official documentation of Stripe can be consulted in \url{https://stripe.com/docs}.
 
 
 \subsubsection{Constraints}
@@ -365,7 +442,6 @@ To ensure the proper work of \companyName{} system, several constraints will be 
     \begin{tabular}{@{}p{8cm}@{}}
     The dashboard will properly work in all modern browsers, from the versions stated on the left and above.
     \end{tabular} \\
-    \hline 
     \bottomrule
     
     

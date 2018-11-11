@@ -1,4 +1,3 @@
-
 abstract sig Parameter{}
 
 abstract sig FixedParameter extends Parameter {}
@@ -45,14 +44,6 @@ one sig Database {
 	all u:users |#(has[u] & reverse_data[Birth])<2
 	//at most 1 Genre per user
 	all u:users |#(has[u] & reverse_data[Genre])<2
-
-
-
-	//#(belongs[reverse_data[Codice]]) = #(reverse_data[Codice])
-
-
-
-	//all u:users | all v:reverse_data[Codice] | #(u->v)  < 2 
 	
 }
 
@@ -73,12 +64,6 @@ fact{
 fact{
 	all v:Value| one u:User | u->v in Database.has
 }
-/*
-fact{
-	one u:User | all v:d.reverse_data[FixedParameter] | v in database.
-	all d:Database | one v:Value, u:User | u->v in Database.has iff d.data[v] in FixedParameter
-
-}*/
 
 
 
@@ -118,29 +103,29 @@ check noUserMatchedWithoutConstraints{
 	all q:Query |{ 
 		all u:q.users_matched |u in q.database.belongs[q.database.reverse_data[q.constraints]]
 	}
-} for 10
+} for 50
 
 //Any codice, name, surname or residence appears in the result of a query.
 check noForbiddenParametersInQuery{
 	all q:Query | q.database.data[q.results] not in (Codice + Name + Surname + Residence)
-} for 10
+} for 50
 
 //Queries with few entries will not be allowed
 check noFewEntries{
 	all q:Query | #(q.users_matched)>2
-} for 10
+} for 50
 
 //Queries with few entries will not be allowed
 check noFewEntries{
 	all q:Query | #(q.users_matched)>2
-} for 10
+} for 50
 
 //Any user can't have more than 1 codice
 check noTwoCodice{
 	all d:Database | {
 		all u:d.users |#(d.has[u] & d.reverse_data[Codice])<2
 	}
-} for 10
+} for 50
 // Ommited the rest of the checks on numer of genres, residences and so on  for simplicity
 
 //Must be the adequate number of parameters depending of the number of users.
@@ -151,15 +136,15 @@ check mandatoryParameters{
 		#(Database.users) >= #(Database.reverse_data[Birth]) and
 		#(Database.users) >= #(Database.reverse_data[Residence]) and
 		#(Database.users) >= #(Database.reverse_data[Genre])
-} for 100
+} for 50
 
 
 
-pred show[q:Query, d:Database, i:IndividualSearch] {
-	//#(q.users_matched) > 1 and
-	//#(d.reverse_data[Codice])>0
-	//#(i.result)>1
+pred show[d:Database, p:TemporalParameter] {
+	#(d.reverse_data[Location])>3
+	#(d.reverse_data[Hearthrate])>3
+	#(d.reverse_data[Weight])=2
 }
  
 
-run show for exactly 10 User, exactly 40 Value, exactly 1 Query, exactly 1 Client, exactly 1 IndividualSearch
+run show for exactly 1 User, exactly 20 Value, exactly 0 Query, exactly 0 Client, exactly 0 IndividualSearch

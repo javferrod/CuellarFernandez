@@ -1,11 +1,14 @@
 \subsection{External Interface Requirements}
 \subsubsection{User Interfaces}
 
+\begin{itemize}
+    \item \textbf{Web Application Interface}
+
 %Log in and sing up on the Web App
 \begin{figure}[H]
   \centering
    \includegraphics[width=0.6\textwidth]{Images/LoginWebApp}
-  \caption{\textit{Log in and sing up on the Web Application}}
+  \caption{{Log in and sing up on the Web Application}}
   \label{fig:LoginWebApp}
 \end{figure}
 
@@ -65,6 +68,30 @@
   \label{fig:GroupSearch}
 \end{figure}
 
+%Result group search in the Web App (First part)
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultGroupSearch}
+  \caption{Result of the group search in the Web Application (First part)}
+  \label{fig:ResultGroupSearch}
+\end{figure}
+
+%Result group search in the Web App (Second part)
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultGroupSearch2}
+  \caption{Result of the group search in the Web Application (Second part)}
+  \label{fig:ResultGroupSearch2}
+\end{figure}
+
+%Result group search in the Web App (Third part)
+\begin{figure}[H]
+  \centering
+   \includegraphics[width=0.6\textwidth]{Images/ResultGroupSearch3}
+  \caption{Result of the group search in the Web Application (Third part)}
+  \label{fig:ResultGroupSearch3}
+\end{figure}
+
 %Contact zone of the Web App
 \begin{figure}[H]
   \centering
@@ -72,6 +99,8 @@
   \caption{Contact zone of the web application}
   \label{fig:ContactWebApp}
 \end{figure}
+
+\item \textbf{Application Interface}
 
 \begin{figure} [H]
 \centering
@@ -97,6 +126,8 @@
   \label{fig:PrincipalScreenAppWithSlide}
 \end{figure}
 
+\item \textbf{Smartwatch Interface}
+
 \begin{figure}[H]
   \centering
    \includegraphics[width=0.55\textwidth]{Images/SmartwatchScreen.png}
@@ -104,6 +135,7 @@
   \label{fig:SmartwatchWindow}
 \end{figure}
 
+\end{itemize}
 
 \subsubsection{Software Interfaces}\label{sec:interfaces}
 In this section, the API offered by \companyName{} will be detailed. This API is intended to be use for the clients who seeks an integration with their own systems.
@@ -187,8 +219,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \textbf{Events flow} &
     \begin{tabular}{@{}p{14cm}@{}}
         \begin{enumerate}[leftmargin=*]
-            \item The client have to click on the button of sing up of the web application.
-            (Figure \ref{fig:LoginWebApp})
+            \item The client have to click on the button of sing up of the web application (figure \ref{fig:LoginWebApp}).
             \item Fill in the necessary information requested in the form that will appear as well as a form of payment.
             \item After the confirmation the system will save the data and the client will be registered.
         \end{enumerate} 
@@ -235,9 +266,9 @@ This section is meant to clarify the normal usage of the platform by the differe
     \textbf{Events flow} &
     \begin{tabular}{@{}p{14cm}@{}}
         \begin{enumerate}[leftmargin=*]
-            \item Press the log in button in the web application. (Figure \ref{fig:LoginWebApp})
-            \item Complete the username and password sections of the log in window. (Figure \ref{fig:LoginScreen})
-            \item After clicking on the log in button, if it is correct the username and password will access to user account and the system will redirect to the main window. (Figure \ref{fig:PrincipalPageWebApp})
+            \item Press the log in button in the web application (figure \ref{fig:LoginWebApp}).
+            \item Complete the username and password sections of the log in window (figure \ref{fig:LoginScreen}).
+            \item After clicking on the log in button, if it is correct the username and password will access to user account and the system will redirect to the main window (figure \ref{fig:PrincipalPageWebApp}).
         \end{enumerate} 
     \end{tabular} \\ 
     \hline
@@ -249,7 +280,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \bottomrule
   \end{tabular}
   \end{adjustbox}
-  \caption{Log in use case (Client)}
+  \caption{Log in of a Client use case}
   \label{table:UseCaseLogInClient}
 \end{table}
 
@@ -269,7 +300,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \textbf{Events flow} &
     \begin{tabular}{@{}p{14cm}@{}}
         \begin{enumerate}[leftmargin=*]
-            \item The user have to click on the button of sing up of the application. (Figure \ref{fig:LogInScreenApp})
+            \item The user have to click on the button of sing up of the application (figure \ref{fig:LogInScreenApp}).
             \item Fill in the necessary information requested in the form that will appear.
             \item After the confirmation the system will save the data and the user will be registered.
         \end{enumerate} 
@@ -290,7 +321,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \bottomrule
   \end{tabular}
   \end{adjustbox}
-  \caption{Sing up use case (User)}
+  \caption{Sing up of a User use case}
   \label{table:UseCaseSingUp}
 \end{table}
 
@@ -316,9 +347,9 @@ This section is meant to clarify the normal usage of the platform by the differe
     \textbf{Events flow} &
     \begin{tabular}{@{}p{14cm}@{}}
         \begin{enumerate}[leftmargin=*]
-            \item Press the log in button in the application. (Figure \ref{fig:LogInScreenApp})
+            \item Press the log in button in the application (figure \ref{fig:LogInScreenApp}).
             \item Complete the username and password sections of the log in window.
-            \item After clicking on the log in button, if it is correct the username and password the user will access be redirected to the main window. (Figure \ref{fig:PrincipalScreenApp})
+            \item After clicking on the log in button, if it is correct the username and password the user will access be redirected to the main window (figure \ref{fig:PrincipalScreenApp}).
         \end{enumerate} 
     \end{tabular} \\ 
     \hline
@@ -330,7 +361,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \bottomrule
   \end{tabular}
   \end{adjustbox}
-  \caption{Log in use case (User)}
+  \caption{Log in of a User use case}
   \label{table:UseCaseLogInUser}
 \end{table}
 
@@ -384,7 +415,7 @@ This section is meant to clarify the normal usage of the platform by the differe
     \toprule
     \textbf{ID} & \uselabel{use:UseCaseGroupSearch}\\
     \hline
-    \textbf{Name} & QUerying data.\\
+    \textbf{Name} & Querying group data.\\
     \hline
     \textbf{Actor} & Client.\\
     \hline
@@ -393,9 +424,9 @@ This section is meant to clarify the normal usage of the platform by the differe
     \textbf{Events flow} &
     \begin{tabular}{@{}p{14cm}@{}}
         \begin{enumerate}[leftmargin=*]
-            \item Click on the group data search button of the web application. (Figure \ref{fig:PrincipalPageWebApp})
+            \item Click on the group data search button of the web application (figure \ref{fig:PrincipalPageWebApp}).
             \item Client will be redirected to a search page, figure \ref{fig:GroupSearch}, where a query can be formulated.
-            \item After pressing the search button the system will show the information of the users (anonymously) who meet the criteria given. \comment{Ref. Mockup}
+            \item After pressing the search button the system will show the information of the users (anonymously) who meet the criteria given (figures \ref{fig:ResultGroupSearch}, \ref{fig:ResultGroupSearch2} and \ref{fig:ResultGroupSearch3}).
         \end{enumerate} 
     \end{tabular} \\ 
     \hline
@@ -461,13 +492,13 @@ The functional requirements are divided in three categories. The requirements of
     
     \reqlabel{req:welcome} &
     \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
-    When an user opens the application and no login had been performed, the system shall show the welcome page. (Figure \ref{fig:LogInScreenApp})
+    When an user opens the application and no login had been performed, the system shall show the welcome page (figure \ref{fig:LogInScreenApp}).
     \end{tabular} \\
     \hline
     
     \reqlabel{req:login} &
     \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
-    When the welcome page is shown, the system shall show two buttons (Figure \ref{fig:LogInScreenApp}). When clicked, one of them shall redirect to the login page and the other to the registration page. 
+    When the welcome page is shown, the system shall show two buttons (figure \ref{fig:LogInScreenApp}). When clicked, one of them shall redirect to the login page and the other to the registration page. 
     \end{tabular} \\
     \hline
     
@@ -485,7 +516,7 @@ The functional requirements are divided in three categories. The requirements of
     
     \reqlabel{req:recollection-data-permissions-no} &
     \goalref{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
-    If the user declines an \comment{Android Permission Request}, the application shall issue again an Android Permission Request for the same sensor.
+    If the user declines an Android Permission Request, the application shall issue again an Android Permission Request for the same sensor.
     \end{tabular} \\
     \hline
     
@@ -501,7 +532,7 @@ The functional requirements are divided in three categories. The requirements of
     \end{tabular} \\
     \hline
     
-    \reqlabel{req:recollection-data-manual-functioning} &
+    \reqlabel{req:recollection-data-maual-functioning} &
     \goalref{gl:how-recollect} \goalref{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
     The system shall prompt the user to introduce the manual parameters at fixed time intervals and store the measures in the server. 
     \end{tabular} \\
@@ -559,43 +590,43 @@ The functional requirements are divided in three categories. The requirements of
     
     \reqlabel{req:client-query} &
     \goalref{gl:query} \goalref{gl:privacy}& \begin{tabular}{@{}p{14cm}@{}}
-    When the client introduces a query from the dashboard page (Figure \ref{fig:GroupSearch})\comment{REVISAR mockup} and the number of entries that fullfil the query are equal or more than 1000, the system shall show the data in page \comment{ref al mockup}.
+    When the client introduces a query from the dashboard page (figure \ref{fig:GroupSearch}) and the number of entries that fullfil the query are equal or more than 1000, the system shall show the data in page (Figures \ref{fig:ResultGroupSearch}, \ref{fig:ResultGroupSearch2} and \ref{fig:ResultGroupSearch3}).
     \end{tabular} \\
     \hline
     
     \reqlabel{req:client-query-few} &
     \goalref{gl:query} \goalref{gl:privacy}& \begin{tabular}{@{}p{14cm}@{}}
-    When the client introduces a query from the dashboard page (Figure \ref{fig:GroupSearch})\comment{REVISAR mockup} and the number of entries that fullfil the query are less than 1000, the system shall warn the client about the impossibility to show the results in page \comment{ref al mockup}.
+    When the client introduces a query from the dashboard page (figure  \ref{fig:GroupSearch}) and the number of entries that fullfil the query are less than 1000, the system shall warn the client about the impossibility to show the results in page.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:query-live} &
     \goalref{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
-    When the system is showing a data batch in the dashboard that fullfils a query (\comment{ref a mockup}) and new data that also fullfils the query arrives, the system shall update the view of the data without intervention of the client.
+    When the system is showing a data batch in the dashboard that fullfils a query (figures individual search: \ref{fig:ResultIndividualSearch1}, \ref{fig:ResultIndividualSearch2} and \ref{fig:ResultIndividualSearch3}; figures group search: \ref{fig:ResultGroupSearch}, \ref{fig:ResultGroupSearch2} and \ref{fig:ResultGroupSearch3}) and new data that also fullfils the query arrives, the system shall update the view of the data without intervention of the client.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:client-query-one} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos} (Figure \ref{fig:SearchIndividualWebApp}), the user exists and the client have already obtained the permission of the user, the system shall return the data associated to the individual.
+    When the client introduces a codice fiscale from the dashboard page (figure \ref{fig:SearchIndividualWebApp}), the user exists and the client have already obtained the permission of the user, the system shall return the data associated to the individual.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:client-codice-permission} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos} (Figure \ref{fig:SearchIndividualWebApp}), the user exists and the client do not have the permission of the user, the system shall prompt the client to ask permission to the user.
+    When the client introduces a codice fiscale from the dashboard page (figure \ref{fig:SearchIndividualWebApp}), the user exists and the client do not have the permission of the user, the system shall prompt the client to ask permission to the user.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:client-codice-noexist} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    When the client introduces a codice fiscale from \comment{pagina de busqueda de individuos} (Figure \ref{fig:SearchIndividualWebApp}), and the user do not exists, the system shall prompt the client to ask permission to the user\footnote{This is done to prevent the clients to poll if a codice fiscale is in the system or not}.
+    When the client introduces a codice fiscale from the dashboard page (figure \ref{fig:SearchIndividualWebApp}), and the user do not exists, the system shall prompt the client to ask permission to the user.
     \end{tabular} \\
     \hline
     
     \reqlabel{req:client-ask-permissions} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    When the client is requesting permission to a concrete user in page \comment{ref a la page} and clicks on \textit{Yes}, the system shall emit a \comment{Ref a la interfaz} to the appropriate user application requesting their permission.
+    When the client is requesting permission to a concrete user in page and clicks on \textit{Yes}, the system shall emit a to the appropriate user application requesting their permission.
     \end{tabular} \\
     \hline
     
@@ -607,7 +638,7 @@ The functional requirements are divided in three categories. The requirements of
     
     \reqlabel{req:client-list-permissions} &
     \goalref{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
-    The system shall show the client a list of all users that had give their permission of access in page \comment{ref a mock} in descending alphabetical order.
+    The system shall show the client a list of all users that had give their permission of access in page in descending alphabetical order.
     \end{tabular} \\
     
     \bottomrule
@@ -628,7 +659,7 @@ In table \ref{table:client-api-reqs} the phrase \textit{When a message with a co
     \midrule
     \reqlabel{req:api-login} &
     \goalref{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
-    When a message with a correct format reach the interface \siref{si:api-login} with an existing pair of username and password, the system shall replay with a token that will identify the client in the next api calls. The token have a validity of \comment{3 days}.
+    When a message with a correct format reach the interface \siref{si:api-login} with an existing pair of username and password, the system shall replay with a token that will identify the client in the next api calls. The token have a validity of 3 days.
     \end{tabular} \\
     \hline
     
@@ -698,11 +729,11 @@ In table \ref{table:client-api-reqs} the phrase \textit{When a message with a co
     \end{tabular} \\
     \hline
     \perflabel{perf:number-of-users} & \begin{tabular}{@{}p{14cm}@{}}
-    The system shall be able to handle at least \comment{10000 active users}.
+    The system shall be able to handle at least 10000 active users.
     \end{tabular} \\
     \hline
     \perflabel{perf:number-of-clients} & \begin{tabular}{@{}p{14cm}@{}}
-    The system shall be able to handle at least \comment{100 active clients}.
+    The system shall be able to handle at least 100 active clients.
     \end{tabular} \\
     
     \bottomrule
@@ -716,12 +747,15 @@ In table \ref{table:client-api-reqs} the phrase \textit{When a message with a co
 \subsection{Design Constraints}
 
 \subsubsection{Standards compliance}
+Since \companyName{} system do not have to handle any critical situation nor have connection with the real world, the applicability of standards is limited. 
 
-\begin{itemize}
-    \item The application will be installed in the internal memory of the terminal and will store all the information in it.
-    \item The application will request and need the acceptance of some permissions for access to the terminal, if not accepted the application can not work or show a proper operation.
-    \item The app will be kept in the background with a minimum consumption for the use of notifications if necessary.
-\end{itemize}
+Although law is not a standard strictly speaking, since the impact of the rules about privacy and usage of data is noticeable in \companyName{} product, a review of the applicable legislation must be made.
+
+Since May 2018, the EU General Data Protection Regulation replaces the previous legislation, enforcing a homogeneous set of rules in the whole Europe Union. The following excerpt is obtained from \cite{GPDR}:
+
+\textit{The request for consent must be given in an intelligible and easily accessible form, with the purpose for data processing attached to that consent. Consent must be clear and distinguishable from other matters and provided in an intelligible and easily accessible form, using clear and plain language. It must be as easy to withdraw consent as it is to give it.}
+
+Therefore, the registration process must be clear, stating in a natural language the terms of usage. Users needs to accept one per one the collection of each peace of information that \companyName{} is collecting. Users also can exercise their right to withdraw their consent. A section in the users' application offering to withdraw their permission must be present. Please, notice the Privacy section in figure \ref{fig:PrincipalScreenAppWithSlide}.
 
 \subsubsection{Hardware limitations}
 
@@ -743,7 +777,7 @@ The system shall preserve the integrity of the saved data no matter what circums
 \subsubsection{Availability}
 The system shall be available 99.99\% of the time. Programmed maintenance downtime communicated to \companyName{} on behalf of JJ Software at least one month ahead will not account in the availability time.
 
-\comment{Revisar}
+In the event that an external factor causes \companyName{} services to fall, planned emergency measures will be taken to ensure that the system continues to operate at all times.
 
 \subsubsection{Security}
 For security, the HTTPS protocol will be used, which applies SSL/TLS cryptography \cite{HTTPS} that will allow the passage between the server and the different services in a secure way, not allowing attacks or loss of information from \companyName{} clients and users.
