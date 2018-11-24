@@ -1,0 +1,22 @@
+version: "2"
+services:
+  app:
+    container_name: trackme-api
+    image: trackme-api 
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    environment:
+      - TZ=Europe/Madrid
+  mongo:
+    container_name: mongo
+    image: mongo 
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      - TZ=Europe/Madrid
