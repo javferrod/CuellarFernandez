@@ -1,16 +1,22 @@
 import React from 'react';
-import { css } from 'emotion';
+import { connect } from 'react-redux';
+import Login from './auth/login';
 
-const container = css`
-  padding: 15px;
-`;
+const App = (props) => {
+  const { isLogged } = props;
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <div className={container}>
-        <h1>Ciao!</h1>
-      </div>
-    );
-  }
-}
+  if (!isLogged) { return <Login />; }
+
+  return (
+    <div>
+        Logged
+    </div>
+
+  );
+};
+
+const mapStateToProps = state => ({
+  isLogged: state.auth.token !== null,
+});
+
+export default connect(mapStateToProps)(App);

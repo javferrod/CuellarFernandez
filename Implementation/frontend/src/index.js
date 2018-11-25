@@ -13,9 +13,8 @@ const loggerMiddleware = createLogger();
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 
-
-const store = createStore(rootReducer, 
-			  composeEnhancer(applyMiddleware(thunkMiddleware, loggerMiddleware)))
+const store = createStore(rootReducer,
+			  composeEnhancer(applyMiddleware(thunkMiddleware, loggerMiddleware)));
 
 render(
   <Provider store={store}>
@@ -23,4 +22,3 @@ render(
   </Provider>,
   document.getElementById('root'),
 );
-
