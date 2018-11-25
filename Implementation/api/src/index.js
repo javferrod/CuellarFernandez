@@ -1,15 +1,16 @@
 import Koa from 'koa';
 import Router from 'koa-router';
-import Mongoose from 'mongoose';
 import bodyParser from 'koa-bodyparser';
+import authRouter from './auth';
 
 const cors = require('@koa/cors');
 
-Mongoose.connect('mongodb://mongo/prueba');
 
 
 var app = new Koa();
 var router = new Router();
+
+router.use('/auth', authRouter.routes());
 
 router.post('/', async (ctx, next) => {
 });
