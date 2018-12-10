@@ -1,0 +1,60 @@
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{14cm}}
+    \toprule
+    \textbf{ID} & \textbf{Goal} \\
+    \midrule
+    
+    \goallabel{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should provide accounting and authorisation for users and clients.
+    \end{tabular} \\
+    \hline
+    \goallabel{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store the recollected data.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data using the sensors available in the users' devices, asking the user directly the information when no sensor is available for recollecting the information (for example, weight). 
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data from the users at time intervals.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store and display the data in a time series format, allowing the client to consult the changes in the parameters along the time.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to easily query the already recollected data of the users. 
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to query the data of an specific user.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to subscribe to a query, providing new data as arrives.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should protect the privacy of the users. A data batch displayed to a client should not enable the differentiation between individuals.
+        \end{tabular} \\
+    \hline
+    \goallabel{gl:emergency} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow users to monitor some of their parameters, alerting the emergency system when any of these parameter gets out of a threshold.
+        \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Goals}
+  \label{table:goals}
+\end{table}

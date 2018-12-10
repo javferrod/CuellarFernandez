@@ -582,9 +582,21 @@ The dashboard only present interfaces to the user, which are already defined in 
     \end{tabular} &
     Internal
     &
-    \begin{tabular}{@{}p{4cm}@{}}
+    \begin{tabular}{@{}p{10cm}@{}}
          Gets the user's heart rate at that time.
-    \end{tabular} \\
+    \end{tabular} \\ \hline
+    
+    getUserData &
+    \begin{tabular}{@{}p{4cm}@{}}
+    latitude, longitude, hour, hearth rate
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Send the information obtained from the user.
+    \end{tabular} \\ \hline  
+    
+    
     \bottomrule
   \end{tabular}
   \end{adjustbox}
@@ -599,16 +611,26 @@ The dashboard only present interfaces to the user, which are already defined in 
     \toprule
     \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
     \midrule
-    
-     getUserData &
-    \begin{tabular}{@{}p{4cm}@{}}
+ 
+    sendUserData &
+     \begin{tabular}{@{}p{4cm}@{}}
     latitude, longitude, hour, hearth rate
     \end{tabular} &
     Internal
     &
     \begin{tabular}{@{}p{10cm}@{}}
-    Receives the information obtained from the user
-    \end{tabular} \\ 
+    Send the process information obtained from the user.
+    \end{tabular} \\ \hline
+    
+    processUserData &
+     \begin{tabular}{@{}p{4cm}@{}}
+    latitude, longitude, hearth rate
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Checks that the data is good and processes it for better sending.
+    \end{tabular} \\
     
     \bottomrule
   \end{tabular}
