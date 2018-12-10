@@ -1,0 +1,149 @@
+\subsection{Purpose}
+
+The aim of this document is to determine in a more detailed way which software requirements are going to be used for the development of the project, it is also expected that this document will serve as a model to follow for the development of the application.
+
+The objectives that the project is expected to meet and the different services provided by \companyName{} can be read in the \textbf{RASD} project document.
+
+\subsection{Scope}
+
+The expected scope of the system were presented in the \textbf{RASD} document.
+
+The list of goals will be re-submitted for discussion throughout the document.
+
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{14cm}}
+    \toprule
+    \textbf{ID} & \textbf{Goal} \\
+    \midrule
+    
+    \goallabel{gl:registration} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should provide accounting and authorisation for users and clients.
+    \end{tabular} \\
+    \hline
+    \goallabel{gl:recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store the recollected data.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:how-recollect} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data using the sensors available in the users' devices, asking the user directly the information when no sensor is available for recollecting the information (for example, weight). 
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:intervals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should recollect the data from the users at time intervals.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should store and display the data in a time series format, allowing the client to consult the changes in the parameters along the time.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:query} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to easily query the already recollected data of the users. 
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:individuals} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to query the data of an specific user.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:real-time} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow the clients to subscribe to a query, providing new data as arrives.
+    \end{tabular} \\
+    \hline
+    
+    \goallabel{gl:privacy} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should protect the privacy of the users. A data batch displayed to a client should not enable the differentiation between individuals.
+        \end{tabular} \\
+    \hline
+    \goallabel{gl:emergency} & \begin{tabular}{@{}p{14cm}@{}}
+    The system should allow users to monitor some of their parameters, alerting the emergency system when any of these parameter gets out of a threshold.
+        \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Goals}
+  \label{table:goals}
+\end{table}
+
+\subsection{Definitions, acronyms, abbreviations}
+\subsubsection{Definitions}
+\begin{itemize}
+
+    \item \textbf{Android Studio:} Official development environment for Android developed by Google.
+    \item \textbf{Container:} Standard unit of software that packages up code and all its dependencies.
+    \item \textbf{Docker:} Software developed by Docker Inc. Provides operating-system-level vitalisation also knows as containerisation.
+    \item \textbf{InfluxDB:} Open-source time series database.
+    \item \textbf{Koa.js:} Minimalist web framework from the creators of Express.
+    \item \textbf{Kubernetes:} Open-source system for automating deployment, scaling, and management of containerized applications.
+    \item \textbf{Mockups:} Models of device interfaces.
+    \item \textbf{MongoDB:} Open-source document-oriented database.
+    \item \textbf{Orchestration:} Automated arrangement and coordination of computer systems and services.
+    
+\end{itemize}
+\subsubsection{Acronyms}
+
+\begin{itemize}
+    \item \textbf{API:} Application Programming Interface.
+    \item \textbf{HTTP:} Hypertext Transfer Protocol.
+    \item \textbf{HTTPS:} Hypertext Transfer Protocol Secure.
+    \item \textbf{IP:} Internet Protocol.
+    \item \textbf{XML:} Extensible Markup Language.
+\end{itemize}
+
+\subsubsection{Abbreviations}
+
+\subsection{Revision history}
+
+The revision history can be find on page \comment{Ref a pagina 2}.
+
+\subsection{Reference documents}
+
+References used during the development of this document can be found at the bottom of the document on the page \pageref{sect:references}.
+
+\subsection{Document structure}
+
+The structure of this document is given in the table of contents (Page \pageref{sect:contents}) but in this section we will take a closer look at everything contained in the document.
+
+\begin{enumerate}
+
+    \item \textbf{INTRODUCTION}
+    
+    In the first section we will deal with the introduction. As in the RASD, the document that is being presented will be presented in an incoming form with references, an introduction to the objectives that the project is expected to achieve, definitions, abbreviations, and so on.
+    
+    You can start reading this section on page \pageref{sect:introduction}.
+    
+    \item \textbf{ARCHITECTURAL DESIGN}
+    
+    The second section of the document presents the design of the architecture that will be followed throughout the development, this part is very important because it is the one that presents in a detailed way all the functioning that is behind and the different connections that are made.
+
+    We present different schemes and designs from an external point to how the different parts of the systems interact with each other and what they use.
+    
+    You can start reading this section on page \pageref{sect:architecturalDesign}.
+    
+    \item \textbf{USER INTERFACE DESIGN} 
+    
+    The third section presents the designs of the user interface, at this point we will not go into depth since the designs and explanations have been given in the RASD.
+    
+    You can start reading this section on page \pageref{sect:userInterfaceDesign}.
+    
+    \item \textbf{REQUIREMENTS TRACEABILITY}
+    
+    The fourth section presents the objectives and requirements of the service which were presented in the RASD and how these are resolved through the architectures presented in this document.
+    
+    You can start this reading this section on page \pageref{sect:requirementsTraceability}.
+    
+    \item \textbf{IMPLEMENTATION, INTEGRATION AND TEST PLAN}
+    
+    The last section deals with how has been made the implementation of the different parts that make up the service and what elements (frameworks, services, etc.) have been used during its implementation. 
+    
+    It is also treated as all these elements have been integrated into the system and testing plan has been used to verify the proper functioning of all parts and service.
+    
+    You can start reading this section on page \pageref{sect:implementationIntegrationTestplan}.
+\end{enumerate}

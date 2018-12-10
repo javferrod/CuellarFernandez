@@ -1,0 +1,108 @@
+In the following points we will treat that objectives (those presented in the RASD that have also been presented in the Scope of this document) that have been fulfilled through the implementations treated in this document. 
+
+
+
+
+\comment{En el documento del DD pone explicitamente mapear requisitos, si se quiere se puede añadir mas mapeos pero requisitos seguro que si}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{cc}
+    \toprule
+    \textbf{Use case ID} & \textbf{Run time diagram} \\
+    \midrule
+    \useref{use:UseCaseLogInClient} \useref{use:UseCaseLogInUser} & Figure \ref{fig:login} \\ \hline
+    \useref{use:UseCaseSingUpClient} \useref{use:UseCaseSignUpUser} & Figure \ref{fig:login} \\ \hline
+    \useref{use:UseCaseIndividualSearch} & Figure \ref{fig:search} \\ \hline
+    \useref{use:UseCaseGroupSearch} & Figure \ref{fig:query} \\ 
+    \bottomrule
+    
+  \end{tabular}
+  \caption{Correspondence between use cases and run time diagrams}
+  \label{table:usecase-runtime}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{cc}
+    \toprule
+    \textbf{Requirement ID} & \textbf{Component name} \\
+    \midrule
+    \reqref{req:welcome} & \\ \hline
+    
+    \bottomrule
+    
+  \end{tabular}
+  \caption{Correspondence between requirements and components}
+  \label{table:requirements-components}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    \textbf{Interface ID} & \textbf{Component} & \textbf{Table} \\
+    \midrule
+    
+    \siref{si:api-login} & Authentication & Table \ref{table:interfaces-authentication} \\ \hline
+    \siref{si:api-query} & GroupSearch & Table \ref{table:interfaces-group-search} \\ \hline
+    \siref{si:api-search} & IndividualSearch & Table \ref{table:interfaces-individual-search} \\ 
+    \bottomrule
+    
+  \end{tabular}
+  \caption{Correspondence between interfaces and component interfaces}
+  \label{table:interfaces-components-interfaces}
+\end{table}
+
+\comment{Si mapeamos los requisitos, pienso que los goals sobran ya que cada requisito va a asociado a un goal}
+\begin{itemize}
+    \item \textbf{\goalref {gl:registration}:} The system should provide accounting and authorisation for users and clients.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:recollect}:} The system should store the recollected data.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:how-recollect}:} The system should recollect the data using the sensors available in the users' devices, asking the user directly the information when no sensor is available for recollecting the information (for example, weight).
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:intervals}:} The system should recollect the data from the users at time intervals.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:time}:} The system should store and display the data in a time series format, allowing the client to consult the changes in the parameters along the time.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:query}:} The system should allow the clients to easily query the already recollected data of the users.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:individuals}:} The system should allow the clients to query the data of an specific user.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:real-time}:} The system should allow the clients to subscribe to a query, providing new data as arrives.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:privacy}:} The system should protect the privacy of the users. A data batch displayed to a client should not enable the differentiation between individuals.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+    \item \textbf{\goalref{gl:emergency}:} The system should allow users to monitor some of their parameters, alerting the emergency system when any of these parameter gets out of a threshold.
+    \begin{enumerate}
+        \item 
+    \end{enumerate}
+    
+\end{itemize}

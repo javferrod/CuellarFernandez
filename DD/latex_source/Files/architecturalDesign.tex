@@ -1,0 +1,756 @@
+\subsection{Overview}
+An overview of the system is shown in figure \ref{fig:overview-architecture}. The dashed lines represents connections between elements of the \companyName{} system while the solid ones corresponds to outside ones. 
+
+\begin{figure} [H]
+        \centering
+        \includegraphics[width=1.00\textwidth]{images/overviewArchitecture.png}
+        \caption{Overview of the system}
+        \label{fig:overview-architecture}
+\end{figure}
+
+The system have three main blocks: the mobile application, the server and the dashboard. HTTPS is used to interconnect them. There are also external services, the emergency system and the payment system. The connection with them is realised using also HTTPS.
+
+\begin{itemize}
+    \item \textbf{Mobile:} Executed in user's smartphones. Recollects the data at fixed intervals and summit it to the server.
+    \begin{itemize}
+        \item \textbf{Smartwatch:} Executed in the user's smartwatch. Recollects \ref{pm:hearthrate} when needed and send it over Bluetooth to the mobile.
+    \end{itemize}
+    
+    \item \textbf{Server:} The most complex component. Contains two databases and the API itself. Handle the data submitted by the users and stores it. Replies to the clients queries and is in charge of authorising users and clients.
+    \item \textbf{Dashboard:} Entirely executed in the client's web browser. It is centred in providing a visual interface to the clients. 
+\end{itemize}
+
+Globally, the architecture follows the classical client-server style, the paradigms used are discussed more profoundly in section \ref{sec:styles-patterns}.
+
+Worth mentioning that the API offered to the clients is a subset of the API used by the dashboard, therefore no special effort is needed in that direction.
+
+%The design of the architecture will present 4 layers (or levels) that relate to each other as shown in the figure \comment{Añadir ref.} , these 4 layers will be the ones that generate the services of \companyName{}.
+
+%The 4 layers \footnote{The user is not considered as a layer.} will be divided from the form:
+
+%\begin{table}[H]
+%  \centering
+%    \begin{adjustbox}{max width=\textwidth}
+%  \begin{tabular}{cp{14cm}}
+%    \toprule
+%    \textbf{Layer} & \textbf{Objective} \\
+%    \midrule
+%    
+%    1 &
+%    \begin{tabular}{@{}p{9cm}@{}}
+%         INFORMACION SOBRE CAPA
+%    \end{tabular}
+%    \hline
+%      \bottomrule
+%  \end{tabular}
+%  \end{adjustbox}
+%  \caption{Layers and objectives of each layer (Architecture of the system)}
+%  \label{table:layersArchitecture}
+%\end{table}
+
+\subsection{Component view}
+
+\begin{figure}[H]
+    \includegraphics[angle=90,width=0.39\textwidth]{images/ComponentView.png}
+    \centering
+    \caption{Deployment of the mobile side components}
+    \label{fig:deployment-mobile}
+\end{figure}
+
+\subsection{Deployment view}
+Figure \ref{fig:deployment-server} shows the deployment of the server side components. The use of Docker introduces an isolation layer between the Operating system and the source code, which enables portability across all operating systems that supports Docker.
+
+Furthermore, the inclusion of Docker facilitates a future deployment in which the containers are distributed. Kubernetes can handle the orchestration while Docker will tackle the containerisation.
+
+The connection between containers is specified in a Docker Compose file, which will provide IP connectivity between the different containers as shown in the figure \ref{fig:deployment-server}.
+\begin{figure}[H]
+    \includegraphics[width=0.8\textwidth]{images/deploy-server.png}
+    \centering
+    \caption{Deployment of the server side components}
+    \label{fig:deployment-server}
+\end{figure}
+
+Figures \ref{fig:deployment-mobile} and \ref{fig:deployment-dashboard} shows the deployment of mobile and dashboard respectively. The diagrams are rather simpler, the deployment of mobile and dashboard do not require any special requirements.
+
+In the case of the mobile, the most relevant information is contained in the version of Android required.
+
+\begin{figure}[H]
+    \includegraphics[width=0.3\textwidth]{images/deploy-mobile.png}
+    \centering
+    \caption{Deployment of the mobile side components}
+    \label{fig:deployment-mobile}
+\end{figure}
+
+The dashboard will be written in React, and therefore the JavaScript code will be downloaded by the client to be executed in the web browser JavaScript interpreter. 
+
+\begin{figure}[H]
+    \includegraphics[width=0.3\textwidth]{images/deploy-dashboard.png}
+    \centering
+    \caption{Deployment of the dashboard components}
+    \label{fig:deployment-dashboard}
+\end{figure}
+
+\subsection{Runtime view}
+Along this section, almost all operations performed by users or clients are explained in terms of calls between the different actors of the system. The following diagrams are high level ones and therefore do not include any component, although the interactions that takes places between components are easily extrapolated thanks to the names of the components.
+
+Only chains of correct operations are shown in the diagrams, error handling is out of the scope of this section.
+
+The calls between the NodeJS server and the databases do not represent a real query, functions are used instead of real queries to represent the intention of the call rather than the semantics of each database.
+
+
+Figure \ref{fig:dashboard-download} represents the download of the dashboard in the cients' web browser. An NginX frontend is used to deliver the static files needed to render the dashboard as NginX excels in this tasks \cite{benchmark-nginx}.
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlactor[class=user]{Client}
+\umlobject[class=server]{Nginx}
+\umlobject[class=server]{NodeJS}
+\begin{umlcall}[op= HTTPS GET /, return={index.html, index.js}]{Client}{Nginx}
+\end{umlcall}
+\begin{umlcall}[op=HTTPS GET /api/*, return={200 OK, JSON}]{Client}{Nginx}
+\begin{umlcall}[op= HTTP GET /*, return={200 OK, JSON}]{Nginx}{NodeJS}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Download of the dashboard}
+    \label{fig:dashboard-download}
+\end{figure}
+
+Figure \ref{fig:login} shows the login process by a client or a user. The final target of the client or user is to obtain a token that is used to authenticate him in future calls.
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlactor{Client/User}
+\umlobject[class=server]{NodeJS}
+\umldatabase[class=db]{MongoDB}
+\begin{umlcall}[op= POST /auth/, return={token}]{Client/User}{NodeJS}
+\begin{umlcall}[op={getUser(usr, passwd)}, return={user}]{NodeJS}{MongoDB}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Login by a Client or User}
+    \label{fig:login}
+\end{figure}
+
+In figure \ref{fig:data-sent} there are two calls to a database. The first one takes place between the fixed database and the server whilst the second one is performed against the temporal database. The former represents the authentication process and is performed by Authentication component. This call is included in almost every process.
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlobject[class=application]{Mobile}
+\umlobject[class=server]{NodeJS}
+\umldatabase[class=db]{InfluxDB}
+\umldatabase[class=db]{MongoDB}
+\begin{umlcall}[op= POST /data/, return={200 OK}]{Mobile}{NodeJS}
+\begin{umlcall}[op=getUser(token), return={user}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=writePoints(data), return={true}]{NodeJS}{InfluxDB}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Data sent from the mobile application}
+    \label{fig:data-sent}
+\end{figure}
+
+In figure \ref{fig:query}, the most relevant is the double search performed in the temporal and fixed databases. Worth mentioning that if no results are obtained in the first call, the second one is not conducted.
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlobject[class=application]{Dashboard}
+\umlobject[class=server]{NodeJS}
+\umldatabase[class=db]{InfluxDB}
+\umldatabase[class=db]{MongoDB}
+\begin{umlcall}[op= POST /query/, return={data}]{Dashboard}{NodeJS}
+\begin{umlcall}[op=getUser(token), return={client}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=FIND cond, return={temporal data}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=SELECT WHERE cond, return={data}]{NodeJS}{InfluxDB}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Query performed by a client}
+    \label{fig:query}
+\end{figure}
+
+Figure \ref{fig:search} shows a individual search. The management of permissions is reduced to check if the user is included in the list of permissions of the client.
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlobject[class=application]{Dashboard}
+\umlobject[class=server]{NodeJS}
+\umldatabase[class=db]{InfluxDB}
+\umldatabase[class=db]{MongoDB}
+\begin{umlcall}[op= POST /search/, return={data}]{Dashboard}{NodeJS}
+\begin{umlcall}[op=getUser(token), return={client}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=getPermissions(client), return={user list}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=FIND cond, return={temporal data}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=SELECT WHERE cond, return={data}]{NodeJS}{InfluxDB}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Individual search performed by a client}
+    \label{fig:search}
+\end{figure}
+
+Figures \ref{fig:permission-request} and \ref{fig:permission-accepted} represents the process of asking and granting permission. 
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlobject[class=application]{Mobile}
+\umlobject[class=application]{Dashboard}
+\umlobject[class=server]{NodeJS}
+\umldatabase[class=db, x=14]{MongoDB}
+\begin{umlcall}[op= POST /permission/, return={200 OK}]{Dashboard}{NodeJS}
+\begin{umlcall}[op=getUser(token), return={client}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=getUser(usr), return={user}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op={insertPermission(client, pending)}, return={permission}]{NodeJS}{MongoDB}
+\end{umlcall}
+\end{umlcall}
+\begin{umlcall}[op=PUSH permission request]{NodeJS}{Mobile}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Permission request performed by a client}
+    \label{fig:permission-request}
+\end{figure}
+
+\begin{figure}[H]
+\begin{tikzpicture}
+\begin{umlseqdiag}
+\umlobject[class=application]{Mobile}
+\umlobject[class=server, x=5]{NodeJS}
+\umldatabase[class=db, x=12]{MongoDB}
+\begin{umlcall}[op= POST /permission/accept/, return={200 OK}]{Mobile}{NodeJS}
+\begin{umlcall}[op=getUser(token), return={user}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op=getPermission(usr), return={permission}]{NodeJS}{MongoDB}
+\end{umlcall}
+\begin{umlcall}[op={updatePermission(permission, accepted)}, return={permission}]{NodeJS}{MongoDB}
+\end{umlcall}
+\end{umlcall}
+\end{umlseqdiag}
+\end{tikzpicture}
+    \centering
+    \caption{Permission request accepted by an user}
+    \label{fig:permission-accepted}
+\end{figure}
+
+\subsection{Component interfaces}
+
+\subsubsection{Server}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    login &
+    \begin{tabular}{@{}p{4cm}@{}}
+    username/clientname, password
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns a token which can be used to identify the user/client in the future. 
+    \end{tabular} \\ \hline
+    
+    registerUser &
+    \begin{tabular}{@{}p{4cm}@{}}
+    username, password, fixed parameters
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Creates a user with the given username, password and fixed parameters
+    \end{tabular} \\ \hline
+    
+    registerClient &
+    \begin{tabular}{@{}p{4cm}@{}}
+    clientname, password, credit card information
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Creates a client with the given clientname and password. Interacts with Stripe to start the charge to the given credit card
+    \end{tabular} \\ \hline
+    
+    getUser &
+    \begin{tabular}{@{}p{4cm}@{}}
+    token
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns all the user/client associated to the given token
+    \end{tabular} \\ 
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of Authentication component}
+  \label{table:interfaces-authentication}
+\end{table}
+
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{5cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{Type}& \textbf{Description} \\
+    \midrule
+    sendData &
+    \begin{tabular}{@{}p{5cm}@{}}
+    user's token, parameters from user
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Receives the data from the user, sanitise and stores it.
+    \end{tabular} \\ 
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of Data Recollector component}
+  \label{table:interfaces-data-recollector}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+    query &
+    \begin{tabular}{@{}p{4cm}@{}}
+    client token, query
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns all the users that fulfils the query if the query can be anonymised.
+    \end{tabular} \\ 
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of GroupSearch component}
+  \label{table:interfaces-group-search}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+    search &
+    \begin{tabular}{@{}p{4cm}@{}}
+    client token, codice fiscale
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns the user associated to the given codice fiscale if the clients have the needed permission.
+    \end{tabular} \\ 
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of IndividualSearch component}
+  \label{table:interfaces-individual-search}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+    request &
+    \begin{tabular}{@{}p{4cm}@{}}
+    client token, codice fiscale
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Raise a request of permission to the user associated to the given codice fiscale.
+    \end{tabular} \\ \hline
+    
+    accept &
+    \begin{tabular}{@{}p{4cm}@{}}
+    user token, permission ID
+    \end{tabular} &
+    External
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Sets the given permission as accepted.
+    \end{tabular} \\ 
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of Permission component}
+  \label{table:interfaces-permission}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+    raise &
+    \begin{tabular}{@{}p{4cm}@{}}
+    user location, user name, parameter
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Raise a emergency call to the external emergency system.
+    \end{tabular} \\ 
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of EmergencyController component}
+  \label{table:interfaces-emergency-controller}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    saveTemporalParameter &
+    \begin{tabular}{@{}p{4cm}@{}}
+    userID, parameter
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Stores the parameter and its value in InfluxDB database
+    \end{tabular} \\ \hline
+    
+    temporalSearch &
+    \begin{tabular}{@{}p{4cm}@{}}
+    userID, query
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns all the temporal parameters that fulfils the query from the user indicated by userID 
+    \end{tabular} \\ \hline
+    
+    temporalSearch &
+    \begin{tabular}{@{}p{4cm}@{}}
+    query
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns all the temporal parameters with their corresponding userID that fulfils the query 
+    \end{tabular} \\ 
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of TemporalData component}
+  \label{table:interfaces-temporal-data}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    createUser &
+    \begin{tabular}{@{}p{4cm}@{}}
+    username, password, fixed parameters
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Creates a user with the given username, password and fixed parameters
+    \end{tabular} \\ \hline
+    
+    fixedSearch &
+    \begin{tabular}{@{}p{4cm}@{}}
+    userID, query
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns all the users that fulfils the query 
+    \end{tabular} \\ \hline
+    
+    getUser &
+    \begin{tabular}{@{}p{4cm}@{}}
+    username/clientname
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns the user/client that match the given username
+    \end{tabular} \\ \hline
+    
+    getPermissions &
+    \begin{tabular}{@{}p{4cm}@{}}
+    clientname
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Returns the list of users for which the given client have permissions.
+    \end{tabular} \\ \hline
+    
+    savePermission &
+    \begin{tabular}{@{}p{4cm}@{}}
+    username, clientname, status
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Creates a permission if not exists and sets its status to the given one.
+    \end{tabular} \\ 
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of FixedData component}
+  \label{table:interfaces-fixed-data}
+\end{table}
+
+\subsubsection{Dashboard interfaces}
+The dashboard only present interfaces to the user, which are already defined in the RASD.
+\subsubsection{Mobile application}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+     getLocation &
+    \begin{tabular}{@{}p{4cm}@{}}
+    latitude, longitude, hour
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Obtains the location where the user is at that moment.
+    \end{tabular} \\ \hline
+    
+    getHearthRate &
+    
+    \begin{tabular}{@{}p{4cm}@{}}
+        hearth rate
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+         Gets the user's heart rate at that time.
+    \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of Recollector component}
+  \label{table:interfaces-recollector}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cp{4cm}cp{10cm}}
+    \toprule
+    \textbf{Name} &\textbf{Receives} & \textbf{type }& \textbf{Description} \\
+    \midrule
+    
+     getUserData &
+    \begin{tabular}{@{}p{4cm}@{}}
+    latitude, longitude, hour, hearth rate
+    \end{tabular} &
+    Internal
+    &
+    \begin{tabular}{@{}p{10cm}@{}}
+    Receives the information obtained from the user
+    \end{tabular} \\ 
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Interfaces of Scheduler component}
+  \label{table:interfaces-scheduler}
+\end{table}
+
+
+\subsection{Selected architectural styles and patterns}
+\label{sec:styles-patterns}
+The general architecture will be discussed first. Later on, the styles and patterns used in each part of the system will be introduced.
+
+\subsubsection{General architecture}
+As shown in figure \ref{fig:overview-architecture}, the system follows the client-server paradigm. There are two \textit{clients\footnote{The italic is used to differentiate the \textit{client} in client-server paradigm from the clients of \companyName{} platform.}} in the platform, the Android application used by users and the Dashboard used by the clients. The server is composed by an application which responds to the requests of the \textit{clients} and two servers which store the data.
+
+Client-server architecture is a widespread style, used in almost all the mobile applications which requires interaction between systems. Moreover, the usage of applications based entirely in the browser, and therefore client-server, is common.
+
+\subsubsection{Android application}
+
+The android application is presented in Android Studio, a tool with a lot of potential that allows to develop it in the best possible way. For this we use two programming languages that are JAVA and XML.
+
+JAVA and XML combine very well providing each other the needs that the other presents and giving a final set with a lot of potential.
+
+\subsubsection{Server application}
+The server can be divided in two parts, the API and the databases. The former is written in Koa.js whilst the databases are MongoDB for the fixed data and InfluxDB for the temporal one.
+
+The API centres around endpoints and the corresponding handlers. Therefore, the logic will be arranged in five main blocks: Authentication, Data Recollector, Group Search, IndividualSearch and Permissions. Each of these blocks contains the endpoints, handlers and helpers needed to offer the service.
+
+
+MongoDB and InfluxDB are NoSQL databases, hence there is not need of any configuration of the databases prior to insert data into them. 
+
+Functional programming is embraced when possible. Although JavaScript in its latest versions includes several ideas from this paradigm, libraries like ramda are used when needed.
+
+\subsubsection{Dashboard application}
+The dashboard is written in React, and therefore the component-based and declarative styles are embraced. To maintain and distribute the state across the React application, Redux paradigm is used.
+
+Redux plays well with React providing a single source of truth for the entire application which unleash the declarativeness of React.
+
+As in the server application, the functional programming style is adopted. This paradigm avoids to mutate data, which becomes useful when dealing with React as eases the detection of changes in the state.
+%The Android application is the most difficult to update piece of the system. As the server and dashboard code are executed or served from the server owned by JJ Software, the necessary updates can be rolled out as needed.
+
+\subsubsection{Protocols}
+
+The protocol to be used for the connections between the blocks is the HTTPS protocol. 
+
+This protocol is based on the HTTP protocol and allows us to use an encrypted channel to transmit data securely providing the necessary security in the transfer of information between the different blocks that make up the service.
+
+The internal connections between the web application and the databases will be made using the IP protocol.
+
+This protocol is used because it is a protocol of a more internal level than the HTTPS and that allows the passage of data packets between units.
+
+
+\subsection{Other design decisions}
+\subsubsection{Chosen databases}
+\companyName{} service is entirely dedicated to gather data and store it. Databases are essentials in almost every application, even more in the project at hand.
+
+As mention earlier, the data is structured into parameters, which can be classified in two main groups: fixed and temporal. These two groups have different needs in terms of treatment and storage\footnote{For example, a retention policy is needed to store only 3 months of temporal data (\perfref{perf:storage-capacity})}. Therefore, different databases are needed.
+
+Table \ref{table:databases} summarises the reasons why MongoDB and InfluxDB have been chosen as databases.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{cp{4cm}cp{4cm}}
+    \toprule
+    Parameter type & Requirements of the data & Database & Advantages \\
+    \midrule
+    
+    Temporal &
+    \begin{tabular}{@{}p{5cm}@{}}
+    Retention policy\\
+    Timestamps 
+    \end{tabular} &
+    InfluxDB & 
+    \begin{tabular}{@{}p{5cm}@{}}
+    Fulfils requirements \\
+    Driver for NodeJS \\
+    Distributable 
+    \end{tabular}\\
+    \hline
+    Fixed &
+    \begin{tabular}{@{}p{5cm}@{}}
+    -
+    \end{tabular} &
+    MongoDB & 
+    \begin{tabular}{@{}p{5cm}@{}}
+    Flexible\\
+    Driver for NodeJS \\
+    Easly distributable
+    \end{tabular}\\
+     \bottomrule
+  \end{tabular}
+    \caption{Data types, requirements and databases}
+    \label{table:databases}
+\end{table} 
+    
+The bottom line is that two databases are needed, a conventional database and a time-series based one. There are plenty of options that would fulfil the requirements, the main reason to choose MongoDB and InfluxDB is the expertise that the developer team have with them.
+
+\subsubsection{Databases design}
+This section states the chosen structure for the data stored in MongoDB and InfluxDB.
+
+InfluxDB imposes a rigid structure for the data\footnote{called measures in InfluxDB}. The structure per each parameter is shown in figure \ref{fig:structure-influx}, the tag field is used to link the temporal data with the fixed one.
+
+\begin{figure}[H]
+    \centering
+    \begin{minted}[
+               xleftmargin=115pt,
+               tabsize=4]{js}
+    
+    {
+        "measurement": parameter,
+        "tags": { "user": username },
+        "fields": { "value": value },
+    }
+    \end{minted}
+    \caption{Structure of one parameter in InfluxDB}
+    \label{fig:structure-influx}
+\end{figure}
+
+MongoDB is more flexible, and allows any kind of structure as long as it is JSON. The selected structure is stated in figure \ref{fig:structure-mongodb}.
+
+\begin{figure}[H]
+    \centering
+    \begin{minted}[
+               xleftmargin=70pt,
+               tabsize=4]{js}
+    {
+        permissions: [{
+            "client": userID
+            "user": userID
+        }],
+        users: [{
+                "id": uniqueID
+                "type": user/client,
+                "auth": { 
+                        "username": username,
+                        "password": digest(password)
+                        },
+               ... fixed parameters
+        }]
+    }
+    \end{minted}
+    \caption{Structure of one parameter in InfluxDB}
+    \label{fig:structure-mongodb}
+\end{figure}

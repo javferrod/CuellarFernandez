@@ -1,0 +1,61 @@
+The implementation is carried out at all times in parallel in order to meet the deadlines.
+The following points explain the formats followed in the development of each part:
+
+\begin{itemize}
+    \item \textbf{Mobile application:} The mobile application is developed with Android Studio following the languages of use of this, in this case the application is being developed with XML (for the visual part) and Java (for the functional part).
+    
+    The development of this starts with the different layouts that will make up the application, once all the layouts have been developed following the mockups presented in the RASD, the development of the functional systems begins, many of these systems will be spun to XML (so it is done first) as is the case of buttons or areas where to show text.
+    
+    \item \textbf{Server:}
+    
+    The development of the server could be distinguished as in 3 phases, all these parts are necessary for the service to work. Following the order of development:
+    
+    \begin{itemize}
+        \item   The first phase would be Docker, Docker allows us to perform a virtualization without worrying about the system that will run the service, thanks to this allows us to focus more on the code and not if it worked in the system.
+        
+        \item The second phase would belong to Node.js, Docker will contain for its virtualization a Node.js which provides an optimization in the server and allows us to use Javascript on the server side.
+        
+        \item Finally we will use the Koa.js framework, one of the most modern frameworks of Node.js.
+        
+    \end{itemize}
+    
+    All this development is done on a private server managed by JJSoftware.
+    
+    Inside the server will be the databases, the databases used are InfluxDB and MongoDB, these databases will be virtualized and also carried by Docker. Docker will make connections between the databases and the service using the IP protocol.
+    
+    The databases are developed externally using the programs provided by MongoDB and InfluxDB, in this development is made the internal configuration and adjust the data that will process them.
+    
+    \item \textbf{Dashboard:}
+    
+    The Front-End of the web application will be done using React in conjunction with Redux, all this will be done under the JavaScript programming language.
+    
+    The different layouts that make up the web application will be developed first, they will follow the Mockups presented in the RASD, all these layouts will be created using the main React languages (HTML, CSS, JavaScript (together with JSX)).
+    Following the implementation of the layouts, the Redux library is added to control the states of the application, which is done in its main JavaScript language.
+
+\end{itemize}
+
+  \subsection{Time spent on implementation}
+    
+    \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{images/gantt}
+        \caption{Gantt chart}
+        \label{fig:gantt_chart}
+    \end{figure}
+    
+    Figure \ref{fig:gantt_chart} shows the spaces of time needed to develop each block of which the service is composed.
+
+    These blocks, as can be seen in some cases, depend on the completion of another, given that for their operation or implementation it is necessary that another part of the service is in operation.
+
+    The times for the development of each block have been estimated on the basis of the number of people working in it as well as for the previous knowledge that was had of that architecture and the complexity that they present.
+
+  \subsection{Test plan:}
+    
+    The testing plan that will be used for the verification of the systems and the service is based on TDD programming, by means of this mode of testing we will carry out a wide verification of the systems allowing to give this way a safe, effective and optimal service.
+    
+     \begin{figure} [H]
+        \centering
+        \includegraphics[width=0.90\textwidth]{images/TDD}
+        \caption{Test-Driven Development}
+        \label{fig:TDD}
+    \end{figure}
