@@ -1,16 +1,15 @@
 import Router from 'koa-router';
 import R from 'ramda';
+import { isFixedQuery, isTemporalQuery, isNotEmpty } from '../common/query-helpers';
+import { getParameters } from '../database/temporal';
 
 var queryManager = new Router({ prefix: '/query' });
-
-import { getParameters } from '../database/temporal';
 
 queryManager.get('/', async (ctx, next) => {
     let user = ctx.request.body.auth;
 
     return ctx.response.body = await getParameters(user);
 });
-
 
 /*
 query : {
@@ -21,8 +20,6 @@ query : {
     weight: {min, max}
     hearthrate: {min, max}
 }
-
-
 */
 
 queryManager.post('/', async (ctx, next) => {
@@ -40,9 +37,6 @@ queryManager.post('/', async (ctx, next) => {
 
 })
 
-const isNotEmpty = R.compose(R.not, R.isEmpty);
-const isFixedQuery = R.compose(isNotEmpty, R.props('residence', 'age', 'genre'));
-const isTemporalQuery = R.compose(isNotEmpty, R.props('location', 'weight', 'hearthrate'));
 const union = R.compose()
 
 

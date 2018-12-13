@@ -1,5 +1,6 @@
 import { InfluxDB, FieldType } from 'influx';
 import R from 'ramda'
+import { isTemporalQuery } from '../common/query-helpers';
 
 const DATABASE_NAME = 'temporal_data'
 
@@ -32,7 +33,6 @@ const influx = new InfluxDB({
   ]
 })
 
-
 const createInfluxDatabase = async () => {
   let names = await influx.getDatabaseNames();
 
@@ -40,8 +40,9 @@ const createInfluxDatabase = async () => {
     return await influx.createDatabase(DATABASE_NAME)
 }
 
+const getParameters = async user => await influx.query('select * from weight')
+
 const saveTemporalParameter = R.curry((user, parameter) =>{
-  console.log('holi'+parameter);
   return influx.writePoints([
       {
         measurement: parameter.type,
@@ -52,17 +53,31 @@ const saveTemporalParameter = R.curry((user, parameter) =>{
 });
 
 const temporalSearch = query => {
-  const {weight, location, hearthrate} = query;
+  let where = buildQuery(query);
 
-  let query = `select * WHERE ${inInterval(weight)} AND ${inInterval(hearthrate)}`
+  return influx.query('select * from ' + where);
+}
 
-  influx.query('select * from ')
-} 
+export { saveTemporalParameter, temporalSearch, getParameters, createInfluxDatabase };
+
+// Helpers
+
+//TODO Location is not searched like this, I'm affraid that a manual filter have to be done.
+const buildQuery = (query) => {
+  if(isTemporalQuery(query))
+    return "";
+
+  let interval = inIntervalIf(query);
+  return `WHERE ${interval("weight")} ${interval("location")} ${interval("hearthrate")}`;
+}
+
+const inIntervalIf = R.curry((object, propName) => 
+                              R.ifElse(
+                                R.compose(R.not, R.isEmpty), 
+                                R.flip(inInterval)(propName), 
+                                R.identity
+                              )(object));
+
+const inInterval = R.curry((object, propName) => `AND ( ${propName} > ${R.path([propName, 'min'], object)} AND ${propName} < ${R.path([propName, 'max'], object)} )`)
 
 
-const inInterval = R.curry((object, propName) => `( ${propName} > ${R.path([propName, 'min'], object)} AND ${propName} < ${R.path([propName, 'max'], object)} )`)
-
-
-const getParameters = async user => await influx.query('select * from weight')
-
-export { saveTemporalParameter, getParameters, createInfluxDatabase };
