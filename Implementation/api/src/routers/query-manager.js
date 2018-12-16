@@ -1,7 +1,6 @@
 import Router from 'koa-router';
-import R from 'ramda';
-import { isFixedQuery, isTemporalQuery, isNotEmpty } from '../common/query-helpers';
 import { getParameters } from '../database/temporal';
+import Query from '../database/query';
 
 var queryManager = new Router({ prefix: '/query' });
 
@@ -22,22 +21,28 @@ query : {
 }
 */
 
+
+/*
+* The fixed search have priority since is easier
+* and narrows the search. The second search only
+* filters the users selected by the first one.
+*/
+
 queryManager.post('/', async (ctx, next) => {
-    let query = ctx.request.query;
-    
-    var fixedResults, temporalResults;
+    var query = new Query(ctx.request.query);
 
-    if(isFixedQuery(query))
-        fixedResults = await fixedSearch(query);
-    
-    if(isNotEmpty(fixedResults) && isTemporalQuery(query))
-        temporalResults = await temporalSearch(query);
+    if(query.haveFixedParameters()){
+        query = await fixedSearch(query);
+        query = await temporalSearch(query);
+    }
+    else{
+        query = await temporalSearch(query);
+        query = await fixedSearch(query);
+    }
 
-    ctx.response.body = union(fixedResults, temporalResults);
+    ctx.response.body = query.buildResults();
 
 })
-
-const union = R.compose()
 
 
 export default queryManager;

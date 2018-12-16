@@ -1,9 +1,7 @@
 import { InfluxDB, FieldType } from 'influx';
 import R from 'ramda'
-import { isTemporalQuery } from '../common/query-helpers';
 
 const DATABASE_NAME = 'temporal_data'
-
 const influx = new InfluxDB({
   host: 'influx',
   database: DATABASE_NAME,
@@ -33,6 +31,7 @@ const influx = new InfluxDB({
   ]
 })
 
+
 const createInfluxDatabase = async () => {
   let names = await influx.getDatabaseNames();
 
@@ -52,25 +51,46 @@ const saveTemporalParameter = R.curry((user, parameter) =>{
   ])
 });
 
-const temporalSearch = query => {
-  let where = buildQuery(query);
+/*
+* Builds the select and executed it. If the object 
+* Query have already results (from fixed database)
+* it only search the already matched users.
+*/
 
-  return influx.query('select * from ' + where);
+const temporalSearch = async query => {
+  let where = buildWhere(query);
+
+  var result = await influx.query('select * from ' + where);
+
+  if(query.haveLocation())
+    result = filterByLocation(query.location)(result)
+
+  query.temporalResults = result;
+
+  return query;
 }
 
 export { saveTemporalParameter, temporalSearch, getParameters, createInfluxDatabase };
 
 // Helpers
 
-//TODO Location is not searched like this, I'm affraid that a manual filter have to be done.
-const buildQuery = (query) => {
-  if(isTemporalQuery(query))
+const buildWhere = (query) => {
+  if(!query.haveWeight() && !query.haveHearthRate())
     return "";
 
   let interval = inIntervalIf(query);
-  return `WHERE ${interval("weight")} ${interval("location")} ${interval("hearthrate")}`;
+  return `WHERE ${interval("weight")} ${interval("hearthrate")}`;
 }
 
+const filterByLocation = location => R.filter(isInside(location))
+
+//TODO implement
+const isInside = (location, entry) => {
+  return true;
+}
+
+
+//Maybe this needs to be refactored since there are only two parameters. This seems an overkill.
 const inIntervalIf = R.curry((object, propName) => 
                               R.ifElse(
                                 R.compose(R.not, R.isEmpty), 
