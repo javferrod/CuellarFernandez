@@ -7,24 +7,12 @@ const influx = new InfluxDB({
   database: DATABASE_NAME,
   schema: [
     {
-      measurement: 'location',
+      measurement: 'data',
       fields: {
         latitude: FieldType.FLOAT,
-        longitude: FieldType.FLOAT
-      },
-      tags: ['user']
-    },
-    {
-      measurement: 'hearthrate',
-      fields: {
-        value: FieldType.INTEGER,
-      },
-      tags: ['user']
-    },
-    {
-      measurement: 'weight',
-      fields: {
-        value: FieldType.FLOAT,
+        longitude: FieldType.FLOAT,
+        hearthrate: FieldType.INTEGER,
+        weight: FieldType.FLOAT,
       },
       tags: ['user']
     }
@@ -35,16 +23,21 @@ const influx = new InfluxDB({
 const createInfluxDatabase = async () => {
   let names = await influx.getDatabaseNames();
 
+  let measurements = await influx.getMeasurements();
+
+  console.log(measurements);
+
   if(!R.contains(DATABASE_NAME, names))
     return await influx.createDatabase(DATABASE_NAME)
 }
 
 const getParameters = async user => await influx.query('select * from weight')
 
-const saveTemporalParameter = R.curry((user, parameter) =>{
-  return influx.writePoints([
+const saveTemporalParameter = R.curry( async (user, parameter) => {
+  console.log(parameter);
+  return await influx.writePoints([
       {
-        measurement: parameter.type,
+        measurement: 'data',
         tags: { user: user},
         fields: {...parameter.fields},
       }
@@ -60,7 +53,9 @@ const saveTemporalParameter = R.curry((user, parameter) =>{
 const temporalSearch = async query => {
   let where = buildWhere(query);
 
-  var result = await influx.query('select * from ' + where);
+  console.log(where);
+
+  var result = await influx.query('select * FROM data ' + where);
 
   if(query.haveLocation())
     result = filterByLocation(query.location)(result)
@@ -78,8 +73,17 @@ const buildWhere = (query) => {
   if(!query.haveWeight() && !query.haveHearthRate())
     return "";
 
-  let interval = inIntervalIf(query);
-  return `WHERE ${interval("weight")} ${interval("hearthrate")}`;
+
+  let interval = inInterval(query.temporalParameters);
+
+  if(query.haveWeight() && query.haveHearthRate())
+    return `WHERE ${interval('weight')} AND ${interval('hearthrate')}`
+
+  if(query.haveWeight()) 
+    return `WHERE ${interval('weight')}`
+  
+    if(query.haveHearthRate()) 
+    return `WHERE ${interval('hearthrate')}`
 }
 
 const filterByLocation = location => R.filter(isInside(location))
@@ -89,15 +93,6 @@ const isInside = (location, entry) => {
   return true;
 }
 
-
-//Maybe this needs to be refactored since there are only two parameters. This seems an overkill.
-const inIntervalIf = R.curry((object, propName) => 
-                              R.ifElse(
-                                R.compose(R.not, R.isEmpty), 
-                                R.flip(inInterval)(propName), 
-                                R.identity
-                              )(object));
-
-const inInterval = R.curry((object, propName) => `AND ( ${propName} > ${R.path([propName, 'min'], object)} AND ${propName} < ${R.path([propName, 'max'], object)} )`)
+const inInterval = R.curry((object, propName) => `( ${propName} > ${R.path([propName, 'min'], object)} AND ${propName} < ${R.path([propName, 'max'], object)} )`)
 
 

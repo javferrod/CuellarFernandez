@@ -12,15 +12,18 @@ dataRecollector.post('/', (ctx, next) => {
         ctx.response.status = 400;
         return;
     }
-    processParameters(parameters,user);
+    processParameters(parameters, user);
 
     ctx.response.status = 200;
 });
 
 function processParameters(parameters, user){
-    console.log(parameters
+    console.log(parameters);
+    console.log(parameters.filter(isValidParameter));
+
+    parameters
         .filter(isValidParameter)
-        .forEach(saveTemporalParameter(user)));
+        .forEach(saveTemporalParameter(user));
 }
 
 

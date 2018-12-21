@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { getParameters } from '../database/temporal';
+import { getParameters, temporalSearch } from '../database/temporal';
 import Query from '../database/query';
 
 var queryManager = new Router({ prefix: '/query' });
@@ -29,16 +29,18 @@ query : {
 */
 
 queryManager.post('/', async (ctx, next) => {
-    var query = new Query(ctx.request.query);
+    var query = new Query(ctx.request.body.query);
 
     if(query.haveFixedParameters()){
-        query = await fixedSearch(query);
+        //query = await fixedSearch(query);
         query = await temporalSearch(query);
     }
     else{
         query = await temporalSearch(query);
-        query = await fixedSearch(query);
+        //query = await fixedSearch(query);
     }
+
+    console.log(query);
 
     ctx.response.body = query.buildResults();
 
