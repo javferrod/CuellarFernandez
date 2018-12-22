@@ -1,13 +1,17 @@
 import Router from 'koa-router';
-import { getParameters, temporalSearch } from '../database/temporal';
-import Query from '../database/query';
+import { searchByCodice, searchByParameters } from '../database';
 
 var queryManager = new Router({ prefix: '/query' });
+
+queryManager.post('/codice', async (ctx, next) => {
+    const { codice } = ctx.request.body;
+    ctx.response.body = await searchByCodice(codice);
+})
 
 queryManager.get('/', async (ctx, next) => {
     let user = ctx.request.body.auth;
 
-    return ctx.response.body = await getParameters(user);
+    //return ctx.response.body = await getParameters(user);
 });
 
 /*
@@ -22,29 +26,8 @@ query : {
 */
 
 
-/*
-* The fixed search have priority since is easier
-* and narrows the search. The second search only
-* filters the users selected by the first one.
-*/
-
 queryManager.post('/', async (ctx, next) => {
-    var query = new Query(ctx.request.body.query);
-
-    if(query.haveFixedParameters()){
-        //query = await fixedSearch(query);
-        query = await temporalSearch(query);
-    }
-    else{
-        query = await temporalSearch(query);
-        //query = await fixedSearch(query);
-    }
-
-    console.log(query);
-
-    ctx.response.body = query.buildResults();
-
+    ctx.response.body = await searchByParameters(ctx.request.body.parameters)
 })
-
 
 export default queryManager;

@@ -9,42 +9,27 @@ import R from 'ramda';
 
 export default class Query {
     constructor(query){
-        
-        this.temporalParameters = { 
-            location: query.location,
-            weight: query.weight,
-            hearthrate: query.hearthrate
-        };
-        
-        this.fixedParameters = { 
-            residence: query.residence,
-            age: query.age,
-            genre: query.genre
-        };
 
+        this.location = query.location;
+        this.weight = query.weight;
+        this.hearthrate = query.hearthrate;
+        this.residence = query.residence;
+        this.age = query.age;
+        this.genre = query.genre;
 
         this.results = [];
-
-    }
-
-    haveFixedParameters(){
-        return true;
-    }
-
-    haveTemporalParameters(){
-        return this.haveWeight() || this.haveHearthRate() || this.haveLocation();
     }
 
     haveWeight(){
-        return !R.isNil(this.temporalParameters.weight);
+        return !R.isNil(this.weight);
     }
 
     haveHearthRate(){
-        return !R.isNil(this.temporalParameters.hearthrate);
+        return !R.isNil(this.hearthrate);
     }
 
     haveLocation(){
-        return !R.isNil(this.temporalParameters.location);
+        return !R.isNil(this.location);
     }
 
 

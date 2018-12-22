@@ -1,8 +1,10 @@
 import Router from 'koa-router';
+
+import { saveParameters } from '../database';
+
 var dataRecollector = new Router({ prefix: '/data' });
 
 import { isValidParameter } from '../common/validators';
-import { saveTemporalParameter } from '../database/temporal';
 
 dataRecollector.post('/', (ctx, next) => {
     let user = ctx.request.body.auth;
@@ -12,19 +14,11 @@ dataRecollector.post('/', (ctx, next) => {
         ctx.response.status = 400;
         return;
     }
-    processParameters(parameters, user);
-
+    
+    saveParameters(parameters, user);
+    
     ctx.response.status = 200;
 });
-
-function processParameters(parameters, user){
-    console.log(parameters);
-    console.log(parameters.filter(isValidParameter));
-
-    parameters
-        .filter(isValidParameter)
-        .forEach(saveTemporalParameter(user));
-}
 
 
 export default dataRecollector;

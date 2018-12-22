@@ -8,25 +8,15 @@ services:
     ports:
       - "8080:8080"
     links:
-      - mongo
-      - influx
+      - timescale
     environment:
       - TZ=Europe/Madrid
-  mongo:
-    container_name: mongo
-    image: mongo 
+  timescale:
+    container_name: timescale
+    image: timescale/timescaledb
     volumes:
-      - ./data/mongo:/data/db
+      - ./data/timescale:/var/lib/postgresql/data
     ports:
-      - "27017:27017"
+      - "5432:5432"
     environment:
-      - TZ=Europe/Madrid
-  influx:
-    container_name: influx
-    image: influxdb 
-    volumes:
-      - /data/influx:/var/lib/influxdb
-    ports:
-      - "8086:8086"
-    environment:
-      - TZ=Europe/Madrid
+      - POSTGRES_PASSWORD=ramdom_stuff
