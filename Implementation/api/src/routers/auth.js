@@ -14,7 +14,7 @@ authRouter.post('/register', async (ctx, next) => {
     var id;
 
     //If is user
-    id = saveUser(username, password, name, residence, codice);
+    id = await saveUser(username, password, name, residence, codice);
     //Else client
     //id = saveClient(..);
 

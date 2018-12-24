@@ -1,46 +1,51 @@
 import { knex } from './init';
-import { USERS, WEIGHTS, LOCATIONS, HEARTH_RATES } from './names';
+import { USERS, TEMPORAL_PARAMETERS } from './names';
 import R from 'ramda';
 
 
-async function getParameters(userID){
-    return knex(USERS)
-        .join(WEIGHTS, 'users.id', '=', 'weights.user')
-        .join(HEARTH_RATES, 'users.id', '=', 'hearthrates.user')
-        .join(LOCATIONS, 'users.id', '=', 'locations.user')
-        .where('users.id',userID);
+async function searchByID(userID){
+   
+    const filter = R.pipe(
+        leftJoin(TEMPORAL_PARAMETERS),
+        filterByID(userID)
+    )
+
+    return filter(knex(USERS));
 }
 
 async function searchByCodice(codice){
-    return knex
-        .select()
-        // TODO refine .select('hearthrate, weight, latitude, longitude, time')
-        .from(USERS)
-        .leftJoin(WEIGHTS, 'users.id', '=', 'weights.user')
-        .leftJoin(HEARTH_RATES, 'users.id', '=', 'hearthrates.user')
-        .leftJoin(LOCATIONS, 'users.id', '=', 'locations.user')
-        .where('users.codice', codice);
+ 
+    const filter = R.pipe(
+        leftJoin(TEMPORAL_PARAMETERS),
+        filterByCodice(codice)
+    )
+
+    return filter(knex(USERS));
 }
 
 async function searchByParameters(parameters){
 
     const filter = R.pipe(
-        leftJoin(WEIGHTS),
-        leftJoin(HEARTH_RATES),
-        leftJoin(LOCATIONS),
+        leftJoin(TEMPORAL_PARAMETERS),
         filterRanges(parameters),
         filterFixed(parameters)
     );
 
-    return filter(knex.from(USERS).select('latitude','longitude', 'weight', 'hearthrate','time'));
+    return filter(knex(USERS)
+        .select('users.id, latitude','longitude', 'weight', 'hearthrate','time'));
 }
 
-export { searchByCodice, searchByParameters }
+export { searchByID, searchByCodice, searchByParameters }
+
+//HELPERS
 
 const leftJoin = R.curry((table, query) => {
     query.leftJoin(table, 'users.id', '=', `${table}.user`);
     return query;
 });
+
+//TODO refactor this 
+//SELECT * from temporal_parameters where "user" IN (select "user" from temporal_parameters where hearthrate>90) AND "user" IN (SELECT "user" from temporal_parameters WHERE weight >100); 
 
 const filterRanges = R.curry((parameters, query) =>{
     const { weight, hearthrate } = parameters;
@@ -56,9 +61,25 @@ const filterRanges = R.curry((parameters, query) =>{
 
 //TODO implement.
 const filterFixed = R.curry((parameters, query) => {
+
+    const { gender } = parameters;
+
+    if(notNil(gender))
+        query.where('gender', gender);
+
     return query;
 });
 
+
+const filterByID = R.curry((userID, query) => {
+        query.where('users.id', userID);
+        return query;
+});
+
+const filterByCodice = R.curry((codice, query) => {
+        query.where('users.codice', codice);
+        return query;
+});
 
 const notNil = R.pipe(R.isNil, R.not);
 

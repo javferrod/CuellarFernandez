@@ -1,12 +1,9 @@
 import Router from 'koa-router';
-
 import { saveParameters } from '../database';
 
 var dataRecollector = new Router({ prefix: '/data' });
 
-import { isValidParameter } from '../common/validators';
-
-dataRecollector.post('/', (ctx, next) => {
+dataRecollector.post('/', async (ctx, next) => {
     let user = ctx.request.body.auth;
     let parameters = ctx.request.body.parameters;
 
@@ -15,7 +12,7 @@ dataRecollector.post('/', (ctx, next) => {
         return;
     }
     
-    saveParameters(parameters, user);
+    await saveParameters(parameters, user);
     
     ctx.response.status = 200;
 });

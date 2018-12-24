@@ -1,5 +1,5 @@
 const knexFactory = require('knex');
-import { LOCATIONS, USERS , WEIGHTS, HEARTH_RATES } from './names';
+import { USERS , TEMPORAL_PARAMETERS } from './names';
 
 var knex;
 
@@ -62,30 +62,12 @@ async function createTables(){
         table.boolean('client');
     });
 
-    await knex.schema.createTable(WEIGHTS, (table) => {
+    await knex.schema.createTable(TEMPORAL_PARAMETERS, (table) => {
         table.increments();
         table.timestamp('time')
             .defaultTo(knex.fn.now())
         table.float('weight');
-        table.integer('user');
-        table.foreign('user')
-            .references('users.id');
-    });
-    
-    await knex.schema.createTable(HEARTH_RATES, (table) => {
-        table.increments();
-        table.timestamp('time')
-            .defaultTo(knex.fn.now())
         table.integer('hearthrate');
-        table.integer('user');
-        table.foreign('user')
-            .references('users.id');
-    });
-    
-    await knex.schema.createTable(LOCATIONS, (table) => {
-        table.increments();
-        table.timestamp('time')
-            .defaultTo(knex.fn.now())
         table.float('latitude');
         table.float('longitude');
         table.integer('user');
@@ -96,9 +78,7 @@ async function createTables(){
 
 async function createHyperTables(){
     knex.raw("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;");
-    knex.raw("SELECT create_hypertable('weights', 'time')");
-    knex.raw("SELECT create_hypertable('hearthrates', 'time')");
-    knex.raw("SELECT create_hypertable('locations', 'time')");
+    knex.raw(`SELECT create_hypertable('${TEMPORAL_PARAMETERS}', 'time')`);
 }
 
 function createConnection (connection){

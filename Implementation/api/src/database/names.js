@@ -1,7 +1,5 @@
 const USERS = 'users';
-const WEIGHTS = 'weights';
-const HEARTH_RATES = 'hearthrates';
-const LOCATIONS = 'locations';
+const TEMPORAL_PARAMETERS = 'temporal_parameters';
 
 
-export { USERS, WEIGHTS, HEARTH_RATES, LOCATIONS }
+export { USERS, TEMPORAL_PARAMETERS}
