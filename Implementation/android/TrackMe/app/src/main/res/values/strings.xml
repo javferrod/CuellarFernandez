@@ -9,4 +9,7 @@
     <string name="surname">Surname</string>
     <string name="name">Name</string>
     <string name="codice_fiscale">Codice fiscale</string>
+    <string name="save">Save</string>
+    <string name="enter_your_weight">Enter your weight</string>
+    <string name="weight">Weight</string>
 </resources>

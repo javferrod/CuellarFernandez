@@ -99,6 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cancelDialog () {
-        dialog.cancel();
+        dialog.dismiss();
     }
 }
