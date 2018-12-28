@@ -37,6 +37,7 @@ public class Recollector extends AppCompatActivity {
 
     TextView mensaje1;
     TextView mensaje2;
+    TextView mensaje3;
 
     TextView last_record;
 
@@ -46,6 +47,10 @@ public class Recollector extends AppCompatActivity {
 
     Calendar c;
     SimpleDateFormat dateformat;
+
+    int danger_HearthRate;
+    int counter_HearthRate = 0;
+    int control_HearthRate = 55;
 
     private NotificationCompat.Builder mBuilder;
 
@@ -58,6 +63,7 @@ public class Recollector extends AppCompatActivity {
 
         mensaje1 = (TextView) findViewById(R.id.mensaje_id);
         mensaje2 = (TextView) findViewById(R.id.mensaje_id2);
+        mensaje3 = (TextView) findViewById(R.id.mensaje_id3);
 
         control = false;
 
@@ -108,6 +114,8 @@ public class Recollector extends AppCompatActivity {
 
         final NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
+        danger_HearthRate = (int) (Math.random() * 10) + 5;
+
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!gpsEnabled) {
@@ -124,6 +132,7 @@ public class Recollector extends AppCompatActivity {
         if(control == false) {
             mensaje1.setText("Localización agregada");
             mensaje2.setText("");
+            mensaje3.setText("");
         }
 
         task = new TimerTask() {
@@ -189,7 +198,7 @@ public class Recollector extends AppCompatActivity {
 
             String dateTime = dateformat.format(c.getTime());
 
-            mBuilder.setContentText("Trackeo GPS realizado" + Calendar.getInstance().getTime());
+            mBuilder.setContentText("Trackeo GPS realizado: " + dateTime);
 
             mNotifyMgr.notify(1, mBuilder.build());
 
@@ -212,6 +221,8 @@ public class Recollector extends AppCompatActivity {
 
             setLocation(loc);
 
+            Hearth_Rate(mNotifyMgr);
+
         }
         catch (NullPointerException e) {
 
@@ -224,6 +235,47 @@ public class Recollector extends AppCompatActivity {
                 }
             });
 
+        }
+    }
+
+    public void Hearth_Rate (NotificationManager mNotifyMgr) {
+
+        int number;
+        int counter = 0;
+
+        final int number_text;
+
+        do {
+            number = (int) (Math.random() * 55 + 55);
+            counter = counter + 1;
+        } while ((number < (control_HearthRate + 15) || number > (control_HearthRate - 15)) && counter != 5);
+
+        if(counter_HearthRate < danger_HearthRate) {
+
+            number_text = number;
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje3.setText("Hearth rate: " + number_text + " bpm");
+                    counter_HearthRate = counter_HearthRate + 1;
+                }
+            });
+        }
+        else {
+
+            number_text = number - 55;
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje3.setText("Danger! Hearth rate very low: " + number_text + " bpm");
+                    counter_HearthRate = 0;
+                }
+            });
+            mBuilder.setContentText("DANGER! Hearth rate very low");
+
+            mNotifyMgr.notify(1, mBuilder.build());
         }
     }
 
