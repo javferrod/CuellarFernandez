@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,17 +15,22 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +43,7 @@ public class Recollector extends AppCompatActivity {
 
     TextView mensaje1;
     TextView mensaje2;
+    TextView mensaje3;
 
     TextView last_record;
 
@@ -46,8 +53,16 @@ public class Recollector extends AppCompatActivity {
 
     Calendar c;
     SimpleDateFormat dateformat;
+    SimpleDateFormat dateformat2;
+
+    int danger_HearthRate;
+    int counter_HearthRate = 0;
+    int control_HearthRate = 55;
 
     private NotificationCompat.Builder mBuilder;
+
+    AlertDialog.Builder mAlertBuilder;
+    AlertDialog dialog;
 
     Handler mHandler;
 
@@ -58,6 +73,7 @@ public class Recollector extends AppCompatActivity {
 
         mensaje1 = (TextView) findViewById(R.id.mensaje_id);
         mensaje2 = (TextView) findViewById(R.id.mensaje_id2);
+        mensaje3 = (TextView) findViewById(R.id.mensaje_id3);
 
         control = false;
 
@@ -100,13 +116,17 @@ public class Recollector extends AppCompatActivity {
 
         final Localizacion Local = new Localizacion();
 
-        dateformat = new SimpleDateFormat("hh:mm:ss");
+        dateformat = new SimpleDateFormat("HH:mm:ss");
+
+        dateformat2 = new SimpleDateFormat("yyyy/MM/dd");
 
         Local.setMainActivity(this);
 
         Timer timer = new Timer();
 
         final NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+        danger_HearthRate = (int) (Math.random() * 10) + 5;
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
@@ -124,7 +144,10 @@ public class Recollector extends AppCompatActivity {
         if(control == false) {
             mensaje1.setText("Localización agregada");
             mensaje2.setText("");
+            mensaje3.setText("");
         }
+
+        controlWeight();
 
         task = new TimerTask() {
             @Override
@@ -189,7 +212,7 @@ public class Recollector extends AppCompatActivity {
 
             String dateTime = dateformat.format(c.getTime());
 
-            mBuilder.setContentText("Trackeo GPS realizado" + Calendar.getInstance().getTime());
+            mBuilder.setContentText("Trackeo GPS realizado: " + dateTime);
 
             mNotifyMgr.notify(1, mBuilder.build());
 
@@ -212,6 +235,8 @@ public class Recollector extends AppCompatActivity {
 
             setLocation(loc);
 
+            Hearth_Rate(mNotifyMgr);
+
         }
         catch (NullPointerException e) {
 
@@ -226,6 +251,125 @@ public class Recollector extends AppCompatActivity {
 
         }
     }
+
+    public void Hearth_Rate (NotificationManager mNotifyMgr) {
+
+        int number;
+        int counter = 0;
+
+        final int number_text;
+
+        do {
+            number = (int) (Math.random() * 55 + 55);
+            counter = counter + 1;
+        } while ((number < (control_HearthRate + 15) || number > (control_HearthRate - 15)) && counter != 5);
+
+        if(counter_HearthRate < danger_HearthRate) {
+
+            number_text = number;
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje3.setText("Hearth rate: " + number_text + " bpm");
+                    counter_HearthRate = counter_HearthRate + 1;
+                }
+            });
+        }
+        else {
+
+            number_text = number - 55;
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje3.setText("Danger! Hearth rate very low: " + number_text + " bpm");
+                    counter_HearthRate = 0;
+                }
+            });
+            mBuilder.setContentText("DANGER! Hearth rate very low");
+
+            mNotifyMgr.notify(1, mBuilder.build());
+        }
+    }
+
+    public void controlWeight () {
+
+        Context context = this;
+
+        c = Calendar.getInstance();
+
+        SharedPreferences myPreferences
+                = getSharedPreferences("data", context.MODE_PRIVATE);
+
+        SharedPreferences sharpref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharpref.edit();
+
+        String date = dateformat2.format(c.getTime());
+
+        boolean show = false;
+
+
+        if(sharpref.contains("WEIGHT") == false) {
+            edit.putString("WEIGHT", date);
+            edit.commit();
+            show = true;
+        }
+        else {
+
+            try {
+                Date oldDate = dateformat2.parse(sharpref.getString("WEIGHT", null));
+
+                Date newDate = dateformat2.parse(date);
+
+                int days = (int) ((newDate.getTime()-oldDate.getTime())/86400000);
+
+                if(days >= 7) {
+                    edit.putString("WEIGHT", date);
+                    show = true;
+
+                    edit.apply();
+                }
+
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if(show == true) {
+            mAlertBuilder = new AlertDialog.Builder(Recollector.this);
+            View mViewWeight = getLayoutInflater().inflate(R.layout.dialog_weight, null);
+
+            final EditText mWeight = mViewWeight.findViewById(R.id.textWeight);
+            final Button mWeightButton = mViewWeight.findViewById(R.id.saveButton);
+
+            mWeightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mWeight.getText().toString().isEmpty()) {
+                        Toast.makeText(Recollector.this, "Please fill any empty fields",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(Recollector.this, "Successfully save",
+                                Toast.LENGTH_SHORT).show();
+                        cancelDialog();
+                    }
+                }
+            });
+
+            mAlertBuilder.setView(mViewWeight);
+            mAlertBuilder.setCancelable(false);
+
+            dialog = mAlertBuilder.create();
+            dialog.show();
+        }
+    }
+
+    private void cancelDialog () {
+        dialog.dismiss();
+    }
+
 
     /* Aqui empieza la Clase Localizacion */
     public class Localizacion implements LocationListener {

@@ -13,11 +13,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected void requestPermission () {
-
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1000);
-
-    }
+    AlertDialog.Builder mBuilder;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
         mShowDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
-                final EditText mEmail = mView.findViewById(R.id.textEmail);
-                final EditText mPassword = mView.findViewById(R.id.textPassword);
-                final Button mLogin = mView.findViewById(R.id.logInButton);
+                mBuilder = new AlertDialog.Builder(MainActivity.this);
+                View mViewLogIn = getLayoutInflater().inflate(R.layout.dialog_login, null);
+                final EditText mEmail = mViewLogIn.findViewById(R.id.textEmail);
+                final EditText mPassword = mViewLogIn.findViewById(R.id.textPassword);
+                final Button mLogin = mViewLogIn.findViewById(R.id.logInButton);
 
 
                 mLogin.setOnClickListener(new View.OnClickListener() {
@@ -52,12 +49,56 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-                mBuilder.setView(mView);
-                AlertDialog dialog = mBuilder.create();
+                mBuilder.setView(mViewLogIn);
+                dialog = mBuilder.create();
                 dialog.show();
 
             }
         });
+
+        Button mShowSignUp = findViewById(R.id.singUp);
+        mShowSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBuilder = new AlertDialog.Builder(MainActivity.this);
+                View mViewSignUp = getLayoutInflater().inflate(R.layout.dialog_register, null);
+                final EditText mNameSignUp = mViewSignUp.findViewById(R.id.textName);
+                final EditText mSurnameSignUp = mViewSignUp.findViewById(R.id.textSurname);
+                final EditText mCodiceFiscaleSignUp = mViewSignUp.findViewById(R.id.textCodiceFiscale);
+                final EditText mEmailSignUp = mViewSignUp.findViewById(R.id.textEmail);
+                final EditText mPasswordSignUp = mViewSignUp.findViewById(R.id.textPassword);
+                final Button mSignUp = mViewSignUp.findViewById(R.id.signUpButton);
+
+                mSignUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(mNameSignUp.getText().toString().isEmpty() || mSurnameSignUp.getText().toString().isEmpty() || mCodiceFiscaleSignUp.getText().toString().isEmpty()
+                                || mEmailSignUp.getText().toString().isEmpty() || mPasswordSignUp.getText().toString().isEmpty()) {
+                            Toast.makeText(MainActivity.this, "Please fill any empty fields",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Successfully registered",
+                                    Toast.LENGTH_SHORT).show();
+                            cancelDialog();
+                        }
+                    }
+                });
+
+                mBuilder.setView(mViewSignUp);
+                dialog = mBuilder.create();
+                dialog.show();
+            }
+        });
+    }
+
+    protected void requestPermission () {
+
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1000);
+
+    }
+
+    private void cancelDialog () {
+        dialog.dismiss();
     }
 }
