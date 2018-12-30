@@ -3,27 +3,22 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.authRouter = exports.dataRecollector = exports.queryManager = undefined;
+
+var _queryManager = require('./query-manager');
+
+var _queryManager2 = _interopRequireDefault(_queryManager);
 
 var _dataRecollector = require('./data-recollector');
 
-Object.keys(_dataRecollector).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _dataRecollector[key];
-    }
-  });
-});
+var _dataRecollector2 = _interopRequireDefault(_dataRecollector);
 
 var _auth = require('./auth');
 
-Object.keys(_auth).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _auth[key];
-    }
-  });
-});
+var _auth2 = _interopRequireDefault(_auth);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.queryManager = _queryManager2.default;
+exports.dataRecollector = _dataRecollector2.default;
+exports.authRouter = _auth2.default;

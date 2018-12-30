@@ -32,7 +32,7 @@ async function searchByParameters(parameters){
     );
 
     return filter(knex(USERS)
-        .select('users.id, latitude','longitude', 'weight', 'hearthrate','time'));
+        .select('users.id', 'latitude', 'longitude', 'weight', 'hearthrate', 'time'));
 }
 
 export { searchByID, searchByCodice, searchByParameters }
@@ -43,18 +43,26 @@ const leftJoin = R.curry((table, query) => {
     query.leftJoin(table, 'users.id', '=', `${table}.user`);
     return query;
 });
-
-//TODO refactor this 
-//SELECT * from temporal_parameters where "user" IN (select "user" from temporal_parameters where hearthrate>90) AND "user" IN (SELECT "user" from temporal_parameters WHERE weight >100); 
-
-const filterRanges = R.curry((parameters, query) =>{
+ 
+const filterRanges = R.curry((parameters, query) => {
     const { weight, hearthrate } = parameters;
 
-    if(notNil(weight))
-        query.whereBetween('weight', [weight.min, weight.max]);
+    if(notNil(weight)){
+        let subquery = knex
+                        .select("user")
+                        .from(TEMPORAL_PARAMETERS)
+                        .whereBetween('weight', [weight.min, weight.max]);
+        query.whereIn('users.id', subquery);
+    }
     
-    if(notNil(hearthrate))
-        query.whereBetween('hearthrate', [hearthrate.min, hearthrate.max]);
+    if(notNil(hearthrate)){
+        let subquery = knex
+                        .select("user")
+                        .from(TEMPORAL_PARAMETERS)
+                        .whereBetween('hearthrate', [hearthrate.min, hearthrate.max]);
+
+        query.whereIn('users.id', subquery);
+    }
 
     return query;
 });
@@ -82,4 +90,3 @@ const filterByCodice = R.curry((codice, query) => {
 });
 
 const notNil = R.pipe(R.isNil, R.not);
-

@@ -1,12 +1,8 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-
-import dataRecollector from './routers/data-recollector';
-import authRouter from './routers/auth';
-import queryManager from './routers/query-manager';
-
-import { connectToDatabase, saveParameter } from './database';
+import { authRouter, dataRecollector, queryManager } from './routers';
+import { connectToDatabase } from './database';
 
 const cors = require('@koa/cors');
 

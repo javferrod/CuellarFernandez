@@ -5,14 +5,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.knex = exports.connectToDatabase = undefined;
 
-var _koaRouter = require('koa-router');
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _koaRouter2 = _interopRequireDefault(_koaRouter);
-
-var _database = require('../database');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _names = require('./names');
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
     "use strict";
@@ -305,26 +302,117 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
     }
 };
 
-var dataRecollector = new _koaRouter2.default({ prefix: '/data' });
+var knexFactory = require('knex');
 
-dataRecollector.post('/', function (ctx, next) {
-    return new Promise(function ($return, $error) {
-        var user, parameters;
 
-        user = ctx.request.body.auth;
-        parameters = ctx.request.body.parameters;
+var knex;
 
-        if (!user || !parameters) {
-            ctx.response.status = 400;
-            return $return();
-        }
+var CONNECTION_WITHOUT_DATABASE = {
+    host: 'timescale',
+    user: 'postgres',
+    password: 'ramdom_stuff',
+    database: 'postgres'
+};
 
-        return (0, _database.saveParameters)(parameters, user).then(function ($await_1) {
-
-            ctx.response.status = 200;
-            return $return();
-        }.$asyncbind(this, $error), $error);
-    });
+var CONNECTION_DETAILS = _extends({}, CONNECTION_WITHOUT_DATABASE, {
+    database: 'data'
 });
 
-exports.default = dataRecollector;
+function connectToDatabase() {
+    return new Promise(function ($return, $error) {
+        console.log("[i] Connecting to POSTGRES");
+
+        exports.knex = knex = createConnection(CONNECTION_DETAILS);
+
+        var $Try_1_Post = function () {
+
+            console.log("[i] Connected to POSTGRES");
+            return $return();
+        }.$asyncbind(this, $error);var $Try_1_Catch = function (err) {
+            knex.destroy();
+
+            console.log('[i] Creating database');
+            return createDatabase().then(function ($await_2) {
+
+                console.log('[i] Reconnecting to database');
+                exports.knex = knex = createConnection(CONNECTION_DETAILS);
+
+                console.log('[i] Creating tables');
+                createTables();
+
+                console.log('[i] Creating hypertables');
+                createHyperTables();
+                return $Try_1_Post();
+            }.$asyncbind(this, $error), $error);
+        }.$asyncbind(this, $error);try {
+            return testConnection().then(function ($await_3) {
+                return $Try_1_Post();
+            }.$asyncbind(this, $Try_1_Catch), $Try_1_Catch);
+        } catch (err) {
+            $Try_1_Catch(err)
+        }
+    });
+}
+
+function createDatabase() {
+    return new Promise(function ($return, $error) {
+        var temporal;
+
+        temporal = createConnection(CONNECTION_WITHOUT_DATABASE);
+        return temporal.raw('CREATE DATABASE data').then(function ($await_4) {
+            return $return(temporal.destroy());
+        }.$asyncbind(this, $error), $error);
+    });
+}
+
+function createTables() {
+    return new Promise(function ($return, $error) {
+        return knex.schema.createTable(_names.USERS, function (table) {
+            table.increments();
+            table.timestamps();
+            table.string('username');
+            table.string('password');
+            table.string('name');
+            table.string('residence');
+            table.string('gender');
+            table.string('codice').unique();
+            table.boolean('client');
+        }).then(function ($await_5) {
+            return knex.schema.createTable(_names.TEMPORAL_PARAMETERS, function (table) {
+                table.increments();
+                table.timestamp('time').defaultTo(knex.fn.now());
+                table.float('weight');
+                table.integer('hearthrate');
+                table.float('latitude');
+                table.float('longitude');
+                table.integer('user');
+                table.foreign('user').references('users.id');
+            }).then(function ($await_6) {
+                return $return();
+            }.$asyncbind(this, $error), $error);
+        }.$asyncbind(this, $error), $error);
+    });
+};
+
+function createHyperTables() {
+    return new Promise(function ($return, $error) {
+        knex.raw("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;");
+        knex.raw('SELECT create_hypertable(\'' + _names.TEMPORAL_PARAMETERS + '\', \'time\')');
+        return $return();
+    });
+}
+
+function createConnection(connection) {
+    return knexFactory({
+        client: 'pg',
+        connection: connection,
+        useNullAsDefault: true
+    });
+};
+
+function testConnection() {
+    return knex.raw('SELECT 1+1 as result');
+}
+
+exports.connectToDatabase = connectToDatabase;
+exports.knex = knex;

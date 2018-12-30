@@ -5,12 +5,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.saveParameters = exports.saveClient = exports.saveUser = undefined;
 
-var _koaRouter = require('koa-router');
+var _init = require('./init');
 
-var _koaRouter2 = _interopRequireDefault(_koaRouter);
+var _names = require('./names');
 
-var _database = require('../database');
+var _ramda = require('ramda');
+
+var _ramda2 = _interopRequireDefault(_ramda);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -305,26 +308,57 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
     }
 };
 
-var dataRecollector = new _koaRouter2.default({ prefix: '/data' });
-
-dataRecollector.post('/', function (ctx, next) {
+function saveUser(username, password, name, residence, codice) {
     return new Promise(function ($return, $error) {
-        var user, parameters;
 
-        user = ctx.request.body.auth;
-        parameters = ctx.request.body.parameters;
+        var data = {
+            username: username,
+            password: password,
+            name: name,
+            residence: residence,
+            codice: codice,
+            client: false
+        };
 
-        if (!user || !parameters) {
-            ctx.response.status = 400;
-            return $return();
-        }
-
-        return (0, _database.saveParameters)(parameters, user).then(function ($await_1) {
-
-            ctx.response.status = 200;
-            return $return();
-        }.$asyncbind(this, $error), $error);
+        return $return((0, _init.knex)(_names.USERS).returning('id').insert(data));
     });
-});
+}
 
-exports.default = dataRecollector;
+function saveClient(username, password, name) {
+    return new Promise(function ($return, $error) {
+
+        var data = {
+            username: username,
+            password: password,
+            name: name,
+            client: true
+        };
+
+        return $return((0, _init.knex)(_names.USERS).returning('id').insert(data));
+    });
+}
+
+/*
+* parameter is a json with the correct keys 
+* (hearthrate, weight, latitude or longitude)
+* and insert them into the database. 
+*/
+function saveParameters(parameters, userID) {
+    return new Promise(function ($return, $error) {
+        var get = getParameters(userID);
+
+        return $return((0, _init.knex)(_names.TEMPORAL_PARAMETERS).returning('id').insert(get(parameters)));
+    });
+}
+
+_ramda2.default.assoc();
+
+exports.saveUser = saveUser;
+exports.saveClient = saveClient;
+exports.saveParameters = saveParameters;
+
+// HELPERS
+
+var getParameters = function getParameters(userID) {
+    return _ramda2.default.pipe(_ramda2.default.pick(['weight', 'hearthrate', 'latitude', 'longitude']), _ramda2.default.assoc('user', userID));
+};

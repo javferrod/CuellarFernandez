@@ -1,5 +1,5 @@
 import { knex } from './init';
-import { HEARTH_RATES, WEIGHTS, LOCATIONS, USERS, TEMPORAL_PARAMETERS } from './names';
+import { USERS, TEMPORAL_PARAMETERS } from './names';
 import R from 'ramda';
 
 async function saveUser(username, password, name, residence, codice){

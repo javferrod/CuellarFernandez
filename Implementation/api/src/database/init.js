@@ -57,6 +57,7 @@ async function createTables(){
         table.string('password');
         table.string('name');
         table.string('residence');
+        table.string('gender');
         table.string('codice')
             .unique();
         table.boolean('client');

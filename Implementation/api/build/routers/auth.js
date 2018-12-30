@@ -10,6 +10,12 @@ var _koaRouter = require('koa-router');
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
+var _database = require('../database');
+
+var _ramda = require('ramda');
+
+var _ramda2 = _interopRequireDefault(_ramda);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
@@ -303,18 +309,30 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
     }
 };
 
-var authRouter = new _koaRouter2.default();
+var authRouter = new _koaRouter2.default({ prefix: '/auth' });
 
 authRouter.post('/login', function (ctx, next) {
     return new Promise(function ($return, $error) {
-        ctx.body = { token: 'hola' };
+        ctx.response.body = { token: 'hola' };
         return $return();
     });
 });
 
-authRouter.post('register', function (ctx, next) {
+authRouter.post('/register', function (ctx, next) {
     return new Promise(function ($return, $error) {
-        return $return();
+        var _ctx$request$body, username, password, name, residence, codice, id;
+
+        _ctx$request$body = ctx.request.body, username = _ctx$request$body.username, password = _ctx$request$body.password, name = _ctx$request$body.name, residence = _ctx$request$body.residence, codice = _ctx$request$body.codice;
+        return (0, _database.saveUser)(username, password, name, residence, codice).then(function ($await_1) {
+
+            //If is user
+            id = $await_1;
+            //Else client
+            //id = saveClient(..);
+
+            if (_ramda2.default.isNil(id)) ctx.responde.status = 500;else ctx.response.status = 200;
+            return $return();
+        }.$asyncbind(this, $error), $error);
     });
 });
 

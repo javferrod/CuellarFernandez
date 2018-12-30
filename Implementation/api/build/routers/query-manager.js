@@ -10,9 +10,7 @@ var _koaRouter = require('koa-router');
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
-var _query = require('../database/query');
-
-var _query2 = _interopRequireDefault(_query);
+var _database = require('../database');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -309,6 +307,17 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
 var queryManager = new _koaRouter2.default({ prefix: '/query' });
 
+queryManager.post('/codice', function (ctx, next) {
+    return new Promise(function ($return, $error) {
+        var codice;
+        codice = ctx.request.body.codice;
+        return (0, _database.searchByCodice)(codice).then(function ($await_1) {
+            ctx.response.body = $await_1;
+            return $return();
+        }.$asyncbind(this, $error), $error);
+    });
+});
+
 queryManager.get('/', function (ctx, next) {
     return new Promise(function ($return, $error) {
         var user = ctx.request.body.auth;
@@ -329,30 +338,12 @@ query : {
 }
 */
 
-/*
-* The fixed search have priority since is easier
-* and narrows the search. The second search only
-* filters the users selected by the first one.
-*/
-
 queryManager.post('/', function (ctx, next) {
     return new Promise(function ($return, $error) {
-        var query = new _query2.default(ctx.request.body.query);
-
-        /*    if(query.haveFixedParameters()){
-                //query = await fixedSearch(query);
-                query = await temporalSearch(query);
-            }
-            else{
-                query = await temporalSearch(query);
-                //query = await fixedSearch(query);
-            }
-        
-            console.log(query);
-        
-            ctx.response.body = query.buildResults();*/
-
-        return $return();
+        return (0, _database.searchByParameters)(ctx.request.body.parameters).then(function ($await_2) {
+            ctx.response.body = $await_2;
+            return $return();
+        }.$asyncbind(this, $error), $error);
     });
 });
 

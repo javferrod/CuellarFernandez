@@ -5,12 +5,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.searchByParameters = exports.searchByCodice = exports.searchByID = undefined;
 
-var _koaRouter = require('koa-router');
+var _init = require('./init');
 
-var _koaRouter2 = _interopRequireDefault(_koaRouter);
+var _names = require('./names');
 
-var _database = require('../database');
+var _ramda = require('ramda');
+
+var _ramda2 = _interopRequireDefault(_ramda);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -305,26 +308,90 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
     }
 };
 
-var dataRecollector = new _koaRouter2.default({ prefix: '/data' });
-
-dataRecollector.post('/', function (ctx, next) {
+function searchByID(userID) {
     return new Promise(function ($return, $error) {
-        var user, parameters;
 
-        user = ctx.request.body.auth;
-        parameters = ctx.request.body.parameters;
+        var filter = _ramda2.default.pipe(leftJoin(_names.TEMPORAL_PARAMETERS), filterByID(userID));
 
-        if (!user || !parameters) {
-            ctx.response.status = 400;
-            return $return();
-        }
-
-        return (0, _database.saveParameters)(parameters, user).then(function ($await_1) {
-
-            ctx.response.status = 200;
-            return $return();
-        }.$asyncbind(this, $error), $error);
+        return $return(filter((0, _init.knex)(_names.USERS)));
     });
+}
+
+function searchByCodice(codice) {
+    return new Promise(function ($return, $error) {
+
+        var filter = _ramda2.default.pipe(leftJoin(_names.TEMPORAL_PARAMETERS), filterByCodice(codice));
+
+        return $return(filter((0, _init.knex)(_names.USERS)));
+    });
+}
+
+function searchByParameters(parameters) {
+    return new Promise(function ($return, $error) {
+
+        console.log("Hola");
+
+        var filter = _ramda2.default.pipe(leftJoin(_names.TEMPORAL_PARAMETERS), filterRanges(parameters), filterFixed(parameters));
+
+        return $return(filter((0, _init.knex)(_names.USERS).select('users.id, latitude', 'longitude', 'weight', 'hearthrate', 'time')));
+    });
+}
+
+exports.searchByID = searchByID;
+exports.searchByCodice = searchByCodice;
+exports.searchByParameters = searchByParameters;
+
+//HELPERS
+
+var leftJoin = _ramda2.default.curry(function (table, query) {
+    query.leftJoin(table, 'users.id', '=', table + '.user');
+    return query;
 });
 
-exports.default = dataRecollector;
+/*
+* TODO refactor this 
+* SELECT * from temporal_parameters where "user" IN 
+* (select "user" from temporal_parameters where hearthrate>90) 
+* AND "user" IN (SELECT "user" from temporal_parameters WHERE weight >100); 
+*/
+
+var filterRanges = _ramda2.default.curry(function (parameters, query) {
+    var weight = parameters.weight,
+        hearthrate = parameters.hearthrate;
+
+
+    if (notNil(weight)) {
+        var subquery = _init.knex.select("user").from(_names.TEMPORAL_PARAMETERS).whereBetween('weight', [weight.min, weight.max]);
+        query.whereIn('user.id', subquery);
+    }
+
+    if (notNil(hearthrate)) {
+        var _subquery = _init.knex.select("user").from(_names.TEMPORAL_PARAMETERS).whereBetween('hearthrate', [hearthrate.min, hearthrate.max]);
+
+        query.whereIn('user.id', _subquery);
+    }
+
+    return query;
+});
+
+//TODO implement.
+var filterFixed = _ramda2.default.curry(function (parameters, query) {
+    var gender = parameters.gender;
+
+
+    if (notNil(gender)) query.where('gender', gender);
+
+    return query;
+});
+
+var filterByID = _ramda2.default.curry(function (userID, query) {
+    query.where('users.id', userID);
+    return query;
+});
+
+var filterByCodice = _ramda2.default.curry(function (codice, query) {
+    query.where('users.codice', codice);
+    return query;
+});
+
+var notNil = _ramda2.default.pipe(_ramda2.default.isNil, _ramda2.default.not);
