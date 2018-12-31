@@ -7,37 +7,41 @@
     android:padding="5dp">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_gravity="center"
+        android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:layout_marginBottom="25dp"
+        android:fontFamily="@font/bitter"
+        android:text="@string/select_a_number"
+        android:textColor="@color/colorAccent"
+        android:textSize="25dp"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:text="@string/weight" />
-
-    <EditText
-        android:id="@+id/textWeight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_marginTop="5dp"
-        android:hint="@string/enter_your_weight"
-        android:inputType="text|number"
+        app:layout_constraintBottom_toTopOf="@+id/numberPicker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:background="@color/colorAccent"
-        android:textColor="@android:color/white"
+        android:fontFamily="@font/bitter"
         android:text="@string/save"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textWeight" />
+        app:layout_constraintTop_toBottomOf="@+id/numberPicker" />
 
 </android.support.constraint.ConstraintLayout>

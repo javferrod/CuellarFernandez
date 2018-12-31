@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -340,21 +342,34 @@ public class Recollector extends AppCompatActivity {
             mAlertBuilder = new AlertDialog.Builder(Recollector.this);
             View mViewWeight = getLayoutInflater().inflate(R.layout.dialog_weight, null);
 
-            final EditText mWeight = mViewWeight.findViewById(R.id.textWeight);
+            NumberPicker np = mViewWeight.findViewById(R.id.numberPicker);
+
+            //Populate NumberPicker values from minimum and maximum value range
+            //Set the minimum value of NumberPicker
+            np.setMinValue(35);
+            //Specify the maximum value/number of NumberPicker
+            np.setMaxValue(110);
+
+            //Gets whether the selector wheel wraps when reaching the min/max value.
+            np.setWrapSelectorWheel(true);
+
+            //Set a value change listener for NumberPicker
+            /*np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                    //Display the newly selected number from picker
+                    tv.setText("Selected weight: " + newVal);
+                }
+            });*/
+
             final Button mWeightButton = mViewWeight.findViewById(R.id.saveButton);
 
             mWeightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mWeight.getText().toString().isEmpty()) {
-                        Toast.makeText(Recollector.this, "Please fill any empty fields",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    else {
                         Toast.makeText(Recollector.this, "Successfully save",
                                 Toast.LENGTH_SHORT).show();
                         cancelDialog();
-                    }
                 }
             });
 
