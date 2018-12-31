@@ -34,7 +34,7 @@ queryManager.post('/', async (ctx, next) => {
     let groupedResul = groupByUser(resul);
     
     if(countUsers(groupedResul) >= MIN_USERS)
-        ctx.response.body = remix(groupedResul);
+        ctx.response.body = groupedResul; //remix(groupedResul);
     else
         ctx.response.status = 403;
 })
@@ -51,6 +51,6 @@ const getLocations = R.project(['time', 'latitude', 'longitude']);
 const getWeight = R.project(['time', 'weight']);
 const getHearthRate = R.project(['time', 'hearthrate']);
 
-const remix = R.pipe(
+/*const remix = R.pipe(
     remixLatitude
-)
+)*/

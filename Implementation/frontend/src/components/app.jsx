@@ -1,22 +1,30 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import Login from './auth/login';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Layout } from 'antd';
 
-const App = (props) => {
-  const { isLogged } = props;
+import AppMenu from './common/app-menu';
+import SearchPage from './search/search-page';
 
-  if (!isLogged) { return <Login />; }
+const { Content, Footer } = Layout;
 
+function App() {
   return (
-    <div>
-        Logged
-    </div>
+    <Router>
+      <Layout style={{ minHeight: '100vh' }}>
+        <AppMenu />
+        <Layout>
 
+          <Content style={{ margin: '0 16px' }}>
+            <Route path="/search" component={SearchPage} />
+          </Content>
+
+          <Footer style={{ textAlign: 'center' }}>
+            TrackMe © 2019 Created by JJ
+          </Footer>
+        </Layout>
+      </Layout>
+    </Router>
   );
-};
+}
 
-const mapStateToProps = state => ({
-  isLogged: state.auth.token !== null,
-});
-
-export default connect(mapStateToProps)(App);
+export default App;

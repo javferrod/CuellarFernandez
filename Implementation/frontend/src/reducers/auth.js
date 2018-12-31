@@ -1,4 +1,4 @@
-import { LOGIN_OK, LOGIN_LOADING } from '../../actions/auth';
+import { LOGIN_OK, LOGIN_LOADING } from '../actions/auth';
 
 const initialState = {
   token: null,
