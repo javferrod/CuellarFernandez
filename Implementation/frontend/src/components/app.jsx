@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Layout } from 'antd';
-
 import AppMenu from './common/app-menu';
 import SearchPage from './search/search-page';
 

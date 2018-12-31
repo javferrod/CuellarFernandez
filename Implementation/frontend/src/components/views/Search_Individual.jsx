@@ -1,12 +1,11 @@
 import React from 'react';
-
-import './Search_Individual.css'
+import './Search_Individual.css';
 
 function Search_Individual() {
      return (
         <div>
             <div  class="track-me-img">
-                <img id="track-me" src={require ('./assets/logosinfrase.jpg')} />
+                <img id="track-me" src={require ('../../assets/logosinfrase.jpg')} />
             </div>
             <form class="form-search content-search navbar-form" action="" method="post">
              <div class="input-group">
