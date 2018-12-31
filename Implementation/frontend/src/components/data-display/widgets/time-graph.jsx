@@ -1,8 +1,16 @@
 import React from 'react';
 import MG from 'metrics-graphics';
 import 'metrics-graphics/dist/metricsgraphics.css';
+import { css } from 'emotion';
 
 const R = require('ramda');
+
+const graphStyle = css`
+  width:100%;
+  svg{
+    width:100%;
+  }
+`;
 
 class TimeGraph extends React.Component {
   constructor(props) {
@@ -24,7 +32,7 @@ class TimeGraph extends React.Component {
 
 
     return (
-      <div id={target} />
+      <div className={graphStyle} id={target} />
     );
   }
 }
@@ -32,8 +40,8 @@ class TimeGraph extends React.Component {
 
 const hookupMG = (title, data, target, xAccessor, yAccessor) => {
   MG.data_graphic({
-    width: 600,
-    height: 250,
+    width: 800,
+    height: 300,
     title,
     data: reformatDates(data),
     target,

@@ -14,7 +14,7 @@ const searchBoxContainer = css`
 
 const SearchPage = (props) => {
   const {
-    individualData, collectiveData, onSearch, loading, error, empty, 
+    individualData, collectiveData, onSearch, loading, error, empty,
   } = props;
 
   return (
