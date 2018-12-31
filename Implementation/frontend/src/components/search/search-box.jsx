@@ -10,7 +10,7 @@ const SearchBox = props => (
       hasFeedback
       {...getValidateStatus(props)}
     >
-      <Search className={height32} placeholder="Codice fiscale" onSearch={props.onSearch} />
+      <Search class="form-control form-text" placeholder="Codice fiscale" onSearch={props.onSearch} />
     </Form.Item>
   </Form>
 );
