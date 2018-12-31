@@ -1,39 +1,35 @@
-'use strict';
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.isValidLocation = exports.isValidType = exports.isValidParameter = exports.LOCATION = exports.WEIGHT = exports.HEARTHRATE = undefined;
+exports.isValidLocation = exports.isValidType = exports.isValidParameter = exports.LOCATION = exports.WEIGHT = exports.HEARTHRATE = void 0;
 
-var _ramda = require('ramda');
+var _ramda = _interopRequireDefault(require("ramda"));
 
-var _ramda2 = _interopRequireDefault(_ramda);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var HEARTHRATE = 'hearthrate';
-var WEIGHT = 'weight';
-var LOCATION = 'location';
-
-var isValidType = _ramda2.default.contains(_ramda2.default.__, [HEARTHRATE, WEIGHT, LOCATION]);
-
-//TODO change this
-var isValidParameter = function isValidParameter(parameter) {
-
-    return true;
-    if (!isValidType(parameter.type)) return false;
-    if (parameter.type === LOCATION && !isValidLocation(parameter.fields)) return false;
-
-    return true;
-};
-
-var isValidLocation = function isValidLocation(location) {
-    return _ramda2.default.both(_ramda2.default.has(location, 'latitude'), _ramda2.default.has(location, 'longitude'));
-};
-
+const HEARTHRATE = 'hearthrate';
 exports.HEARTHRATE = HEARTHRATE;
+const WEIGHT = 'weight';
 exports.WEIGHT = WEIGHT;
+const LOCATION = 'location';
 exports.LOCATION = LOCATION;
-exports.isValidParameter = isValidParameter;
+
+const isValidType = _ramda.default.contains(_ramda.default.__, [HEARTHRATE, WEIGHT, LOCATION]); //TODO change this
+
+
 exports.isValidType = isValidType;
+
+const isValidParameter = parameter => {
+  return true;
+  if (!isValidType(parameter.type)) return false;
+  if (parameter.type === LOCATION && !isValidLocation(parameter.fields)) return false;
+  return true;
+};
+
+exports.isValidParameter = isValidParameter;
+
+const isValidLocation = location => _ramda.default.both(_ramda.default.has(location, 'latitude'), _ramda.default.has(location, 'longitude'));
+
 exports.isValidLocation = isValidLocation;

@@ -13,15 +13,18 @@ const searchBoxContainer = css`
 
 
 const SearchPage = (props) => {
-  const { individualData, collectiveData, onSearch, loading, error } = props;
+  const {
+    individualData, collectiveData, onSearch, loading, error, empty, 
+  } = props;
+
   return (
     <div className={marginTop32}>
       <div className={searchBoxContainer}>
-        <SearchBox loading={loading} error={error} onSearch={onSearch} />
+        <SearchBox loading={loading} error={error} empty={empty} onSearch={onSearch} />
       </div>
 
-      <IndividualInfo data={individualData} />
-      <CollectiveInfo data={collectiveData} />
+      <IndividualInfo {...individualData} />
+      <CollectiveInfo {...collectiveData} />
 
     </div>
   );
@@ -32,6 +35,7 @@ const mapStateToProps = state => ({
   collectiveData: state.search.collectiveData,
   loading: state.search.loading,
   error: state.search.error,
+  empty: state.search.empty,
 });
 
 const mapDispatchToProps = dispatch => ({

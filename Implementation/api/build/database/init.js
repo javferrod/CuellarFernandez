@@ -1,418 +1,95 @@
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.knex = exports.connectToDatabase = undefined;
+exports.connectToDatabase = connectToDatabase;
+exports.knex = void 0;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _names = require("./names");
 
-var _names = require('./names');
-
-Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
-    "use strict";
-
-    if (!Function.prototype.$asyncbind) {
-        Object.defineProperty(Function.prototype, "$asyncbind", {
-            value: $asyncbind,
-            enumerable: false,
-            configurable: true,
-            writable: true
-        });
-    }
-
-    if (!$asyncbind.trampoline) {
-        $asyncbind.trampoline = function trampoline(t, x, s, e, u) {
-            return function b(q) {
-                while (q) {
-                    if (q.then) {
-                        q = q.then(b, e);
-                        return u ? undefined : q;
-                    }
-
-                    try {
-                        if (q.pop) {
-                            if (q.length) return q.pop() ? x.call(t) : q;
-                            q = s;
-                        } else q = q.call(t);
-                    } catch (r) {
-                        return e(r);
-                    }
-                }
-            };
-        };
-    }
-
-    if (!$asyncbind.LazyThenable) {
-        $asyncbind.LazyThenable = function () {
-            function isThenable(obj) {
-                return obj && obj instanceof Object && typeof obj.then === "function";
-            }
-
-            function resolution(p, r, how) {
-                try {
-                    var x = how ? how(r) : r;
-                    if (p === x) return p.reject(new TypeError("Promise resolution loop"));
-
-                    if (isThenable(x)) {
-                        x.then(function (y) {
-                            resolution(p, y);
-                        }, function (e) {
-                            p.reject(e);
-                        });
-                    } else {
-                        p.resolve(x);
-                    }
-                } catch (ex) {
-                    p.reject(ex);
-                }
-            }
-
-            function _unchained(v) {}
-
-            function thenChain(res, rej) {
-                this.resolve = res;
-                this.reject = rej;
-            }
-
-            function Chained() {}
-
-            ;
-            Chained.prototype = {
-                resolve: _unchained,
-                reject: _unchained,
-                then: thenChain
-            };
-
-            function then(res, rej) {
-                var chain = new Chained();
-
-                try {
-                    this._resolver(function (value) {
-                        return isThenable(value) ? value.then(res, rej) : resolution(chain, value, res);
-                    }, function (ex) {
-                        resolution(chain, ex, rej);
-                    });
-                } catch (ex) {
-                    resolution(chain, ex, rej);
-                }
-
-                return chain;
-            }
-
-            function Thenable(resolver) {
-                this._resolver = resolver;
-                this.then = then;
-            }
-
-            ;
-
-            Thenable.resolve = function (v) {
-                return Thenable.isThenable(v) ? v : {
-                    then: function then(resolve) {
-                        return resolve(v);
-                    }
-                };
-            };
-
-            Thenable.isThenable = isThenable;
-            return Thenable;
-        }();
-
-        $asyncbind.EagerThenable = $asyncbind.Thenable = ($asyncbind.EagerThenableFactory = function (tick) {
-            tick = tick || (typeof process === 'undefined' ? 'undefined' : _typeof(process)) === "object" && process.nextTick || typeof setImmediate === "function" && setImmediate || function (f) {
-                setTimeout(f, 0);
-            };
-
-            var soon = function () {
-                var fq = [],
-                    fqStart = 0,
-                    bufferSize = 1024;
-
-                function callQueue() {
-                    while (fq.length - fqStart) {
-                        try {
-                            fq[fqStart]();
-                        } catch (ex) {}
-
-                        fq[fqStart++] = undefined;
-
-                        if (fqStart === bufferSize) {
-                            fq.splice(0, bufferSize);
-                            fqStart = 0;
-                        }
-                    }
-                }
-
-                return function (fn) {
-                    fq.push(fn);
-                    if (fq.length - fqStart === 1) tick(callQueue);
-                };
-            }();
-
-            function Zousan(func) {
-                if (func) {
-                    var me = this;
-                    func(function (arg) {
-                        me.resolve(arg);
-                    }, function (arg) {
-                        me.reject(arg);
-                    });
-                }
-            }
-
-            Zousan.prototype = {
-                resolve: function resolve(value) {
-                    if (this.state !== undefined) return;
-                    if (value === this) return this.reject(new TypeError("Attempt to resolve promise with self"));
-                    var me = this;
-
-                    if (value && (typeof value === "function" || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object")) {
-                        try {
-                            var first = 0;
-                            var then = value.then;
-
-                            if (typeof then === "function") {
-                                then.call(value, function (ra) {
-                                    if (!first++) {
-                                        me.resolve(ra);
-                                    }
-                                }, function (rr) {
-                                    if (!first++) {
-                                        me.reject(rr);
-                                    }
-                                });
-                                return;
-                            }
-                        } catch (e) {
-                            if (!first) this.reject(e);
-                            return;
-                        }
-                    }
-
-                    this.state = STATE_FULFILLED;
-                    this.v = value;
-                    if (me.c) soon(function () {
-                        for (var n = 0, l = me.c.length; n < l; n++) {
-                            STATE_FULFILLED(me.c[n], value);
-                        }
-                    });
-                },
-                reject: function reject(reason) {
-                    if (this.state !== undefined) return;
-                    this.state = STATE_REJECTED;
-                    this.v = reason;
-                    var clients = this.c;
-                    if (clients) soon(function () {
-                        for (var n = 0, l = clients.length; n < l; n++) {
-                            STATE_REJECTED(clients[n], reason);
-                        }
-                    });
-                },
-                then: function then(onF, onR) {
-                    var p = new Zousan();
-                    var client = {
-                        y: onF,
-                        n: onR,
-                        p: p
-                    };
-
-                    if (this.state === undefined) {
-                        if (this.c) this.c.push(client);else this.c = [client];
-                    } else {
-                        var s = this.state,
-                            a = this.v;
-                        soon(function () {
-                            s(client, a);
-                        });
-                    }
-
-                    return p;
-                }
-            };
-
-            function STATE_FULFILLED(c, arg) {
-                if (typeof c.y === "function") {
-                    try {
-                        var yret = c.y.call(undefined, arg);
-                        c.p.resolve(yret);
-                    } catch (err) {
-                        c.p.reject(err);
-                    }
-                } else c.p.resolve(arg);
-            }
-
-            function STATE_REJECTED(c, reason) {
-                if (typeof c.n === "function") {
-                    try {
-                        var yret = c.n.call(undefined, reason);
-                        c.p.resolve(yret);
-                    } catch (err) {
-                        c.p.reject(err);
-                    }
-                } else c.p.reject(reason);
-            }
-
-            Zousan.resolve = function (val) {
-                if (val && val instanceof Zousan) return val;
-                var z = new Zousan();
-                z.resolve(val);
-                return z;
-            };
-
-            Zousan.reject = function (err) {
-                if (err && err instanceof Zousan) return err;
-                var z = new Zousan();
-                z.reject(err);
-                return z;
-            };
-
-            Zousan.version = "2.3.3-nodent";
-            return Zousan;
-        })();
-    }
-
-    function boundThen() {
-        return resolver.apply(self, arguments);
-    }
-
-    var resolver = this;
-
-    switch (catcher) {
-        case true:
-            return new $asyncbind.Thenable(boundThen);
-
-        case 0:
-            return new $asyncbind.LazyThenable(boundThen);
-
-        case undefined:
-            boundThen.then = boundThen;
-            return boundThen;
-
-        default:
-            return function () {
-                try {
-                    return resolver.apply(self, arguments);
-                } catch (ex) {
-                    return catcher(ex);
-                }
-            };
-    }
-};
-
-var knexFactory = require('knex');
-
+const knexFactory = require('knex');
 
 var knex;
-
-var CONNECTION_WITHOUT_DATABASE = {
-    host: 'timescale',
-    user: 'postgres',
-    password: 'ramdom_stuff',
-    database: 'postgres'
+exports.knex = knex;
+const CONNECTION_WITHOUT_DATABASE = {
+  host: 'timescale',
+  user: 'postgres',
+  password: 'ramdom_stuff',
+  database: 'postgres'
+};
+const CONNECTION_DETAILS = { ...CONNECTION_WITHOUT_DATABASE,
+  database: 'data'
 };
 
-var CONNECTION_DETAILS = _extends({}, CONNECTION_WITHOUT_DATABASE, {
-    database: 'data'
-});
+async function connectToDatabase() {
+  console.log("[i] Connecting to POSTGRES");
+  exports.knex = knex = createConnection(CONNECTION_DETAILS);
 
-function connectToDatabase() {
-    return new Promise(function ($return, $error) {
-        console.log("[i] Connecting to POSTGRES");
+  try {
+    await testConnection();
+  } catch (err) {
+    knex.destroy();
+    console.log('[i] Creating database');
+    await createDatabase();
+    console.log('[i] Reconnecting to database');
+    exports.knex = knex = createConnection(CONNECTION_DETAILS);
+    console.log('[i] Creating tables');
+    createTables();
+    console.log('[i] Creating hypertables');
+    createHyperTables();
+  }
 
-        exports.knex = knex = createConnection(CONNECTION_DETAILS);
-
-        var $Try_1_Post = function () {
-
-            console.log("[i] Connected to POSTGRES");
-            return $return();
-        }.$asyncbind(this, $error);var $Try_1_Catch = function (err) {
-            knex.destroy();
-
-            console.log('[i] Creating database');
-            return createDatabase().then(function ($await_2) {
-
-                console.log('[i] Reconnecting to database');
-                exports.knex = knex = createConnection(CONNECTION_DETAILS);
-
-                console.log('[i] Creating tables');
-                createTables();
-
-                console.log('[i] Creating hypertables');
-                createHyperTables();
-                return $Try_1_Post();
-            }.$asyncbind(this, $error), $error);
-        }.$asyncbind(this, $error);try {
-            return testConnection().then(function ($await_3) {
-                return $Try_1_Post();
-            }.$asyncbind(this, $Try_1_Catch), $Try_1_Catch);
-        } catch (err) {
-            $Try_1_Catch(err)
-        }
-    });
+  console.log("[i] Connected to POSTGRES");
 }
 
-function createDatabase() {
-    return new Promise(function ($return, $error) {
-        var temporal;
-
-        temporal = createConnection(CONNECTION_WITHOUT_DATABASE);
-        return temporal.raw('CREATE DATABASE data').then(function ($await_4) {
-            return $return(temporal.destroy());
-        }.$asyncbind(this, $error), $error);
-    });
+async function createDatabase() {
+  let temporal = createConnection(CONNECTION_WITHOUT_DATABASE);
+  await temporal.raw('CREATE DATABASE data');
+  return temporal.destroy();
 }
 
-function createTables() {
-    return new Promise(function ($return, $error) {
-        return knex.schema.createTable(_names.USERS, function (table) {
-            table.increments();
-            table.timestamps();
-            table.string('username');
-            table.string('password');
-            table.string('name');
-            table.string('residence');
-            table.string('gender');
-            table.string('codice').unique();
-            table.boolean('client');
-        }).then(function ($await_5) {
-            return knex.schema.createTable(_names.TEMPORAL_PARAMETERS, function (table) {
-                table.increments();
-                table.timestamp('time').defaultTo(knex.fn.now());
-                table.float('weight');
-                table.integer('hearthrate');
-                table.float('latitude');
-                table.float('longitude');
-                table.integer('user');
-                table.foreign('user').references('users.id');
-            }).then(function ($await_6) {
-                return $return();
-            }.$asyncbind(this, $error), $error);
-        }.$asyncbind(this, $error), $error);
-    });
-};
+async function createTables() {
+  await knex.schema.createTable(_names.USERS, table => {
+    table.increments();
+    table.timestamps();
+    table.string('username');
+    table.string('password');
+    table.string('name');
+    table.string('residence');
+    table.string('gender');
+    table.string('codice').unique();
+    table.boolean('client');
+  });
+  await knex.schema.createTable(_names.TEMPORAL_PARAMETERS, table => {
+    table.increments();
+    table.timestamp('time').defaultTo(knex.fn.now());
+    table.float('weight');
+    table.integer('hearthrate');
+    table.float('latitude');
+    table.float('longitude');
+    table.integer('user');
+    table.foreign('user').references('users.id');
+  });
+}
 
-function createHyperTables() {
-    return new Promise(function ($return, $error) {
-        knex.raw("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;");
-        knex.raw('SELECT create_hypertable(\'' + _names.TEMPORAL_PARAMETERS + '\', \'time\')');
-        return $return();
-    });
+;
+
+async function createHyperTables() {
+  knex.raw("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;");
+  knex.raw(`SELECT create_hypertable('${_names.TEMPORAL_PARAMETERS}', 'time')`);
 }
 
 function createConnection(connection) {
-    return knexFactory({
-        client: 'pg',
-        connection: connection,
-        useNullAsDefault: true
-    });
-};
-
-function testConnection() {
-    return knex.raw('SELECT 1+1 as result');
+  return knexFactory({
+    client: 'pg',
+    connection: connection,
+    useNullAsDefault: true
+  });
 }
 
-exports.connectToDatabase = connectToDatabase;
-exports.knex = knex;
+;
+
+function testConnection() {
+  return knex.raw('SELECT 1+1 as result');
+}

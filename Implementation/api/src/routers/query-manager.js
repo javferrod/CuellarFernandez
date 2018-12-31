@@ -8,14 +8,22 @@ var queryManager = new Router({ prefix: '/query' });
 
 queryManager.post('/codice', async (ctx, next) => {
     const { codice } = ctx.request.body;
-    ctx.response.body = await searchByCodice(codice);
+    let individual = await searchByCodice(codice);
+
+    if(R.isEmpty(individual)){
+        ctx.response.body = [];
+    } else {
+        ctx.response.body = {
+            residence: get('name')(individual), 
+            residence: get('residence')(individual), 
+            residence: get('genre')(individual), 
+            location: getLocations(individual),
+            weight: getWeight(individual),
+            hearthrate: getHearthRate(individual) 
+        };
+    }
+
 })
-
-queryManager.get('/', async (ctx, next) => {
-    let user = ctx.request.body.auth;
-
-    //return ctx.response.body = await getParameters(user);
-});
 
 /*
 query : {
@@ -41,16 +49,38 @@ queryManager.post('/', async (ctx, next) => {
 
 export default queryManager;
 
+
 const groupByUser = R.groupBy(R.prop('id'));
 const countUsers = R.pipe(
     R.keys,
     R.length
 )
 
-const getLocations = R.project(['time', 'latitude', 'longitude']);
-const getWeight = R.project(['time', 'weight']);
-const getHearthRate = R.project(['time', 'hearthrate']);
+const getLocations = projectProps(['time', 'latitude', 'longitude']);
+const getWeight = projectProps(['time', 'weight']);
+const getHearthRate = projectProps(['time', 'hearthrate']);
 
+function projectProps(props){
+    return R.pipe(
+    R.project(props),
+    R.filter(notNil(props))
+)
+}
+
+function notNil(props){
+    return R.pipe(
+        R.pick(props),
+        R.values,
+        R.reject(R.isNil),
+        R.length,
+        R.equals(R.length(props))
+    )
+}
+
+const get = prop => R.pipe(
+    R.take(1),
+    R.pick(prop)
+)
 /*const remix = R.pipe(
     remixLatitude
 )*/

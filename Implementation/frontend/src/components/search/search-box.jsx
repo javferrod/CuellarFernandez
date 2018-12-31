@@ -10,7 +10,7 @@ const SearchBox = props => (
       hasFeedback
       {...getValidateStatus(props)}
     >
-      <Search className={height32} placeholder="Codice fiscale" onSearch={props.onSearch}/>
+      <Search className={height32} placeholder="Codice fiscale" onSearch={props.onSearch} />
     </Form.Item>
   </Form>
 );
@@ -22,10 +22,16 @@ const getValidateStatus = (props) => {
       help: 'Loading...',
     };
   }
-  if (props.error) {
+  if (props.empty) {
     return {
       validateStatus: 'warning',
       help: 'You do not have permission to access the user',
+    };
+  }
+  if (props.error) {
+    return {
+      validateStatus: 'error',
+      help: 'An error has ocurred, please try again later',
     };
   }
 
