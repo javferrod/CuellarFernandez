@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Layout } from 'antd';
 import AppMenu from './common/app-menu';
 import SearchPage from './search/search-page';
+import PermissionsPage from './permissions/permissions-page';
 
 const { Content, Footer } = Layout;
 
@@ -15,6 +16,7 @@ function App() {
 
           <Content style={{ margin: '0 16px' }}>
             <Route path="/search" component={SearchPage} />
+            <Route path="/permissions" component={PermissionsPage} />
           </Content>
 
           <Footer style={{ textAlign: 'center' }}>

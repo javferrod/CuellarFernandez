@@ -18,10 +18,10 @@ const mapStyle = css`
 `;
 
 const HeathMap = (props) => {
-  const { center, data } = props;
+  const { data } = props;
 
   const points = adequate(data);
-
+  console.log(points);
   return (
     <div className={mapStyle}>
       <Map center={MILANO} zoom={13}>
@@ -34,9 +34,9 @@ const HeathMap = (props) => {
           fitBoundsOnLoad
           fitBoundsOnUpdate
           points={points}
-          longitudeExtractor={m => m[1]}
           latitudeExtractor={m => m[0]}
-          intensityExtractor={m => 1}
+          longitudeExtractor={m => m[1]}
+          intensityExtractor={m => 100}
         />
       </Map>
     </div>
@@ -47,5 +47,10 @@ export default HeathMap;
 
 const adequate = R.pipe(
   R.defaultTo([]),
-  R.project(['latitude', 'longitude']),
+  R.map(
+    R.pipe(
+      R.pick(['latitude', 'longitude']),
+      R.values,
+    ),
+  ),
 );

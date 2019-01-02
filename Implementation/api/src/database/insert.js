@@ -1,5 +1,5 @@
 import { knex } from './init';
-import { USERS, TEMPORAL_PARAMETERS } from './names';
+import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import R from 'ramda';
 
 async function saveUser(username, password, name, residence, codice){
@@ -44,10 +44,18 @@ async function saveParameters(parameters, userID){
         );
 }
 
-R.assoc()
+async function savePermission(clientID, userID){
+    return knex(PERMISSIONS)
+        .returning('id')
+        .insert({
+            client: clientID,
+            user: userID
+        });
+}
 
 
-export { saveUser, saveClient, saveParameters};
+
+export { saveUser, saveClient, saveParameters, savePermission };
 
 // HELPERS
 

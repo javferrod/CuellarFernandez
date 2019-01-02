@@ -1,32 +1,41 @@
 import { knex } from './init';
-import { USERS, TEMPORAL_PARAMETERS } from './names';
+import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import R from 'ramda';
 
 
 async function searchByID(userID){
    
     const filter = R.pipe(
-        leftJoin(TEMPORAL_PARAMETERS),
+        leftJoin(TEMPORAL_PARAMETERS, 'user'),
         filterByID(userID)
     )
 
     return filter(knex(USERS));
 }
 
+
 async function searchByCodice(codice){
  
     const filter = R.pipe(
-        leftJoin(TEMPORAL_PARAMETERS),
+        leftJoin(TEMPORAL_PARAMETERS, 'user'),
         filterByCodice(codice)
     )
 
     return filter(knex(USERS));
 }
 
+async function getID(codice){
+    const filter = R.pipe(
+        filterByCodice(codice)
+    )
+
+    return filter(knex(USERS).select('id'));
+}
+
 async function searchByParameters(parameters){
 
     const filter = R.pipe(
-        leftJoin(TEMPORAL_PARAMETERS),
+        leftJoin(TEMPORAL_PARAMETERS, 'user'),
         filterRanges(parameters),
         filterFixed(parameters)
     );
@@ -35,12 +44,21 @@ async function searchByParameters(parameters){
         .select('users.id', 'latitude', 'longitude', 'weight', 'hearthrate', 'time'));
 }
 
-export { searchByID, searchByCodice, searchByParameters }
+async function getPermissions(clientID){
+    const filter = R.pipe(
+        leftJoin(PERMISSIONS, 'user'),
+        filterByClient(clientID),
+    )
+
+    return filter(knex(USERS))
+}
+
+export { searchByID, searchByCodice, searchByParameters, getPermissions, getID }
 
 //HELPERS
 
-const leftJoin = R.curry((table, query) => {
-    query.leftJoin(table, 'users.id', '=', `${table}.user`);
+const leftJoin = R.curry((table, on, query) => {
+    query.leftJoin(table, 'users.id', '=', `${table}.${on}`);
     return query;
 });
  
@@ -89,4 +107,8 @@ const filterByCodice = R.curry((codice, query) => {
         return query;
 });
 
+const filterByClient = R.curry((clientID, query) => {
+        query.where('permissions.client', clientID);
+        return query;
+});
 const notNil = R.pipe(R.isNil, R.not);

@@ -1,19 +1,31 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import {
+  Form, Input, AutoComplete, Icon,
+} from 'antd';
 import { height32 } from '../common/styles';
 
 const { Search } = Input;
 
-const SearchBox = props => (
-  <Form>
-    <Form.Item
-      hasFeedback
-      {...getValidateStatus(props)}
-    >
-      <Search className={height32} placeholder="Codice fiscale" onSearch={props.onSearch} />
-    </Form.Item>
-  </Form>
-);
+const SearchBox = (props) => {
+  const { onSearch, codices } = props;
+  return (
+    <Form>
+      <Form.Item
+        hasFeedback
+        {...getValidateStatus(props)}
+      >
+        <AutoComplete
+          dataSource={codices}
+          className={height32}
+          onSelect={onSearch}
+          placeholder="Codice fiscale"
+        >
+          <Search className={height32} placeholder="Codice fiscale" />
+        </AutoComplete>
+      </Form.Item>
+    </Form>
+  );
+};
 
 const getValidateStatus = (props) => {
   if (props.loading) {

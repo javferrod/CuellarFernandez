@@ -14,15 +14,15 @@ queryManager.post('/codice', async (ctx, next) => {
         ctx.response.body = [];
     } else {
         ctx.response.body = {
-            residence: get('name')(individual), 
+            name: get('name')(individual), 
             residence: get('residence')(individual), 
-            residence: get('genre')(individual), 
+            genre: get('genre')(individual), 
+            codice: get('codice')(individual), 
             location: getLocations(individual),
             weight: getWeight(individual),
             hearthrate: getHearthRate(individual) 
         };
     }
-
 })
 
 /*
@@ -62,9 +62,9 @@ const getHearthRate = projectProps(['time', 'hearthrate']);
 
 function projectProps(props){
     return R.pipe(
-    R.project(props),
-    R.filter(notNil(props))
-)
+        R.project(props),
+        R.filter(notNil(props))
+    )
 }
 
 function notNil(props){
@@ -78,8 +78,8 @@ function notNil(props){
 }
 
 const get = prop => R.pipe(
-    R.take(1),
-    R.pick(prop)
+    R.head,
+    R.prop(prop)
 )
 /*const remix = R.pipe(
     remixLatitude

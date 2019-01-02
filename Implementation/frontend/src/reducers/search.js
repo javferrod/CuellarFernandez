@@ -34,6 +34,6 @@ export default function search(state = initialState, action) {
 }
 
 const mapData = data => ({
-  individualData: R.pick(['name', 'surname', 'codice', 'genre', 'residence', 'weight', 'hearthrate'], data),
+  individualData: R.pick(['name', 'surname', 'codice', 'genre', 'residence', 'weight', 'hearthrate', 'location'], data),
   collectiveData: R.pick(['location'], data),
 });

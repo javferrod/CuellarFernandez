@@ -1,5 +1,6 @@
 const USERS = 'users';
+const PERMISSIONS = 'permissions';
 const TEMPORAL_PARAMETERS = 'temporal_parameters';
 
 
-export { USERS, TEMPORAL_PARAMETERS}
+export { USERS, PERMISSIONS, TEMPORAL_PARAMETERS}
