@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { getPermissions, getID, updatePermissionStatus } from '../database';
+import { getPermissions, getID, updatePermissionStatus, retrieveUserPermissions } from '../database';
 import { savePermission } from '../database';
 import R from 'ramda';
 
@@ -9,6 +9,12 @@ permissionManager.post('/', async (ctx, next) => {
     const { id } = ctx.request.body;
 
     ctx.response.body = await getPermissions(id);
+})
+
+permissionManager.post('/client', async (ctx, next) => {
+    const { id } = ctx.request.body;
+
+    ctx.response.body = await retrieveUserPermissions(id);
 })
 
 permissionManager.post('/request', async (ctx, next) => {

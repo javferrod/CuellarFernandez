@@ -1,6 +1,7 @@
 import R from 'ramda';
 import { knex } from './init';
 import { PERMISSIONS } from './names';
+import { filterByUser } from './common'
 
 async function updatePermissionStatus(permissionID, userID){
     let operation = R.pipe(
@@ -19,10 +20,6 @@ const filterByPermissionID = R.curry((permissionID, query) => {
     return query;
 });
 
-const filterByUser = R.curry((userID, query) => {
-        query.where(`${PERMISSIONS}.user`, userID);
-        return query;
-});
 
 
 const setAccepted = R.curry((accepted, query) => {

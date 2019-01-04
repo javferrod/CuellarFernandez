@@ -1,6 +1,7 @@
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import R from 'ramda';
+import { filterByUser } from './common';
 
 
 async function searchByID(userID){
@@ -64,7 +65,11 @@ async function havePermission(clientID, codice){
     return ! R.isEmpty(await filter(knex(USERS)))
 }
 
-export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission }
+async function retrieveUserPermissions(userID){
+    return filterByUser(userID, knex(PERMISSIONS));
+}
+
+export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }
 
 //HELPERS
 
