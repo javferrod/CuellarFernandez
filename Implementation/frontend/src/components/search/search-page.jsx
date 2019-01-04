@@ -41,7 +41,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSearch: codice => dispatch(search(codice)),
+  onSearch: codice => dispatch(search(1, codice)),
 });
 
 const adequate = R.map(R.prop('codice'));

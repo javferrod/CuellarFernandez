@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { searchByCodice, searchByParameters } from '../database';
+import { searchByCodice, searchByParameters, havePermission } from '../database';
 import R from 'ramda';
 
 const MIN_USERS = 2;
@@ -7,22 +7,27 @@ const MIN_USERS = 2;
 var queryManager = new Router({ prefix: '/query' });
 
 queryManager.post('/codice', async (ctx, next) => {
-    const { codice } = ctx.request.body;
+    const { id, codice } = ctx.request.body;
     let individual = await searchByCodice(codice);
 
     if(R.isEmpty(individual)){
         ctx.response.body = [];
-    } else {
-        ctx.response.body = {
-            name: get('name')(individual), 
-            residence: get('residence')(individual), 
-            genre: get('genre')(individual), 
-            codice: get('codice')(individual), 
-            location: getLocations(individual),
-            weight: getWeight(individual),
-            hearthrate: getHearthRate(individual) 
-        };
+        return;
     }
+
+    if(! await havePermission(id, codice)){
+       ctx.response.status = 403; 
+    }
+
+    ctx.response.body = {
+        name: get('name')(individual), 
+        residence: get('residence')(individual), 
+        genre: get('genre')(individual), 
+        codice: get('codice')(individual), 
+        location: getLocations(individual),
+        weight: getWeight(individual),
+        hearthrate: getHearthRate(individual) 
+    };
 })
 
 /*

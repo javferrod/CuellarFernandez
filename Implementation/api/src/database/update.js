@@ -1,0 +1,33 @@
+import R from 'ramda';
+import { knex } from './init';
+import { PERMISSIONS } from './names';
+
+async function updatePermissionStatus(permissionID, userID){
+    let operation = R.pipe(
+        filterByPermissionID(permissionID),
+        filterByUser(userID),
+        setAccepted(true)
+    )
+
+    return operation(knex(PERMISSIONS));
+}
+
+export { updatePermissionStatus }
+
+const filterByPermissionID = R.curry((permissionID, query) => {
+    query.where(`${PERMISSIONS}.id`, permissionID);
+    return query;
+});
+
+const filterByUser = R.curry((userID, query) => {
+        query.where(`${PERMISSIONS}.user`, userID);
+        return query;
+});
+
+
+const setAccepted = R.curry((accepted, query) => {
+    query.update({
+        accepted
+    })
+    return query;
+});

@@ -41,7 +41,7 @@ async function searchByParameters(parameters){
     );
 
     return filter(knex(USERS)
-        .select('users.id', 'latitude', 'longitude', 'weight', 'hearthrate', 'time'));
+        .select(`${USERS}.id`, 'latitude', 'longitude', 'weight', 'hearthrate', 'time'));
 }
 
 async function getPermissions(clientID){
@@ -53,12 +53,23 @@ async function getPermissions(clientID){
     return filter(knex(USERS))
 }
 
-export { searchByID, searchByCodice, searchByParameters, getPermissions, getID }
+async function havePermission(clientID, codice){
+    const filter = R.pipe(
+        leftJoin(PERMISSIONS, 'user'),
+        filterByClient(clientID),
+        filterByCodice(codice),
+        filterByStatus(true)
+    )
+
+    return ! R.isEmpty(await filter(knex(USERS)))
+}
+
+export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission }
 
 //HELPERS
 
 const leftJoin = R.curry((table, on, query) => {
-    query.leftJoin(table, 'users.id', '=', `${table}.${on}`);
+    query.leftJoin(table, `${USERS}.id`, '=', `${table}.${on}`);
     return query;
 });
  
@@ -79,7 +90,7 @@ const filterRanges = R.curry((parameters, query) => {
                         .from(TEMPORAL_PARAMETERS)
                         .whereBetween('hearthrate', [hearthrate.min, hearthrate.max]);
 
-        query.whereIn('users.id', subquery);
+        query.whereIn(`${USERS}.id`, subquery);
     }
 
     return query;
@@ -98,17 +109,23 @@ const filterFixed = R.curry((parameters, query) => {
 
 
 const filterByID = R.curry((userID, query) => {
-        query.where('users.id', userID);
+        query.where(`${USERS}.id`, userID);
         return query;
 });
 
 const filterByCodice = R.curry((codice, query) => {
-        query.where('users.codice', codice);
+        query.where(`${USERS}.codice`, codice);
         return query;
 });
 
 const filterByClient = R.curry((clientID, query) => {
-        query.where('permissions.client', clientID);
+        query.where(`${PERMISSIONS}.client`, clientID);
         return query;
 });
+
+const filterByStatus = R.curry((accepted, query) => {
+    query.where(`${PERMISSIONS}.accepted`, accepted);
+    return query;
+});
+
 const notNil = R.pipe(R.isNil, R.not);

@@ -1,5 +1,9 @@
 import { connectToDatabase } from './init';
-import { saveParameters, saveUser, saveClient } from './insert';
-import { searchByID, searchByCodice, searchByParameters } from './search';
+import { saveParameters, saveUser, saveClient, savePermission } from './insert';
+import { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission} from './search';
+import { updatePermissionStatus } from './update';
 
-export { connectToDatabase, saveParameters, saveUser, saveClient, searchByID, searchByCodice, searchByParameters };
+export { 
+    connectToDatabase, saveParameters, saveUser, saveClient, searchByID, searchByCodice, searchByParameters,
+    getPermissions, getID, savePermission, havePermission, updatePermissionStatus
+};

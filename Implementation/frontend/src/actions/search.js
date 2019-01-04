@@ -8,23 +8,19 @@ export const SEARCH_LOADING = 'SEARCH_LOADING';
 export const SEARCH_EMPTY = 'SEARCH_EMPTY';
 
 
-export function search(codice) {
+export function search(id, codice) {
   return async (dispatch) => {
     dispatch(loading());
     let json;
 
     try {
-      json = await axios.post('http://localhost:8080/query/codice', { codice });
+      json = await axios.post('http://localhost:8080/query/codice', { id, codice });
     } catch (error) {
-      dispatch(searchError());
+      handleError(error, dispatch);
       return;
     }
 
-    if (R.isEmpty(json.data)) {
-      dispatch(searchEmpty());
-    } else {
-      dispatch(searchResponse(json.data));
-    }
+    dispatch(searchResponse(json.data));
   };
 }
 
@@ -45,4 +41,10 @@ export function searchEmpty() {
 
 export function loading() {
   return { type: SEARCH_LOADING };
+}
+
+function handleError(error, dispatch) {
+  const { status } = error.response;
+
+  if (status === 403) { dispatch(searchEmpty()); } else { dispatch(searchError()); }
 }

@@ -2,8 +2,6 @@ import {
   PERMISSIONS_SUCCESS, PERMISSIONS_EMPY, PERMISSIONS_LOADING, PERMISSIONS_ERROR,
 } from '../actions/permissions';
 
-const R = require('ramda');
-
 const initialState = {
   loading: false,
   empty: true,

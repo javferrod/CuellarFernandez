@@ -1,6 +1,6 @@
 import Router from 'koa-router';
-import { getPermissions, getID } from '../database/search';
-import { savePermission } from '../database/insert';
+import { getPermissions, getID, updatePermissionStatus } from '../database';
+import { savePermission } from '../database';
 import R from 'ramda';
 
 var permissionManager = new Router({ prefix: '/permissions' });
@@ -16,8 +16,6 @@ permissionManager.post('/request', async (ctx, next) => {
     
     let user = await getID(codice);
 
-    console.log(user);
-
     if(R.isEmpty(user)){
         ctx.response.status = 400;
         return;
@@ -29,6 +27,17 @@ permissionManager.post('/request', async (ctx, next) => {
         ctx.responde.status = 500;
     else
         ctx.response.status = 200;
+})
+
+permissionManager.post('/accept', async (ctx, next) => {
+    const { permissionID, userID }  = ctx.request.body;
+
+    let id = await updatePermissionStatus(permissionID, userID)
+
+    if(id)
+        ctx.response.status = 200;
+    else
+        ctx.response.status = 400;
 })
 
 export default permissionManager;
