@@ -1,12 +1,12 @@
 import React from 'react';
 import { css } from 'emotion';
 import {
-  Map, TileLayer, Marker, Popup,
+  Map, TileLayer,
 } from 'react-leaflet';
 import HeatmapLayer from 'react-leaflet-heatmap-layer';
 
 import 'leaflet/dist/leaflet.css';
-
+import 'leaflet-draw/dist/leaflet.draw.css';
 const R = require('ramda');
 
 const MILANO = [45.4542119, 9.11135096];
@@ -21,7 +21,6 @@ const HeathMap = (props) => {
   const { data } = props;
 
   const points = adequate(data);
-  console.log(points);
   return (
     <div className={mapStyle}>
       <Map center={MILANO} zoom={13}>
