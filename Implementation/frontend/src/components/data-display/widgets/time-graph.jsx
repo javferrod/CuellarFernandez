@@ -2,6 +2,7 @@ import React from 'react';
 import MG from 'metrics-graphics';
 import 'metrics-graphics/dist/metricsgraphics.css';
 import { css } from 'emotion';
+import Placeholder from '../../common/placeholder';
 
 const R = require('ramda');
 
@@ -29,7 +30,13 @@ class TimeGraph extends React.Component {
 
   render() {
     const { target } = this.state;
+    const { title, data } = this.props;
 
+    if (R.isNil(data) || R.isEmpty(data)) {
+      return (
+        <Placeholder text={`No ${title} data avaialble`} icon="warning" />
+      );
+    }
 
     return (
       <div className={graphStyle} id={target} />

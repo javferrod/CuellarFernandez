@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Row, Col } from 'antd';
 import { css } from 'emotion';
 import { bold } from '../../common/styles';
+import Placeholder from '../../common/placeholder';
 
 const R = require('ramda');
 
@@ -14,8 +15,18 @@ const gridStyle = {
 };
 
 const PersonalInfo = (props) => {
-  const { name, codice, residence, genre } = props;
-  console.log(props);
+  const {
+    name, codice, residence, genre,
+  } = props;
+
+  if (R.isNil(name)) {
+    return (
+      <Card className={cardStyle} title={name}>
+        <Placeholder icon="question" text="No personal information available" />
+      </Card>
+    );
+  }
+
   return (
     <Card className={cardStyle} title={name}>
       {generateRow('Codice fiscale', codice)}
