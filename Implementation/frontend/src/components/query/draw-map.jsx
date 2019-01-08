@@ -25,7 +25,8 @@ const DrawableMap = props => (
       />
       <FeatureGroup>
         <EditControl
-          onCreated={e => props.onChange(e.layer._latlngs)}
+          onCreated={e => props.onChange(e.layer._latlngs[0])}
+          onDeleted={e => props.onChange([])}
           position="topleft"
           edit={{
             edit: false,

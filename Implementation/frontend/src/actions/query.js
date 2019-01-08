@@ -8,13 +8,13 @@ export const QUERY_LOADING = 'QUERY_LOADING';
 export const QUERY_EMPTY = 'QUERY_EMPTY';
 
 
-export function search(id, codice) {
+export function search(query) {
   return async (dispatch) => {
     dispatch(loading());
     let json;
 
     try {
-      json = await axios.post('http://localhost:8080/query/', { id, codice });
+      json = await axios.post('http://localhost:8080/query/', { query });
     } catch (error) {
       handleError(error, dispatch);
       return;

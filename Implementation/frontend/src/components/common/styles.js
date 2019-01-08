@@ -11,6 +11,11 @@ const marginTop32 = css`
   margin-top:32px;
 `;
 
+const center = css`
+  margin: 0 auto;
+  display: block;
+`;
+
 const bold = css`
   font-weight: bold;
 `;
@@ -20,9 +25,13 @@ const boxContainer = css`
   max-width:300px;
 `;
 
+const textCentered = css`
+  text-align: center;
+`;
+
 const joinCSS = R.join(' ');
 
 
 export {
-  height32, marginTop32, bold, boxContainer, joinCSS,
+  height32, marginTop32, center, bold, boxContainer, textCentered, joinCSS,
 };

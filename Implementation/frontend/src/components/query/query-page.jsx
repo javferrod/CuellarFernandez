@@ -10,7 +10,7 @@ const QueryPage = (props) => {
   return (
     <div>
       <Filters className={marginTop32} onSearch={onSearch} />
-      <CollectiveInfo data={data} />
+      <CollectiveInfo {...data} />
     </div>
   );
 };

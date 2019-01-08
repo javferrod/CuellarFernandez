@@ -43,11 +43,18 @@ query : {
 
 
 queryManager.post('/', async (ctx, next) => {
-    let resul = await searchByParameters(ctx.request.body.parameters);
+    let resul = await searchByParameters(ctx.request.body.query);
     let groupedResul = groupByUser(resul);
     
-    if(countUsers(groupedResul) >= MIN_USERS)
-        ctx.response.body = groupedResul; //remix(groupedResul);
+    if(countUsers(groupedResul) >= MIN_USERS){
+        ctx.response.body = {
+            location: getLocations(resul),
+            hearthrate: getHearthRate(resul),
+            weight: getWeight(resul)
+        }
+
+    }
+        //ctx.response.body = groupedResul; //remix(groupedResul);
     else
         ctx.response.status = 403;
 })
