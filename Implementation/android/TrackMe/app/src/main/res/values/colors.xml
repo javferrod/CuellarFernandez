@@ -6,4 +6,5 @@
     <color name="white">#ffffff</color>
     <!-- <color name="transparent">0xFFFFFF00</color>-->
     <color name="back_Brown">#4d4845</color>
+    <color name="drawerNavigation">#455a64</color>
 </resources>

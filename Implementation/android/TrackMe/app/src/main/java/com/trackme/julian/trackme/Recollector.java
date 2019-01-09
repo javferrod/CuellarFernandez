@@ -88,7 +88,7 @@ public class Recollector extends AppCompatActivity {
         changeScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.principal_screen);
+                setContentView(R.layout.drawer);
 
                 last_record = findViewById(R.id.last_record);
 
