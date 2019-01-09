@@ -13,4 +13,5 @@
     <string name="enter_your_weight">Enter your weight</string>
     <string name="weight">Weight</string>
     <string name="select_a_number">Mark your weight...</string>
+    <string name="user">Usuario</string>
 </resources>

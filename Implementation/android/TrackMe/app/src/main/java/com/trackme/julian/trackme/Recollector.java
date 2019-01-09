@@ -68,16 +68,20 @@ public class Recollector extends AppCompatActivity {
 
     Handler mHandler;
 
+    Scheduler scheduler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recollector);
 
-        mensaje1 = (TextView) findViewById(R.id.mensaje_id);
-        mensaje2 = (TextView) findViewById(R.id.mensaje_id2);
-        mensaje3 = (TextView) findViewById(R.id.mensaje_id3);
+        mensaje1 = findViewById(R.id.mensaje_id);
+        mensaje2 = findViewById(R.id.mensaje_id2);
+        mensaje3 = findViewById(R.id.mensaje_id3);
 
         control = false;
+
+        scheduler = Scheduler.getInstance(getApplicationContext());
 
         final Button changeScreen = findViewById(R.id.button_change);
 
@@ -86,7 +90,7 @@ public class Recollector extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.principal_screen);
 
-                last_record = (TextView) findViewById(R.id.last_record);
+                last_record = findViewById(R.id.last_record);
 
                 control = true;
             }
@@ -141,10 +145,10 @@ public class Recollector extends AppCompatActivity {
             return;
         }
 
-        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
+        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, Local);
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Local);
         if(control == false) {
-            mensaje1.setText("Localización agregada");
+            mensaje1.setText("Aggregate location");
             mensaje2.setText("");
             mensaje3.setText("");
         }
@@ -154,7 +158,8 @@ public class Recollector extends AppCompatActivity {
         task = new TimerTask() {
             @Override
             public void run() {
-                GPS(mNotifyMgr, mlocManager);
+                controlLocation(mNotifyMgr, mlocManager);
+                hearthRate(mNotifyMgr);
             }
         };
 
@@ -171,7 +176,7 @@ public class Recollector extends AppCompatActivity {
     }
 
     public void setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
+
         if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
             try {
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -196,7 +201,7 @@ public class Recollector extends AppCompatActivity {
         }
     }
 
-    public void GPS(NotificationManager mNotifyMgr, LocationManager mlocManager) {
+    public void controlLocation(NotificationManager mNotifyMgr, LocationManager mlocManager) {
 
         final Location loc;
 
@@ -214,11 +219,11 @@ public class Recollector extends AppCompatActivity {
 
             String dateTime = dateformat.format(c.getTime());
 
-            mBuilder.setContentText("Trackeo GPS realizado: " + dateTime);
+            mBuilder.setContentText("Acquired data: " + dateTime);
 
             mNotifyMgr.notify(1, mBuilder.build());
 
-            final String Text = "Mi ubicacion actual es: " + "\n Lat = "
+            final String Text = "My current location is: " + "\n Lat = "
                     + loc.getLatitude() + "\n Long = " + loc.getLongitude();
 
             final String TextLastRecord = "Last record: " + dateTime;
@@ -237,12 +242,12 @@ public class Recollector extends AppCompatActivity {
 
             setLocation(loc);
 
-            Hearth_Rate(mNotifyMgr);
+            scheduler.getUserData(loc.getLatitude(), loc.getLongitude(), loc, 0, 0);
 
         }
         catch (NullPointerException e) {
 
-            final String Text = "No ha sido posible establecer la ubicacion";
+            final String Text = "It has not been possible to establish the location";
 
             mHandler.post(new Runnable() {
                 @Override
@@ -254,7 +259,7 @@ public class Recollector extends AppCompatActivity {
         }
     }
 
-    public void Hearth_Rate (NotificationManager mNotifyMgr) {
+    public void hearthRate(NotificationManager mNotifyMgr) {
 
         int number;
         int counter = 0;
@@ -289,20 +294,18 @@ public class Recollector extends AppCompatActivity {
                     counter_HearthRate = 0;
                 }
             });
+
             mBuilder.setContentText("DANGER! Hearth rate very low");
 
             mNotifyMgr.notify(1, mBuilder.build());
         }
+
+        scheduler.getUserData(0, 0, null, number, 0);
     }
 
     public void controlWeight () {
 
-        Context context = this;
-
         c = Calendar.getInstance();
-
-        SharedPreferences myPreferences
-                = getSharedPreferences("data", context.MODE_PRIVATE);
 
         SharedPreferences sharpref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
@@ -311,23 +314,22 @@ public class Recollector extends AppCompatActivity {
 
         boolean show = false;
 
-
-        if(sharpref.contains("WEIGHT") == false) {
-            edit.putString("WEIGHT", date);
-            edit.commit();
+        if(sharpref.contains("weightDate") == false) {
+            edit.putString("weightDate", date);
+            edit.apply();
             show = true;
         }
         else {
 
             try {
-                Date oldDate = dateformat2.parse(sharpref.getString("WEIGHT", null));
+                Date oldDate = dateformat2.parse(sharpref.getString("weightDate", null));
 
                 Date newDate = dateformat2.parse(date);
 
                 int days = (int) ((newDate.getTime()-oldDate.getTime())/86400000);
 
                 if(days >= 7) {
-                    edit.putString("WEIGHT", date);
+                    edit.putString("weightDate", date);
                     show = true;
 
                     edit.apply();
@@ -339,10 +341,11 @@ public class Recollector extends AppCompatActivity {
         }
 
         if(show == true) {
+
             mAlertBuilder = new AlertDialog.Builder(Recollector.this);
             View mViewWeight = getLayoutInflater().inflate(R.layout.dialog_weight, null);
 
-            NumberPicker np = mViewWeight.findViewById(R.id.numberPicker);
+            final NumberPicker np = mViewWeight.findViewById(R.id.numberPicker);
 
             //Populate NumberPicker values from minimum and maximum value range
             //Set the minimum value of NumberPicker
@@ -367,9 +370,16 @@ public class Recollector extends AppCompatActivity {
             mWeightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    boolean save;
+
+                    save = scheduler.getUserData(0, 0, null, 0, np.getValue());
+
+                    if(save) {
                         Toast.makeText(Recollector.this, "Successfully save",
                                 Toast.LENGTH_SHORT).show();
                         cancelDialog();
+                    }
                 }
             });
 
@@ -385,8 +395,6 @@ public class Recollector extends AppCompatActivity {
         dialog.dismiss();
     }
 
-
-    /* Aqui empieza la Clase Localizacion */
     public class Localizacion implements LocationListener {
         Recollector mainActivity;
 
@@ -405,17 +413,21 @@ public class Recollector extends AppCompatActivity {
 
         @Override
         public void onProviderDisabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es desactivado
-            mensaje1.setText("GPS Desactivado");
+
+            mensaje1.setText("GPS Desactivated");
         }
+
         @Override
         public void onProviderEnabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es activado
-            mensaje1.setText("GPS Activado");
+
+            mensaje1.setText("GPS Activated");
         }
+
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
+
             switch (status) {
+
                 case LocationProvider.AVAILABLE:
                     Log.d("debug", "LocationProvider.AVAILABLE");
                     break;
@@ -428,5 +440,4 @@ public class Recollector extends AppCompatActivity {
             }
         }
     }
-
 }
