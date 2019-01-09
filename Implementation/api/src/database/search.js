@@ -42,7 +42,7 @@ async function searchByParameters(parameters){
     );
 
     return filter(knex(USERS)
-        .select(`${USERS}.id`, 'latitude', 'longitude', 'weight', 'hearthrate', 'time'));
+        .select(`${USERS}.id`, 'latitude', 'longitude', 'weight', 'hearthrate', 'time', 'birthdate', 'gender'));
 }
 
 async function getPermissions(clientID){

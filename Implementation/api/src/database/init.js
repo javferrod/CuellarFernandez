@@ -53,11 +53,14 @@ async function createTables(){
     await knex.schema.createTable(USERS, (table) => {
         table.increments();
         table.timestamps();
-        table.string('username');
-        table.string('password');
+        table.string('username')
+            .notNullable();
+        table.string('password')
+            .notNullable();
         table.string('name');
         table.string('residence');
-        table.string('gender');
+        table.string('gender')
+        table.string('birthdate')
         table.string('codice')
             .unique();
         table.boolean('client')

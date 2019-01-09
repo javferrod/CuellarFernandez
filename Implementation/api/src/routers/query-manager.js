@@ -22,7 +22,7 @@ queryManager.post('/codice', async (ctx, next) => {
     ctx.response.body = {
         name: get('name')(individual), 
         residence: get('residence')(individual), 
-        genre: get('genre')(individual), 
+        gender: get('gender')(individual), 
         codice: get('codice')(individual), 
         location: getLocations(individual),
         weight: getWeight(individual),
@@ -45,12 +45,17 @@ query : {
 queryManager.post('/', async (ctx, next) => {
     let resul = await searchByParameters(ctx.request.body.query);
     let groupedResul = groupByUser(resul);
+
+    console.log(resul);
+    console.log(getGenders(resul));
     
     if(countUsers(groupedResul) >= MIN_USERS){
         ctx.response.body = {
             location: getLocations(resul),
             hearthrate: getHearthRate(resul),
-            weight: getWeight(resul)
+            weight: getWeight(resul),
+            birthdate: getBirthDates(resul),
+            gender: getGenders(resul)
         }
 
     }
@@ -71,6 +76,8 @@ const countUsers = R.pipe(
 const getLocations = projectProps(['time', 'latitude', 'longitude']);
 const getWeight = projectProps(['time', 'weight']);
 const getHearthRate = projectProps(['time', 'hearthrate']);
+const getBirthDates = projectProps(['birthdate']);
+const getGenders = projectProps(['gender']);
 
 function projectProps(props){
     return R.pipe(

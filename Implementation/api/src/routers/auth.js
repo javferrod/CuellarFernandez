@@ -10,9 +10,16 @@ authRouter.post('/login', async (ctx, next) => {
 });
 
 authRouter.post('/register-user', async (ctx, next) => {
-    const {username, password, name, residence, codice}= ctx.request.body;
+    const {username, password, name, residence, gender, birthdate, codice}= ctx.request.body;
+    
+    const haveAll = has(['username', 'password', 'name', 'residence', 'gender', 'birthdate', 'codice']);
 
-    let id = await saveUser(username, password, name, residence, codice);
+    if(! haveAll(ctx.request.body) ){
+        ctx.response.status=400;
+        return;
+    }
+
+    let id = await saveUser(username, password, name, residence, gender, birthdate, codice);
 
     if(R.isNil(id))
         ctx.responde.status = 500;
@@ -31,5 +38,11 @@ authRouter.post('/register-client', async (ctx, next) => {
         ctx.response.status = 200;
 });
 
+const has = props => R.pipe(
+    R.pick(props),
+    R.keys,
+    R.length,
+    R.equals(R.length(props))
+);
 
 export default authRouter;

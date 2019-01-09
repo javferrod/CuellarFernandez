@@ -24,6 +24,18 @@ const CollectiveInfo = props => (
         <HeathMap data={props.location} />
       </Col>
     </Row>
+    <Row gutter={16} className={marginTop32}>
+      <Col span={12}>
+        <Card>
+          <BarGraph title="Age" data={props.age} dataName="age" />
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card>
+          <BarGraph title="Gender" data={props.gender} dataName="gender" />
+        </Card>
+      </Col>
+    </Row>
   </div>
 );
 

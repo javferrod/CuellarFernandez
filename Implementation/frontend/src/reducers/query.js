@@ -2,6 +2,8 @@ import {
   QUERY_SUCCESS, QUERY_EMPTY, QUERY_ERROR, QUERY_LOADING,
 } from '../actions/query';
 
+const R = require('ramda');
+
 const initialState = {
   loading: false,
   empty: false,
@@ -13,7 +15,7 @@ export default function search(state = initialState, action) {
   switch (action.type) {
     case QUERY_SUCCESS:
       return {
-        ...state, data: action.data, loading: false, empty: false,
+        ...state, data: process(action.data), loading: false, empty: false,
       };
     case QUERY_EMPTY:
       return {
@@ -29,3 +31,9 @@ export default function search(state = initialState, action) {
       return state;
   }
 }
+
+const process = data => ({ ...data, age: getAges(data.birthdate) });
+
+const getAges = R.map(R.pipe(
+  R.identity,
+));

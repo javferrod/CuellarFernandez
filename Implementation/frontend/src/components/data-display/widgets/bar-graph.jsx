@@ -2,7 +2,9 @@ import React from 'react';
 import { Bar } from 'react-chartjs';
 import { DatePicker } from 'antd';
 import { css } from 'emotion';
-import { center, joinCSS, bold, textCentered } from '../../common/styles';
+import {
+  center, textCentered,
+} from '../../common/styles';
 
 const { RangePicker } = DatePicker;
 
@@ -32,10 +34,12 @@ class BarGraph extends React.Component {
   render() {
     const { firstDate, secondDate } = this.state;
     const { data, dataName, title } = this.props;
+
+
     return (
       <div className={graphStyle}>
         <h3 className={textCentered}>{title}</h3>
-        <RangePicker className={center} onChange={this.onDateChange} />
+        {renderRangePicker(data, this.onDateChange)}
         <Bar data={filter(firstDate, secondDate, dataName, data)} width="600" height="250" />
       </div>
     );
@@ -74,3 +78,19 @@ const isInInterval = R.curry((firstDate, secondDate, toCheck) => R.pipe(
   date => new Date(date),
   date => (firstDate < date && date < secondDate),
 )(toCheck));
+
+
+const renderRangePicker = (data, onDateChange) => {
+  if (haveTime(data)) {
+    return <RangePicker className={center} onDateChange={onDateChange} />;
+  }
+};
+
+const haveTime = R.ifElse(
+  R.either(R.isNil, R.isEmpty),
+  R.F,
+  R.pipe(
+    R.head,
+    R.has('time'),
+  ),
+);

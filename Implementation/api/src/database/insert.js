@@ -2,7 +2,7 @@ import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import R from 'ramda';
 
-async function saveUser(username, password, name, residence, codice){
+async function saveUser(username, password, name, residence, gender, birthdate, codice){
 
     let data = {
         username,
@@ -10,6 +10,8 @@ async function saveUser(username, password, name, residence, codice){
         name,
         residence,
         codice,
+        gender,
+        birthdate,
         client: false
     };
 
