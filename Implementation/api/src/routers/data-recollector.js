@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { saveParameters } from '../database';
+import { saveParameters, populateUsers, populateParameters } from '../database';
 
 var dataRecollector = new Router({ prefix: '/data' });
 
@@ -16,6 +16,11 @@ dataRecollector.post('/', async (ctx, next) => {
     
     ctx.response.status = 200;
 });
+
+dataRecollector.get('/fake', async (ctx, next) => {
+    await populateUsers(10);
+    await populateParameters(100, 20);
+})
 
 
 export default dataRecollector;

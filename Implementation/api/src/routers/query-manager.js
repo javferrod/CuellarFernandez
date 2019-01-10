@@ -45,9 +45,6 @@ query : {
 queryManager.post('/', async (ctx, next) => {
     let resul = await searchByParameters(ctx.request.body.query);
     let groupedResul = groupByUser(resul);
-
-    console.log(resul);
-    console.log(getGenders(resul));
     
     if(countUsers(groupedResul) >= MIN_USERS){
         ctx.response.body = {
@@ -59,7 +56,6 @@ queryManager.post('/', async (ctx, next) => {
         }
 
     }
-        //ctx.response.body = groupedResul; //remix(groupedResul);
     else
         ctx.response.status = 403;
 })
@@ -100,6 +96,3 @@ const get = prop => R.pipe(
     R.head,
     R.prop(prop)
 )
-/*const remix = R.pipe(
-    remixLatitude
-)*/

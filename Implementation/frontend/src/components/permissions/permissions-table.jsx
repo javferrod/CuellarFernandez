@@ -19,7 +19,7 @@ const columns = [{
     if(status)
       return <Icon className={centeredIcon} type="check-circle" />
     else
-      return  <Icon className={centeredIcon} type="check-circle" />
+      return  <Icon className={centeredIcon} type="clock-circle" />
   },
 }];
 

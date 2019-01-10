@@ -1,5 +1,6 @@
+import moment from 'moment';
 import {
-  QUERY_SUCCESS, QUERY_EMPTY, QUERY_ERROR, QUERY_LOADING,
+  QUERY_SUCCESS, QUERY_FORBIDDEN, QUERY_ERROR, QUERY_LOADING,
 } from '../actions/query';
 
 const R = require('ramda');
@@ -15,15 +16,15 @@ export default function search(state = initialState, action) {
   switch (action.type) {
     case QUERY_SUCCESS:
       return {
-        ...state, data: process(action.data), loading: false, empty: false,
+        ...state, data: process(action.data), loading: false, forbidden: false,
       };
-    case QUERY_EMPTY:
+    case QUERY_FORBIDDEN:
       return {
-        ...state, empty: true, loading: false, error: false,
+        ...state, forbidden: true, loading: false, error: false,
       };
     case QUERY_ERROR:
       return {
-        ...state, error: true, loading: false, empty: false,
+        ...state, error: true, loading: false, forbidden: false,
       };
     case QUERY_LOADING:
       return { ...state, loading: true };
@@ -35,5 +36,7 @@ export default function search(state = initialState, action) {
 const process = data => ({ ...data, age: getAges(data.birthdate) });
 
 const getAges = R.map(R.pipe(
-  R.identity,
+  R.prop('birthdate'),
+  birthdate => moment(birthdate),
+  age => ({ age: moment().diff(age, 'years') }),
 ));

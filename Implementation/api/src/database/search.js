@@ -1,6 +1,8 @@
+import R from 'ramda';
+import moment from 'moment';
+
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
-import R from 'ramda';
 import { filterByUser } from './common';
 
 
@@ -66,7 +68,7 @@ async function havePermission(clientID, codice){
 }
 
 async function retrieveUserPermissions(userID){
-    return filterByUser(userID, knex(PERMISSIONS));
+    return filterByUser(userID, knex(PERMISSIONS).select('accepted', 'codice', `${PERMISSIONS}.id`));
 }
 
 export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }
@@ -101,13 +103,14 @@ const filterRanges = R.curry((parameters, query) => {
     return query;
 });
 
-//TODO implement.
 const filterFixed = R.curry((parameters, query) => {
 
-    const { gender } = parameters;
+    const { gender, age } = parameters;
 
     if(notNil(gender))
         query.where('gender', gender);
+    if(notNil(age))
+        query.whereBetween('birthdate', [getBirthdate(age.max), getBirthdate(age.min)])
 
     return query;
 });
@@ -132,5 +135,10 @@ const filterByStatus = R.curry((accepted, query) => {
     query.where(`${PERMISSIONS}.accepted`, accepted);
     return query;
 });
+
+const getBirthdate = R.pipe(
+    age => moment().subtract(age, 'years'),
+    birthdate => birthdate.format('YYYY-MM-DD'),
+)
 
 const notNil = R.pipe(R.isNil, R.not);

@@ -59,8 +59,8 @@ async function createTables(){
             .notNullable();
         table.string('name');
         table.string('residence');
-        table.string('gender')
-        table.string('birthdate')
+        table.string('gender');
+        table.date('birthdate');
         table.string('codice')
             .unique();
         table.boolean('client')

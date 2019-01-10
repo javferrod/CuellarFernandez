@@ -5,7 +5,7 @@ const R = require('ramda');
 export const QUERY_SUCCESS = 'QUERY_SUCCESS';
 export const QUERY_ERROR = 'QUERY_ERROR';
 export const QUERY_LOADING = 'QUERY_LOADING';
-export const QUERY_EMPTY = 'QUERY_EMPTY';
+export const QUERY_FORBIDDEN = 'QUERY_FORBIDDEN';
 
 
 export function search(query) {
@@ -35,8 +35,8 @@ export function queryError() {
   return { type: QUERY_ERROR };
 }
 
-export function queryEmpty() {
-  return { type: QUERY_EMPTY };
+export function queryForbidden() {
+  return { type: QUERY_FORBIDDEN };
 }
 
 export function loading() {
@@ -46,5 +46,5 @@ export function loading() {
 function handleError(error, dispatch) {
   const { status } = error.response;
 
-  if (status === 403) { dispatch(queryEmpty()); } else { dispatch(queryError()); }
+  if (status === 403) { dispatch(queryForbidden()); } else { dispatch(queryError()); }
 }

@@ -1,21 +1,29 @@
 import React from 'react';
-import { Bar } from 'react-chartjs';
+import { Bar } from 'react-chartjs-2';
 import { DatePicker } from 'antd';
 import { css } from 'emotion';
 import {
   center, textCentered,
 } from '../../common/styles';
-
-const { RangePicker } = DatePicker;
+import {
+  haveTime, adequateToChartJS,
+} from './common';
 
 const R = require('ramda');
+
+const { RangePicker } = DatePicker;
 
 const graphStyle = css`
 canvas{
     display: block;
     margin: 0 auto;
-}
-`;
+}`;
+
+const graphOptions = {
+  legend: {
+    display: false,
+  },
+};
 
 class BarGraph extends React.Component {
   constructor(props) {
@@ -40,7 +48,7 @@ class BarGraph extends React.Component {
       <div className={graphStyle}>
         <h3 className={textCentered}>{title}</h3>
         {renderRangePicker(data, this.onDateChange)}
-        <Bar data={filter(firstDate, secondDate, dataName, data)} width="600" height="250" />
+        <Bar data={filter(firstDate, secondDate, dataName, data)} options={graphOptions} width={600} height={250} />
       </div>
     );
   }
@@ -50,26 +58,8 @@ export default BarGraph;
 
 const filter = (firstDate, secondDate, prop, data) => R.pipe(
   R.when(_ => firstDate && secondDate, filterByDate(firstDate, secondDate)),
-  adequate(prop),
+  adequateToChartJS(prop),
 )(data);
-
-const adequate = prop => R.pipe(
-  R.defaultTo([]),
-  R.countBy(R.prop(prop)),
-  values => ({
-    labels: R.keys(values),
-    datasets: [
-      {
-        label: 'My First dataset',
-        fillColor: 'rgba(64,169,255,0.5)',
-        strokeColor: 'rgba(33,160,255,0.8)',
-        highlightFill: 'rgba(64,169,225,0.75)',
-        highlightStroke: 'rgba(33,160,255,1)',
-        data: R.values(values),
-      },
-    ],
-  }),
-);
 
 const filterByDate = R.curry((firstDate, secondDate) => R.filter(isInInterval(firstDate, secondDate)));
 
@@ -79,18 +69,8 @@ const isInInterval = R.curry((firstDate, secondDate, toCheck) => R.pipe(
   date => (firstDate < date && date < secondDate),
 )(toCheck));
 
-
 const renderRangePicker = (data, onDateChange) => {
   if (haveTime(data)) {
     return <RangePicker className={center} onDateChange={onDateChange} />;
   }
 };
-
-const haveTime = R.ifElse(
-  R.either(R.isNil, R.isEmpty),
-  R.F,
-  R.pipe(
-    R.head,
-    R.has('time'),
-  ),
-);

@@ -52,7 +52,7 @@ export function requestPermission(id, codice) {
 export function permissionsResponse(rawData) {
   return {
     type: PERMISSIONS_SUCCESS,
-    data: rawData, // refactor?
+    data: arrayWrap(rawData),
   };
 }
 
@@ -67,3 +67,9 @@ export function permissionsEmpty() {
 export function loading() {
   return { type: PERMISSIONS_LOADING };
 }
+
+
+const arrayWrap = R.unless(
+  R.is(Array),
+  data => [data],
+);

@@ -20,6 +20,21 @@ class Filters extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      age: {
+        min: 8,
+        max: 100,
+      },
+      weight: {
+        min: 40,
+        max: 120,
+      },
+      hearthrate: {
+        min: 40,
+        max: 300,
+      },
+    };
+
     this.handleAgeChange = this.handleAgeChange.bind(this);
     this.handleWeightChange = this.handleWeightChange.bind(this);
     this.handleHearthrateChange = this.handleHearthrateChange.bind(this);
