@@ -3,6 +3,7 @@ import {
   Row, Col, Slider, Select, Card, Icon,
 } from 'antd';
 import { css } from 'emotion';
+const R = require('ramda');
 
 import DrawableMap from './draw-map';
 

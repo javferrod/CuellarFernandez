@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 import { searchByCodice, searchByParameters, havePermission } from '../database';
 import R from 'ramda';
+import { test, filterGroupedResulByLocation } from '../common/location';
 
 const MIN_USERS = 2;
 
@@ -43,10 +44,16 @@ query : {
 
 
 queryManager.post('/', async (ctx, next) => {
-    let resul = await searchByParameters(ctx.request.body.query);
-    let groupedResul = groupByUser(resul);
-    
+    const { query } = ctx.request.body;
+
+    var resul = await searchByParameters(query);
+
+    var groupedResul = filterGroupedResulByLocation(query, groupByUser(resul));
+
     if(countUsers(groupedResul) >= MIN_USERS){
+        resul = ungroup(groupedResul);
+    console.log(resul);
+
         ctx.response.body = {
             location: getLocations(resul),
             hearthrate: getHearthRate(resul),
@@ -54,7 +61,6 @@ queryManager.post('/', async (ctx, next) => {
             birthdate: getBirthDates(resul),
             gender: getGenders(resul)
         }
-
     }
     else
         ctx.response.status = 403;
@@ -64,6 +70,8 @@ export default queryManager;
 
 
 const groupByUser = R.groupBy(R.prop('id'));
+const ungroup = R.pipe(R.values, R.flatten);
+
 const countUsers = R.pipe(
     R.keys,
     R.length
@@ -72,8 +80,9 @@ const countUsers = R.pipe(
 const getLocations = projectProps(['time', 'latitude', 'longitude']);
 const getWeight = projectProps(['time', 'weight']);
 const getHearthRate = projectProps(['time', 'hearthrate']);
-const getBirthDates = projectProps(['birthdate']);
-const getGenders = projectProps(['gender']);
+const getBirthDates = R.pipe(projectProps(['id', 'birthdate']), onePerUser());
+const getGenders = R.pipe(projectProps(['id', 'gender']), onePerUser());
+
 
 function projectProps(props){
     return R.pipe(
@@ -90,6 +99,16 @@ function notNil(props){
         R.length,
         R.equals(R.length(props))
     )
+}
+
+function onePerUser(){
+  return R.pipe(
+    R.groupBy(R.prop('id')),
+    R.map(
+      R.pipe(R.values, R.head, R.omit(['id']))
+    ),
+    R.values,
+  )
 }
 
 const get = prop => R.pipe(

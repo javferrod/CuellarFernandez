@@ -1,9 +1,11 @@
 import R from 'ramda';
 import moment from 'moment';
+import inside from 'point-in-polygon';
 
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import { filterByUser } from './common';
+
 
 
 async function searchByID(userID){
@@ -36,14 +38,13 @@ async function getID(codice){
 }
 
 async function searchByParameters(parameters){
-
     const filter = R.pipe(
         leftJoin(TEMPORAL_PARAMETERS, 'user'),
         filterRanges(parameters),
         filterFixed(parameters)
     );
 
-    return filter(knex(USERS)
+    return await filter(knex(USERS)
         .select(`${USERS}.id`, 'latitude', 'longitude', 'weight', 'hearthrate', 'time', 'birthdate', 'gender'));
 }
 
@@ -114,6 +115,7 @@ const filterFixed = R.curry((parameters, query) => {
 
     return query;
 });
+
 
 
 const filterByID = R.curry((userID, query) => {
