@@ -4,6 +4,7 @@ import BarGraph from './widgets/bar-graph';
 
 import { marginTop32 } from '../common/styles';
 import HeathMap from './widgets/heath-map';
+import PieGraph from './widgets/pie-graph';
 
 const CollectiveInfo = props => (
   <div>
@@ -32,7 +33,7 @@ const CollectiveInfo = props => (
       </Col>
       <Col span={12}>
         <Card>
-          <BarGraph title="Gender" data={props.gender} dataName="gender" />
+          <PieGraph title="Gender" data={props.gender} dataName="gender" />
         </Card>
       </Col>
     </Row>
