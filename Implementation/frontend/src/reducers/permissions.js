@@ -1,6 +1,9 @@
 import {
-  PERMISSIONS_SUCCESS, PERMISSIONS_EMPY, PERMISSIONS_LOADING, PERMISSIONS_ERROR,
+  PERMISSIONS_SUCCESS, PERMISSIONS_EMPY, PERMISSIONS_LOADING,
+  PERMISSIONS_ERROR, PERMISSION_REQUEST_OK,
 } from '../actions/permissions';
+
+const R = require('ramda');
 
 const initialState = {
   loading: false,
@@ -14,6 +17,10 @@ export default function permissions(state = initialState, action) {
     case PERMISSIONS_SUCCESS:
       return {
         ...state, list: action.data, loading: false, empty: false,
+      };
+    case PERMISSION_REQUEST_OK:
+      return {
+        ...state, list: R.append(action.data, state.list),
       };
     case PERMISSIONS_EMPY:
       return {

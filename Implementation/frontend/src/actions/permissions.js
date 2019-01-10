@@ -6,6 +6,7 @@ export const PERMISSIONS_LOADING = 'PERMISSIONS_LOADING';
 export const PERMISSIONS_ERROR = 'PERMISSIONS_ERROR';
 export const PERMISSIONS_SUCCESS = 'PERMISSIONS_SUCCESS';
 export const PERMISSIONS_EMPY = 'PERMISSIONS_EMPY';
+export const PERMISSION_REQUEST_OK = 'PERMISSION_REQUEST_OK';
 
 
 export function getPermissions(id) {
@@ -43,7 +44,7 @@ export function requestPermission(id, codice) {
     if (R.isEmpty(json.data)) {
       dispatch(permissionsEmpty());
     } else {
-      dispatch(permissionsResponse(json.data));
+      dispatch(permissionRequestResponse(id, codice));
     }
   };
 }
@@ -53,6 +54,13 @@ export function permissionsResponse(rawData) {
   return {
     type: PERMISSIONS_SUCCESS,
     data: arrayWrap(rawData),
+  };
+}
+
+export function permissionRequestResponse(id, codice) {
+  return {
+    type: PERMISSION_REQUEST_OK,
+    data: { id, codice, accepted: false }
   };
 }
 

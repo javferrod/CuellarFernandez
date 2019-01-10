@@ -18,7 +18,7 @@ dataRecollector.post('/', async (ctx, next) => {
 });
 
 dataRecollector.get('/fake', async (ctx, next) => {
-    await populateUsers(10);
+    await populateUsers(20);
     await populateParameters(100, 20);
 })
 

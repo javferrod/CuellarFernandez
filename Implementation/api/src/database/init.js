@@ -76,6 +76,7 @@ async function createTables(){
         table.boolean('accepted')
             .defaultTo(false)
             .notNullable();
+        table.unique(['user', 'client']);
         table.foreign('client')
             .references('users.id');
         table.foreign('user')

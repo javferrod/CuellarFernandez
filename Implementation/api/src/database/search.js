@@ -53,7 +53,7 @@ async function getPermissions(clientID){
         filterByClient(clientID),
     )
 
-    return filter(knex(USERS))
+    return filter(knex(USERS).select('accepted', 'codice', `${PERMISSIONS}.id`))
 }
 
 async function havePermission(clientID, codice){
