@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog.Builder mBuilder;
     AlertDialog dialog;
 
+    Router router = Router.getInstance(getApplicationContext());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                         else {
+
+                            router.logInUser(mEmail.getText().toString(), mPassword.getText().toString());
+
                             Intent ListSong = new Intent(getApplicationContext(), Recollector.class);
                             startActivity(ListSong);
                         }

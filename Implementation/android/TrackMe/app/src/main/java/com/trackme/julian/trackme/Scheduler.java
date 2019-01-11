@@ -20,6 +20,8 @@ public class Scheduler {
 
     private int hearthRate = 0;
 
+    private boolean saveCorrect = false;
+
 
     public static Scheduler getInstance(Context context) {
 
@@ -172,8 +174,6 @@ public class Scheduler {
 
     public boolean getUserData (double latitude, double longitude, Location location, int hearthRate, int weight) {
 
-        boolean saveCorrect = false;
-
         boolean post = false;
 
         if(latitude != 0) {
@@ -188,34 +188,33 @@ public class Scheduler {
             setLocation(location);
         }
 
-        if(hearthRate != 0) {
-            setHearthRate(hearthRate);
-
-            if(getLatitude() != 0 && getLongitude() != 0 && getLocation() != null) {
-                post = true;
-            }
-        }
-
         if(weight != 0) {
             setWeight(weight);
             saveCorrect = true;
         }
 
+        if(hearthRate != 0) {
+            setHearthRate(hearthRate);
+
+            if(getLatitude() != 0 && getLongitude() != 0 && getLocation() != null && getWeight() != 0) {
+                post = true;
+            }
+        }
+
         if(post) {
-            sendUserData();
+            sendUserData(saveCorrect);
+            saveCorrect = false;
         }
 
         return  saveCorrect;
     }
 
-    private void sendUserData () {
+    private void sendUserData (boolean newWeight) {
 
-        Router router = Router.getInstance();
+        Router router = Router.getInstance(context);
 
         double latitude;
         double longitude;
-
-        Location location;
 
         int hearthRate;
 
@@ -224,17 +223,20 @@ public class Scheduler {
         latitude = getLatitude();
         longitude = getLongitude();
 
-        location = getLocation();
-
         hearthRate = getHearthRate();
-
-        weight  = getWeight();
 
         Log.d("debug", "Latitude: " + latitude);
         Log.d("debug", "Longitude: " + longitude);
 
-        router.postUserData(latitude, longitude, location, hearthRate, weight);
+        if(newWeight == true) {
+            weight  = getWeight();
+            Log.d("debug", "EL PESO SE HA MANDADO " + weight);
+            router.postUserData(latitude, longitude, hearthRate, weight);
+        }
 
+        else {
+            router.postUserData(latitude, longitude, hearthRate, 0);
+        }
     }
 
 
