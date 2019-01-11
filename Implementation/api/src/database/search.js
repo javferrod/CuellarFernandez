@@ -1,6 +1,5 @@
 import R from 'ramda';
 import moment from 'moment';
-import inside from 'point-in-polygon';
 
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
@@ -69,7 +68,7 @@ async function havePermission(clientID, codice){
 }
 
 async function retrieveUserPermissions(userID){
-    return filterByUser(userID, knex(PERMISSIONS).select('accepted', 'codice', `${PERMISSIONS}.id`));
+    return filterByUser(userID, knex(PERMISSIONS).select('accepted', `${PERMISSIONS}.id`));
 }
 
 export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }

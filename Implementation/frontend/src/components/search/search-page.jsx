@@ -10,7 +10,7 @@ const R = require('ramda');
 
 const SearchPage = (props) => {
   const {
-    individualData, onSearch, loading, error, empty, codices,
+    data, onSearch, loading, error, empty, codices,
   } = props;
 
   return (
@@ -26,14 +26,14 @@ const SearchPage = (props) => {
         />
       </div>
 
-      <IndividualInfo {...individualData} />
+      <IndividualInfo {...data} />
 
     </div>
   );
 };
 
 const mapStateToProps = state => ({
-  individualData: state.search.individualData,
+  data: state.search.data,
   loading: state.search.loading,
   error: state.search.error,
   empty: state.search.empty,

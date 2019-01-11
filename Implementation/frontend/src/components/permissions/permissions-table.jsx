@@ -13,8 +13,8 @@ const columns = [{
   key: 'codice',
 }, {
   title: '',
-  dataIndex: 'status',
-  key: 'status',
+  dataIndex: 'accepted',
+  key: 'accepted',
   render: status => {
     if(status)
       return <Icon className={centeredIcon} type="check-circle" />

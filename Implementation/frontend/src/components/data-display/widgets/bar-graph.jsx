@@ -41,8 +41,8 @@ class BarGraph extends React.Component {
 
   onDateChange(e) {
     this.setState({
-      firstDate: e[0].toDate(),
-      secondDate: e[1].toDate(),
+      firstDate: toDate(e[0]),
+      secondDate: toDate(e[1]),
     });
   }
 
@@ -50,7 +50,7 @@ class BarGraph extends React.Component {
     const { firstDate, secondDate } = this.state;
     const { data, dataName, title } = this.props;
 
-
+    console.log(firstDate, secondDate);
     return (
       <div className={graphStyle}>
         <h3 className={textCentered}>{title}</h3>
@@ -78,6 +78,11 @@ const isInInterval = R.curry((firstDate, secondDate, toCheck) => R.pipe(
 
 const renderRangePicker = (data, onDateChange) => {
   if (haveTime(data)) {
-    return <RangePicker className={center} onDateChange={onDateChange} />;
+    return <RangePicker className={center} onChange={onDateChange} />;
   }
 };
+
+const toDate = R.unless(
+  R.isNil,
+  date => date.toDate(),
+);
