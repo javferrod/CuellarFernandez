@@ -8,8 +8,8 @@ import {
   background, cardStyle, marginTop10, loginButton,
 } from './common-style';
 
-import { combineStyle } from '../../common/util/style';
 import { login } from '../../actions/auth';
+import { joinCSS } from '../common/styles';
 
 class Login extends React.Component {
   constructor(props) {
@@ -31,8 +31,8 @@ class Login extends React.Component {
 
   handleLogin() {
     const { username, password } = this.state;
-    const { dispatch } = this.props;
-    dispatch(login(username, password));
+    const { onLogin } = this.props;
+    onLogin(username, password);
   }
 
   render() {
@@ -48,8 +48,8 @@ class Login extends React.Component {
             <Input
               type="text"
               placeholder="User"
-              vallue={username}
-              onChange={this.handleUsernamea}
+              value={username}
+              onChange={this.handleUsername}
             />
             <Input
               className={marginTop10}
@@ -59,7 +59,7 @@ class Login extends React.Component {
               onChange={this.handlePassword}
             />
             <Button
-              className={combineStyle(marginTop10, loginButton)}
+              className={joinCSS([marginTop10, loginButton])}
               type="primary"
               onClick={this.handleLogin}
             >

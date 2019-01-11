@@ -9,13 +9,13 @@ export const PERMISSIONS_EMPY = 'PERMISSIONS_EMPY';
 export const PERMISSION_REQUEST_OK = 'PERMISSION_REQUEST_OK';
 
 
-export function getPermissions(id) {
+export function getPermissions(token) {
   return async (dispatch) => {
     dispatch(loading());
     let json;
 
     try {
-      json = await axios.post('http://localhost:8080/permissions', { id });
+      json = await axios.post('http://localhost:8080/permissions', { token });
     } catch (error) {
       dispatch(permissionsError());
       return;
@@ -29,13 +29,13 @@ export function getPermissions(id) {
   };
 }
 
-export function requestPermission(id, codice) {
+export function requestPermission(token, codice) {
   return async (dispatch) => {
     dispatch(loading());
     let json;
 
     try {
-      json = await axios.post('http://localhost:8080/permissions/request', { id, codice });
+      json = await axios.post('http://localhost:8080/permissions/request', { token, codice });
     } catch (error) {
       dispatch(permissionsError());
       return;
@@ -44,7 +44,7 @@ export function requestPermission(id, codice) {
     if (R.isEmpty(json.data)) {
       dispatch(permissionsEmpty());
     } else {
-      dispatch(permissionRequestResponse(id, codice));
+      dispatch(permissionRequestResponse(codice));
     }
   };
 }
@@ -57,10 +57,10 @@ export function permissionsResponse(rawData) {
   };
 }
 
-export function permissionRequestResponse(id, codice) {
+export function permissionRequestResponse(codice) {
   return {
     type: PERMISSION_REQUEST_OK,
-    data: { id, codice, accepted: false }
+    data: { codice, accepted: false },
   };
 }
 

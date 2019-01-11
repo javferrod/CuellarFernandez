@@ -7,7 +7,7 @@ import { marginTop32 } from '../common/styles';
 
 const IndividualInfo = (props) => {
   const {
-    name, codice, weight, hearthrate, location, residence, gender, age,
+    name, codice, weight, hearthrate, location, residence, gender, birthdate,
   } = props;
   return (
     <div>
@@ -16,7 +16,7 @@ const IndividualInfo = (props) => {
           <HeathMap data={location} />
         </Col>
         <Col span={8}>
-          <PersonalInfo name={name} codice={codice} residence={residence} gender={gender} age={age} />
+          <PersonalInfo name={name} codice={codice} residence={residence} gender={gender} birthdate={birthdate} />
         </Col>
       </Row>
       <Row gutter={16} className={marginTop32}>

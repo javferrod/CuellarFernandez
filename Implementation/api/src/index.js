@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import { authRouter, dataRecollector, queryManager, permissionManager } from './routers';
+import { authRouter, dataRecollector, queryManager, permissionManager, authMiddleware } from './routers';
 import { connectToDatabase } from './database';
 
 const cors = require('@koa/cors');
@@ -17,6 +17,7 @@ app
   .use(bodyParser())
   .use(router.routes())
   .use(authRouter.routes())
+  .use(authMiddleware)
   .use(dataRecollector.routes())
   .use(queryManager.routes())
   .use(permissionManager.routes())

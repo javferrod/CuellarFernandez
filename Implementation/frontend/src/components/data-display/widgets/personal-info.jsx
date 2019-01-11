@@ -16,7 +16,7 @@ const gridStyle = {
 
 const PersonalInfo = (props) => {
   const {
-    name, codice, residence, genre,
+    name, codice, residence, gender, birthdate
   } = props;
 
   if (R.isNil(name)) {
@@ -31,8 +31,8 @@ const PersonalInfo = (props) => {
     <Card className={cardStyle} title={name}>
       {generateRow('Codice fiscale', codice)}
       {generateRow('Residence', residence)}
-      {generateRow('Genre', genre)}
-      {generateRow('Codice fiscale', codice)}
+      {generateRow('Gender', gender)}
+      {generateRow('Birthdate', birthdate)}
     </Card>
   );
 };

@@ -110,9 +110,9 @@ class Filters extends React.Component {
             <Slider min={40} max={300} range defaultValue={[40, 300]} onChange={this.handleHearthrateChange} />
             <p>Gender</p>
             <Select defaultValue="both" onChange={this.handleGenreChange}>
-              <Option value="male">Male</Option>
-              <Option value="female">Female</Option>
-              <Option value="both">Both</Option>
+              <Option key={1} value="M">Male</Option>
+              <Option key={2} value="F">Female</Option>
+              <Option key={3} value={undefined}>Both</Option>
             </Select>
 
           </Card>

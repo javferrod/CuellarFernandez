@@ -1,22 +1,20 @@
+import moment from 'moment';
 import {
   SEARCH_LOADING, SEARCH_ERROR, SEARCH_SUCCESS, SEARCH_EMPTY,
 } from '../actions/search';
-
-const R = require('ramda');
 
 const initialState = {
   loading: false,
   empty: false,
   error: false,
-  individualData: {},
-  collectiveData: {},
+  data: {},
 };
 
 export default function search(state = initialState, action) {
   switch (action.type) {
     case SEARCH_SUCCESS:
       return {
-        ...state, ...mapData(action.data), loading: false, empty: false,
+        ...state, data: adequate(action.data), loading: false, empty: false,
       };
     case SEARCH_EMPTY:
       return {
@@ -33,7 +31,7 @@ export default function search(state = initialState, action) {
   }
 }
 
-const mapData = data => ({
-  individualData: R.pick(['name', 'surname', 'codice', 'genre', 'residence', 'weight', 'hearthrate', 'location'], data),
-  collectiveData: R.pick(['location'], data),
+const adequate = data => ({
+  ...data,
+  birthdate: moment(data.birthdate).format('YYYY-MM-DD'),
 });

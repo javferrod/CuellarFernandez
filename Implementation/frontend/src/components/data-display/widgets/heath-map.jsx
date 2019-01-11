@@ -19,7 +19,6 @@ const mapStyle = css`
 
 const HeathMap = (props) => {
   const { data } = props;
-
   const points = adequate(data);
   return (
     <div className={mapStyle}>
@@ -50,6 +49,7 @@ const adequate = R.pipe(
     R.pipe(
       R.pick(['latitude', 'longitude']),
       R.values,
+      values => [parseFloat(values[0], parseFloat(values[1]))],
     ),
   ),
 );

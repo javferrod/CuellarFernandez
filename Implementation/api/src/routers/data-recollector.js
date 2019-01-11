@@ -4,15 +4,14 @@ import { saveParameters, populateUsers, populateParameters } from '../database';
 var dataRecollector = new Router({ prefix: '/data' });
 
 dataRecollector.post('/', async (ctx, next) => {
-    let user = ctx.request.body.auth;
-    let parameters = ctx.request.body.parameters;
+    const { auth, parameters } = ctx.request.body; 
 
-    if(!user || !parameters){
+    if(!auth || !parameters){
         ctx.response.status = 400;
         return;
     }
     
-    await saveParameters(parameters, user);
+    await saveParameters(parameters, auth);
     
     ctx.response.status = 200;
 });

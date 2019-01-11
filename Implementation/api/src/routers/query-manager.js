@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import { searchByCodice, searchByParameters, havePermission } from '../database';
 import R from 'ramda';
-import { test, filterGroupedResulByLocation } from '../common/location';
+import { filterGroupedResulByLocation } from '../common/location';
 
 const MIN_USERS = 2;
 
@@ -25,6 +25,7 @@ queryManager.post('/codice', async (ctx, next) => {
         residence: get('residence')(individual), 
         gender: get('gender')(individual), 
         codice: get('codice')(individual), 
+        birthdate: get('birthdate')(individual), 
         location: getLocations(individual),
         weight: getWeight(individual),
         hearthrate: getHearthRate(individual) 
@@ -52,7 +53,6 @@ queryManager.post('/', async (ctx, next) => {
 
     if(countUsers(groupedResul) >= MIN_USERS){
         resul = ungroup(groupedResul);
-    console.log(resul);
 
         ctx.response.body = {
             location: getLocations(resul),

@@ -1,4 +1,4 @@
-import { LOGIN_OK, LOGIN_LOADING } from '../actions/auth';
+import { LOGIN_OK, LOGIN_LOADING, LOGIN_NOT_OK } from '../actions/auth';
 
 const initialState = {
   token: null,
@@ -12,6 +12,8 @@ export default function auth(state = initialState, action) {
       return { ...state, loading: true };
     case LOGIN_OK:
       return { ...state, token: action.token, loading: false };
+    case LOGIN_NOT_OK:
+      return { ...state, loading: false };
     default:
       return state;
   }

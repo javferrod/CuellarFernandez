@@ -1,10 +1,9 @@
 import R from 'ramda';
 import moment from 'moment';
-import inside from 'point-in-polygon';
 
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
-import { filterByUser } from './common';
+import { filterByUser, leftJoin } from './common';
 
 
 
@@ -69,17 +68,13 @@ async function havePermission(clientID, codice){
 }
 
 async function retrieveUserPermissions(userID){
-    return filterByUser(userID, knex(PERMISSIONS).select('accepted', 'codice', `${PERMISSIONS}.id`));
+    return filterByUser(userID, knex(PERMISSIONS).select('accepted', `${PERMISSIONS}.id`));
 }
 
 export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }
 
 //HELPERS
 
-const leftJoin = R.curry((table, on, query) => {
-    query.leftJoin(table, `${USERS}.id`, '=', `${table}.${on}`);
-    return query;
-});
  
 const filterRanges = R.curry((parameters, query) => {
     const { weight, hearthrate } = parameters;
