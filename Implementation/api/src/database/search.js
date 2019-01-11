@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
-import { filterByUser } from './common';
+import { filterByUser, leftJoin } from './common';
 
 
 
@@ -75,10 +75,6 @@ export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, 
 
 //HELPERS
 
-const leftJoin = R.curry((table, on, query) => {
-    query.leftJoin(table, `${USERS}.id`, '=', `${table}.${on}`);
-    return query;
-});
  
 const filterRanges = R.curry((parameters, query) => {
     const { weight, hearthrate } = parameters;

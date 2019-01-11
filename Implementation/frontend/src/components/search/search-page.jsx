@@ -10,7 +10,7 @@ const R = require('ramda');
 
 const SearchPage = (props) => {
   const {
-    data, onSearch, loading, error, empty, codices,
+    data, onSearch, loading, error, empty, codices, token,
   } = props;
 
   return (
@@ -21,7 +21,7 @@ const SearchPage = (props) => {
           loading={loading}
           error={error}
           empty={empty}
-          onSearch={onSearch}
+          onSearch={onSearch(token)}
           codices={codices}
         />
       </div>
@@ -38,10 +38,11 @@ const mapStateToProps = state => ({
   error: state.search.error,
   empty: state.search.empty,
   codices: adequate(state.permissions.list),
+  token: state.auth.token,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSearch: codice => dispatch(search(1, codice)),
+  onSearch: token => codice => dispatch(search(token, codice)),
 });
 
 const adequate = R.map(R.prop('codice'));

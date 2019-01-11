@@ -13,15 +13,18 @@ const tableStyle = css`
 
 class PermissionsPage extends React.Component {
   componentDidMount() {
-    this.props.getPermissions(1);
+    const { getPermissions, token } = this.props;
+    getPermissions(token);
   }
 
   render() {
-    const { permissions, empty, requestPermission } = this.props;
+    const {
+      permissions, empty, requestPermission, token,
+    } = this.props;
     return (
       <div className={marginTop32}>
         <div className={boxContainer}>
-          <PermissionBox onRequest={requestPermission} />
+          <PermissionBox onRequest={requestPermission(token)} />
         </div>
         <div className={tableStyle}>
           <PermissionTable permissions={permissions} empty={empty} />
@@ -36,11 +39,12 @@ const mapStateToProps = state => ({
   loading: state.search.loading,
   error: state.search.error,
   empty: state.search.empty,
+  token: state.auth.token,
 });
 
 const mapDispatchToProps = dispatch => ({
   getPermissions: id => dispatch(getPermissions(id)),
-  requestPermission: codice => dispatch(requestPermission(1, codice)),
+  requestPermission: token => codice => dispatch(requestPermission(token, codice)),
 });
 
 

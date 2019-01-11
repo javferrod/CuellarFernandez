@@ -6,7 +6,7 @@ export const LOGIN_NOT_OK = 'LOGIN_NOT_OK';
 
 
 export function login(username, password) {
-  const credentials = { username, password };
+  const credentials = { user: username, password };
 
   return async (dispatch) => {
     dispatch(loading());
@@ -18,7 +18,7 @@ export function login(username, password) {
 }
 
 export function loginResponse(response) {
-  const token = response.token;
+  const { token } = response;
 
   if (token) { return { type: LOGIN_OK, token }; }
   return { type: LOGIN_NOT_OK };

@@ -1,6 +1,6 @@
 import queryManager from './query-manager';
 import dataRecollector from './data-recollector';
-import authRouter from './auth';
+import { authRouter, authMiddleware } from './auth';
 import permissionManager from './permissions';
 
-export { queryManager, dataRecollector, authRouter, permissionManager }
+export { queryManager, dataRecollector, authRouter, authMiddleware, permissionManager }

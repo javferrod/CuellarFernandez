@@ -9,12 +9,12 @@ import { marginTop32 } from '../common/styles';
 
 const QueryPage = (props) => {
   const {
-    onSearch, data, error, forbidden,
+    onSearch, data, error, forbidden, token,
   } = props;
   return (
     <div>
       <ErrorBox error={error} forbidden={forbidden} />
-      <Filters className={marginTop32} onSearch={onSearch} />
+      <Filters className={marginTop32} onSearch={onSearch(token)} />
       <CollectiveInfo {...data} />
     </div>
   );
@@ -25,10 +25,11 @@ const mapStateToProps = state => ({
   loading: state.query.loading,
   error: state.query.error,
   forbidden: state.query.forbidden,
+  token: state.auth.token,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSearch: filters => dispatch(search(filters)),
+  onSearch: token => filters => dispatch(search(token, filters)),
 });
 
 

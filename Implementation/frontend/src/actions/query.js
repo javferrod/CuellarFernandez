@@ -8,13 +8,13 @@ export const QUERY_LOADING = 'QUERY_LOADING';
 export const QUERY_FORBIDDEN = 'QUERY_FORBIDDEN';
 
 
-export function search(query) {
+export function search(token, query) {
   return async (dispatch) => {
     dispatch(loading());
     let json;
 
     try {
-      json = await axios.post('http://localhost:8080/query/', { query });
+      json = await axios.post('http://localhost:8080/query/', { token, query });
     } catch (error) {
       handleError(error, dispatch);
       return;

@@ -1,5 +1,5 @@
 const knexFactory = require('knex');
-import { USERS , TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
+import { USERS , TEMPORAL_PARAMETERS, PERMISSIONS, TOKENS } from './names';
 
 var knex;
 
@@ -65,6 +65,18 @@ async function createTables(){
             .unique();
         table.boolean('client')
             .notNullable();
+    });
+
+    await knex.schema.createTable(TOKENS, (table) => {
+        table.increments();
+        table.string('token')
+            .notNullable();
+        table.date('expiration')
+            .notNullable();
+        table.integer('user')
+            .notNullable();
+        table.foreign('user')
+            .references('users.id');
     });
     
     await knex.schema.createTable(PERMISSIONS, (table) => {
