@@ -17,6 +17,8 @@ public class Router {
 
     private Context context;
 
+    private boolean logInCorrect;
+
     RequestQueue requestQueue;
 
     private static Router instance = null;
@@ -40,9 +42,46 @@ public class Router {
 
     public void registerUser() {
 
+       /* JSONObject json = new JSONObject();
+
+        try {
+            json.put("username", username);
+            json.put("password", password);
+            json.put("name", name);
+            json.put("codice", codice);
+            json.put("gender", gender);
+            json.put("birthdate", birthdate);
+            json.put("residence", residence);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            JsonObjectRequest request = new JsonObjectRequest
+                    (Request.Method.POST, "http://51.15.143.114:8080/auth/register-user", json, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("debug", response.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("debug", "ERROR RESPONSE");
+                        }
+                    });
+
+            requestQueue.add(request);
+        } else {
+            Log.d("debug", "NETWORK DISABLED");
+        }*/
     }
 
     public void logInUser(String username, String password) {
+
+        this.logInCorrect = false;
 
         JSONObject json = new JSONObject();
 
@@ -62,6 +101,7 @@ public class Router {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d("debug", response.toString());
+                            controlLogIn();
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -76,9 +116,20 @@ public class Router {
         }
     }
 
+    private void controlLogIn () {
+
+        this.logInCorrect = true;
+    }
+
+    public boolean getLogInCorrect () {
+
+        return this.logInCorrect;
+
+    }
+
     public void postUserData(double latitude, double longitude, int hearthRate, int weight) {
 
-        JSONObject json = new JSONObject();
+       /* JSONObject json = new JSONObject();
         JSONObject manJson = new JSONObject();
 
         try {
@@ -113,10 +164,39 @@ public class Router {
             requestQueue.add(request);
         } else {
             Log.d("debug", "NETWORK DISABLED");
-        }
+        }*/
     }
 
     public void getPermissionsUser () {
 
+        /*JSONObject json = new JSONObject();
+
+        try {
+            json.put("token", token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            JsonObjectRequest request = new JsonObjectRequest
+                    (Request.Method.POST, "http://51.15.143.114:8080/permissions/client", json, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("debug", response.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("debug", "ERROR RESPONSE");
+                        }
+                    });
+
+            requestQueue.add(request);
+        } else {
+            Log.d("debug", "NETWORK DISABLED");
+        }*/
     }
 }

@@ -17,4 +17,6 @@
     <string name="julian_cuellar">Julian Cuellar</string>
     <string name="emailShow">julian.cuellar@mail.polimi.com</string>
     <string name="space"> </string>
+    <string name="residence">Residence</string>
+    <string name="birthdate">Birthdate</string>
 </resources>
