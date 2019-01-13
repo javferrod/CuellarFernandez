@@ -53,13 +53,9 @@ import java.util.TimerTask;
 
 public class Recollector extends AppCompatActivity {
 
-    TextView mensaje1;
-    TextView mensaje2;
     TextView mensaje3;
 
     TextView last_record;
-
-    Boolean control;
 
     TimerTask task;
     TimerTask taskPermission;
@@ -89,26 +85,14 @@ public class Recollector extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recollector);
 
-        mensaje1 = findViewById(R.id.mensaje_id);
-        mensaje2 = findViewById(R.id.mensaje_id2);
         mensaje3 = findViewById(R.id.mensaje_id3);
-
-        control = false;
 
         scheduler = Scheduler.getInstance(getApplicationContext());
 
-        final Button changeScreen = findViewById(R.id.button_change);
+        setContentView(R.layout.drawer);
 
-        changeScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.drawer);
+        last_record = findViewById(R.id.last_record);
 
-                last_record = findViewById(R.id.last_record);
-
-                control = true;
-            }
-        });
 
         int icono = R.drawable.logomini;
         Intent intent = new Intent(Recollector.this, Recollector.class);
@@ -193,35 +177,9 @@ public class Recollector extends AppCompatActivity {
             }
         };
 
-        timer.schedule(task, 1, 30000);
+        timer.schedule(task, 1, 300000);
         timer.schedule(taskPermission, 60000, 60000);
         timer.schedule(taskGetPermission, 30000, 60000);
-    }
-
-    public void setLocation(Location loc) {
-
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    final Address DirCalle = list.get(0);
-
-                    if (control == false) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mensaje2.setText("Mi direccion es: \n"
-                                        + DirCalle.getAddressLine(0));
-                            }
-                        });
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void controlLocation(NotificationManager mNotifyMgr, LocationManager mlocManager) {
@@ -254,28 +212,13 @@ public class Recollector extends AppCompatActivity {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (control == false) {
-                        mensaje1.setText(Text);
-                    } else {
-                        last_record.setText(TextLastRecord);
-                    }
+                    last_record.setText(TextLastRecord);
                 }
             });
-
-            setLocation(loc);
 
             scheduler.getUserData(loc.getLatitude(), loc.getLongitude(), loc, 0, 0);
 
         } catch (NullPointerException e) {
-
-            final String Text = "It has not been possible to establish the location";
-
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mensaje1.setText(Text);
-                }
-            });
 
         }
     }
@@ -410,8 +353,6 @@ public class Recollector extends AppCompatActivity {
 
         jsonArray = scheduler.askPermissionUser();
 
-        Log.d("debug", String.valueOf(jsonArray.length()));
-
         int length = jsonArray.length();
 
         controlScreenPermission = 0;
@@ -441,12 +382,10 @@ public class Recollector extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
-                            if(mGroupOptions.getCheckedRadioButtonId() == -1) {
+                            if (mGroupOptions.getCheckedRadioButtonId() == -1) {
                                 Toast.makeText(Recollector.this, "Select one option",
                                         Toast.LENGTH_SHORT).show();
-                            }
-
-                            else if (mOptionYes.isChecked()) {
+                            } else if (mOptionYes.isChecked()) {
 
                                 scheduler.setPermissionUser(Integer.parseInt(permissionID));
                             }
@@ -497,13 +436,13 @@ public class Recollector extends AppCompatActivity {
         @Override
         public void onProviderDisabled(String provider) {
 
-            mensaje1.setText("GPS Desactivated");
+            Log.d("debug","GPS Desactivated");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
 
-            mensaje1.setText("GPS Activated");
+            Log.d("debug","GPS Activated");
         }
 
         @Override

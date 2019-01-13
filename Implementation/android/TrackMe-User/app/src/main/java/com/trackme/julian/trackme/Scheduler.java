@@ -243,7 +243,6 @@ public class Scheduler {
                 jsonObject = new JSONObject(sharpref.getString("permissionsUser", null));
                 jsonArray = jsonObject.getJSONArray("permissions");
 
-                Log.d("debug", jsonArray.getString(0));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

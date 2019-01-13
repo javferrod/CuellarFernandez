@@ -69,7 +69,6 @@ public class Router {
                     (Request.Method.POST, "http://51.15.143.114:8080/auth/register-user", json, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d("debug", response.toString());
                         }
                     }, new Response.ErrorListener() {
                         @Override
