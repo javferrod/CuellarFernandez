@@ -14,7 +14,7 @@ permissionManager.post('/', async (ctx, next) => {
 permissionManager.post('/client', async (ctx, next) => {
     const { auth } = ctx.request.body;
 
-    ctx.response.body = await retrieveUserPermissions(auth);
+    ctx.response.body = { permissions: await retrieveUserPermissions(auth) };
 })
 
 permissionManager.post('/request', async (ctx, next) => {
