@@ -1,6 +1,6 @@
 # CuellarFernandez
 
-the dashboard can be accessed at http://cuellarfernandez.duckdns.org:8080. The access credentials are client/client.
+The dashboard can be accessed at http://cuellarfernandez.duckdns.org:8080. The access credentials are client/client. http://51.15.143.114:8080/ can be used too.
 
 # Running it in local
 
