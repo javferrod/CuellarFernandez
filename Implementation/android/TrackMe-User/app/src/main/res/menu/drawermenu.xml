@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/account" android:title="Account" android:icon="@drawable/icono_home" />
+<item android:id="@+id/contact" android:title="Contact" android:icon="@drawable/pencil"/>
+<item android:id="@+id/privacy" android:title="Privacy" android:icon="@drawable/candado" />
+<item android:title=" "/>
+<item android:title=" "/>
+<item android:title=" "/>
+<item android:title=" "/>
+<item android:title=" "/>
+<item android:id="@+id/settings" android:title="Settings" android:icon="@drawable/setting"/>
+</menu>
