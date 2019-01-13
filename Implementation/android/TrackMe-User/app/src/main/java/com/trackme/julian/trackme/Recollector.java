@@ -353,66 +353,69 @@ public class Recollector extends AppCompatActivity {
 
         jsonArray = scheduler.askPermissionUser();
 
-        int length = jsonArray.length();
+        if (jsonArray != null) {
 
-        controlScreenPermission = 0;
+            int length = jsonArray.length();
 
-        while (controlScreenPermission < length) {
-            try {
-                jsonObject = jsonArray.getJSONObject(controlScreenPermission);
-                String accepted = jsonObject.getString("accepted");
+            controlScreenPermission = 0;
 
-                if (accepted.equals("false")) {
+            while (controlScreenPermission < length) {
+                try {
+                    jsonObject = jsonArray.getJSONObject(controlScreenPermission);
+                    String accepted = jsonObject.getString("accepted");
 
-                    mAlertBuilder = new AlertDialog.Builder(Recollector.this);
-                    final View mViewPermission = getLayoutInflater().inflate(R.layout.dialog_permission, null);
+                    if (accepted.equals("false")) {
 
-                    final TextView mPermissionInformation = mViewPermission.findViewById(R.id.textInformation);
-                    final Button mPermissionButton = mViewPermission.findViewById(R.id.savePermissionButton);
-                    final RadioGroup mGroupOptions = mViewPermission.findViewById(R.id.radioSelection);
-                    final RadioButton mOptionYes = mViewPermission.findViewById(R.id.radioSelectionYes);
-                    final RadioButton mOptionNo = mViewPermission.findViewById(R.id.radioSelectionNo);
+                        mAlertBuilder = new AlertDialog.Builder(Recollector.this);
+                        final View mViewPermission = getLayoutInflater().inflate(R.layout.dialog_permission, null);
 
-                    String name = jsonObject.getString("name");
-                    mPermissionInformation.setText(name + " is asking for permission to access your stored data, do you accept?");
+                        final TextView mPermissionInformation = mViewPermission.findViewById(R.id.textInformation);
+                        final Button mPermissionButton = mViewPermission.findViewById(R.id.savePermissionButton);
+                        final RadioGroup mGroupOptions = mViewPermission.findViewById(R.id.radioSelection);
+                        final RadioButton mOptionYes = mViewPermission.findViewById(R.id.radioSelectionYes);
+                        final RadioButton mOptionNo = mViewPermission.findViewById(R.id.radioSelectionNo);
 
-                    final String permissionID = jsonObject.getString("id");
+                        String name = jsonObject.getString("name");
+                        mPermissionInformation.setText(name + " is asking for permission to access your stored data, do you accept?");
 
-                    mPermissionButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                        final String permissionID = jsonObject.getString("id");
 
-                            if (mGroupOptions.getCheckedRadioButtonId() == -1) {
-                                Toast.makeText(Recollector.this, "Select one option",
+                        mPermissionButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                if (mGroupOptions.getCheckedRadioButtonId() == -1) {
+                                    Toast.makeText(Recollector.this, "Select one option",
+                                            Toast.LENGTH_SHORT).show();
+                                } else if (mOptionYes.isChecked()) {
+
+                                    scheduler.setPermissionUser(Integer.parseInt(permissionID));
+                                }
+
+                                Toast.makeText(Recollector.this, "Successfully save",
                                         Toast.LENGTH_SHORT).show();
-                            } else if (mOptionYes.isChecked()) {
-
-                                scheduler.setPermissionUser(Integer.parseInt(permissionID));
+                                cancelDialog();
                             }
-
-                            Toast.makeText(Recollector.this, "Successfully save",
-                                    Toast.LENGTH_SHORT).show();
-                            cancelDialog();
-                        }
-                    });
+                        });
 
 
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAlertBuilder.setView(mViewPermission);
-                            mAlertBuilder.setCancelable(false);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAlertBuilder.setView(mViewPermission);
+                                mAlertBuilder.setCancelable(false);
 
-                            dialog = mAlertBuilder.create();
-                            dialog.show();
-                        }
-                    });
+                                dialog = mAlertBuilder.create();
+                                dialog.show();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-            controlScreenPermission = controlScreenPermission + 1;
+                controlScreenPermission = controlScreenPermission + 1;
+            }
         }
     }
 
@@ -436,13 +439,13 @@ public class Recollector extends AppCompatActivity {
         @Override
         public void onProviderDisabled(String provider) {
 
-            Log.d("debug","GPS Desactivated");
+            Log.d("debug", "GPS Desactivated");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
 
-            Log.d("debug","GPS Activated");
+            Log.d("debug", "GPS Activated");
         }
 
         @Override

@@ -240,8 +240,12 @@ public class Scheduler {
             JSONObject jsonObject = null;
             jsonArray = null;
             try {
+
                 jsonObject = new JSONObject(sharpref.getString("permissionsUser", null));
-                jsonArray = jsonObject.getJSONArray("permissions");
+
+                if (jsonObject.length() != 0) {
+                    jsonArray = jsonObject.getJSONArray("permissions");
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
