@@ -28,10 +28,11 @@ async function generateToken(user, password){
     let token = await tokenGenerator.generate();
     let userID = await getUserID(user, password);
 
+    console.log(userID);
 
     let data = {
         token: token,
-        user: userID,
+        user: userID[0].id,
         expiration: moment().add(7, 'days').format('YYYY-MM-DD')
     }
 
@@ -43,7 +44,7 @@ export { getToken, getUserByToken, generateToken }
 const getUserID = (user, password) => {
 
     const filter = R.pipe(
-        filterByUsernameAndPassword(user, password),
+        filterByUsernameAndPassword(user, password)
     );
 
     return filter(knex(USERS).select('id'));

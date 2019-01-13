@@ -68,7 +68,13 @@ async function havePermission(clientID, codice){
 }
 
 async function retrieveUserPermissions(userID){
-    return filterByUser(userID, knex(PERMISSIONS).select('accepted', `${PERMISSIONS}.id`));
+
+    const filter = R.pipe(
+        leftJoin(PERMISSIONS, 'client'),
+        filterByUser(userID)
+    );
+
+    return filter(knex(USERS).select('accepted',`${USERS}.name`, `${PERMISSIONS}.id`));
 }
 
 export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }

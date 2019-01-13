@@ -17,7 +17,7 @@ authRouter.post('/login', async (ctx, next) => {
     }
 
     if(isTokenNil(tokenEntry) || isTokenExpired(tokenEntry))
-        token = generateToken(user, password);
+        token = R.head(await generateToken(user, password));
     else
         token = extractToken(tokenEntry);
 
