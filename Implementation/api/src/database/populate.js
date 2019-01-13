@@ -1,4 +1,5 @@
 import { saveUser, saveParameters } from './insert';
+import { saveClient } from '.';
 
 const faker = require('faker');
 faker.locale='it';
@@ -25,8 +26,13 @@ async function populateParameters(amount, amountUsers){
     
 }
 
-export { populateUsers, populateParameters }
+async function createDefaultClient(){
+    await saveClient('client', 'client');
+}
 
+export { populateUsers, populateParameters, createDefaultClient }
+
+// HELPERS
 
 const generateGender = () => {
     if(Math.random() < 0.5)

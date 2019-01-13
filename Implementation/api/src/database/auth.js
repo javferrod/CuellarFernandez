@@ -13,7 +13,7 @@ async function getToken(user, password){
         filterByUsernameAndPassword(user, password)
     )
 
-    return filter(knex(USERS).select('token', 'expiration'));
+    return filter(knex(USERS).select('token', 'expiration', `${TOKENS}.id`));
 }
 
 async function getUserByToken(token){
@@ -22,13 +22,10 @@ async function getUserByToken(token){
     return filter(knex(TOKENS).select('user', 'expiration'))
 }
 
-
-
+// Generates and saves a new token for the given user.
 async function generateToken(user, password){
     let token = await tokenGenerator.generate();
     let userID = await getUserID(user, password);
-
-    console.log(userID);
 
     let data = {
         token: token,
@@ -39,7 +36,16 @@ async function generateToken(user, password){
     return knex(TOKENS).returning('token').insert(data);
 }
 
-export { getToken, getUserByToken, generateToken }
+async function deleteToken(tokenEntry){
+    let id = R.head(tokenEntry).id
+
+    return knex(TOKENS).where('id', id).del();
+}
+
+export { getToken, getUserByToken, generateToken, deleteToken }
+
+
+// HELPERS
 
 const getUserID = (user, password) => {
 

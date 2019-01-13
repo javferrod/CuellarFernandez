@@ -50,7 +50,6 @@ class BarGraph extends React.Component {
     const { firstDate, secondDate } = this.state;
     const { data, dataName, title } = this.props;
 
-    console.log(firstDate, secondDate);
     return (
       <div className={graphStyle}>
         <h3 className={textCentered}>{title}</h3>

@@ -1,5 +1,7 @@
 const knexFactory = require('knex');
 import { USERS , TEMPORAL_PARAMETERS, PERMISSIONS, TOKENS } from './names';
+import { populateUsers, populateParameters } from './populate';
+import { createDefaultClient } from '.';
 
 var knex;
 
@@ -15,7 +17,18 @@ const CONNECTION_DETAILS = {
     database : 'data'  
 }
 
-async function connectToDatabase(){
+
+function connectToDatabase(){
+    return setTimeout(connect, 8000);
+}
+
+/*
+* Tries to connect to the data database. If don't exists
+* destroys the client, creates a new one, creates the database
+* and retries. If success, create the tables and the timescale
+* hypertable.
+*/
+async function connect(){
         console.log("[i] Connecting to POSTGRES");
         
         knex = createConnection(CONNECTION_DETAILS);
@@ -33,10 +46,15 @@ async function connectToDatabase(){
             knex = createConnection(CONNECTION_DETAILS);
 
             console.log('[i] Creating tables');
-            createTables();
+            await createTables();
 
             console.log('[i] Creating hypertables');
             createHyperTables();
+
+            console.log('[i] Creating faked data');
+            await populateUsers(20);
+            await populateParameters(100, 20);
+            await createDefaultClient();
         }
 
         console.log("[i] Connected to POSTGRES");
@@ -128,4 +146,5 @@ function testConnection(){
 }
 
 
-export { connectToDatabase, knex };
+
+export { connectToDatabase, connect, knex };

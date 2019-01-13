@@ -65,11 +65,6 @@ class Login extends React.Component {
             >
             Log in
             </Button>
-            <div className={marginTop10}>
-              Or
-              {' '}
-              <a href="/register">register now!</a>
-            </div>
           </Skeleton>
         </Card>
       </div>
