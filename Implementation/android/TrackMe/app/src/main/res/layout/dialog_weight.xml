@@ -19,7 +19,6 @@
         app:layout_constraintBottom_toTopOf="@+id/numberPicker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <NumberPicker

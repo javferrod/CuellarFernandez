@@ -1,6 +1,7 @@
 package com.trackme.julian.trackme;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -70,6 +72,8 @@ public class Recollector extends AppCompatActivity {
 
     Scheduler scheduler;
 
+    private AlarmManager alarmMgr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +120,14 @@ public class Recollector extends AppCompatActivity {
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1000) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationStart();
+            }
+        }
+    }
+
     private void locationStart() {
 
         final LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -140,9 +152,8 @@ public class Recollector extends AppCompatActivity {
             Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(settingsIntent);
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            return;
+        if (ActivityCompat.checkSelfPermission(Recollector.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Recollector.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Recollector.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
         }
 
         mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, Local);
@@ -166,13 +177,8 @@ public class Recollector extends AppCompatActivity {
         timer.schedule(task, 1, 30000);
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 1000) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                locationStart();
-                return;
-            }
-        }
+    public void track () {
+
     }
 
     public void setLocation(Location loc) {
@@ -440,4 +446,16 @@ public class Recollector extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 120000,
+                120000, alarmIntent);
+
+    }
+
 }
