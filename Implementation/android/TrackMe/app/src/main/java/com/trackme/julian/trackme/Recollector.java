@@ -16,7 +16,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -29,8 +31,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Time;
@@ -54,6 +62,8 @@ public class Recollector extends AppCompatActivity {
     Boolean control;
 
     TimerTask task;
+    TimerTask taskPermission;
+    TimerTask taskGetPermission;
 
     Calendar c;
     SimpleDateFormat dateformat;
@@ -63,6 +73,8 @@ public class Recollector extends AppCompatActivity {
     int counter_HearthRate = 0;
     int control_HearthRate = 55;
 
+    int controlScreenPermission;
+
     private NotificationCompat.Builder mBuilder;
 
     AlertDialog.Builder mAlertBuilder;
@@ -71,8 +83,6 @@ public class Recollector extends AppCompatActivity {
     Handler mHandler;
 
     Scheduler scheduler;
-
-    private AlarmManager alarmMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,11 +168,6 @@ public class Recollector extends AppCompatActivity {
 
         mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, Local);
         mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Local);
-        if(control == false) {
-            mensaje1.setText("Aggregate location");
-            mensaje2.setText("");
-            mensaje3.setText("");
-        }
 
         controlWeight();
 
@@ -174,11 +179,23 @@ public class Recollector extends AppCompatActivity {
             }
         };
 
+        taskGetPermission = new TimerTask() {
+            @Override
+            public void run() {
+                scheduler.askPermissionUser();
+            }
+        };
+
+        taskPermission = new TimerTask() {
+            @Override
+            public void run() {
+                userPermission();
+            }
+        };
+
         timer.schedule(task, 1, 30000);
-    }
-
-    public void track () {
-
+        timer.schedule(taskPermission, 60000, 60000);
+        timer.schedule(taskGetPermission, 30000, 60000);
     }
 
     public void setLocation(Location loc) {
@@ -237,10 +254,9 @@ public class Recollector extends AppCompatActivity {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(control == false) {
+                    if (control == false) {
                         mensaje1.setText(Text);
-                    }
-                    else {
+                    } else {
                         last_record.setText(TextLastRecord);
                     }
                 }
@@ -250,8 +266,7 @@ public class Recollector extends AppCompatActivity {
 
             scheduler.getUserData(loc.getLatitude(), loc.getLongitude(), loc, 0, 0);
 
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
 
             final String Text = "It has not been possible to establish the location";
 
@@ -275,9 +290,10 @@ public class Recollector extends AppCompatActivity {
         do {
             number = (int) (Math.random() * 55 + 55);
             counter = counter + 1;
-        } while ((number < (control_HearthRate + 15) || number > (control_HearthRate - 15)) && counter != 5);
+        }
+        while ((number < (control_HearthRate + 15) || number > (control_HearthRate - 15)) && counter != 5);
 
-        if(counter_HearthRate < danger_HearthRate) {
+        if (counter_HearthRate < danger_HearthRate) {
 
             number_text = number;
 
@@ -288,8 +304,7 @@ public class Recollector extends AppCompatActivity {
                     counter_HearthRate = counter_HearthRate + 1;
                 }
             });
-        }
-        else {
+        } else {
 
             number_text = number - 55;
 
@@ -309,7 +324,7 @@ public class Recollector extends AppCompatActivity {
         scheduler.getUserData(0, 0, null, number, 0);
     }
 
-    public void controlWeight () {
+    public void controlWeight() {
 
         c = Calendar.getInstance();
 
@@ -320,21 +335,20 @@ public class Recollector extends AppCompatActivity {
 
         boolean show = false;
 
-        if(sharpref.contains("weightDate") == false) {
+        if (sharpref.contains("weightDate") == false) {
             edit.putString("weightDate", date);
             edit.apply();
             show = true;
-        }
-        else {
+        } else {
 
             try {
                 Date oldDate = dateformat2.parse(sharpref.getString("weightDate", null));
 
                 Date newDate = dateformat2.parse(date);
 
-                int days = (int) ((newDate.getTime()-oldDate.getTime())/86400000);
+                int days = (int) ((newDate.getTime() - oldDate.getTime()) / 86400000);
 
-                if(days >= 7) {
+                if (days >= 7) {
                     edit.putString("weightDate", date);
                     show = true;
 
@@ -346,30 +360,18 @@ public class Recollector extends AppCompatActivity {
             }
         }
 
-        if(show == true) {
+        if (show == true) {
 
             mAlertBuilder = new AlertDialog.Builder(Recollector.this);
             View mViewWeight = getLayoutInflater().inflate(R.layout.dialog_weight, null);
 
             final NumberPicker np = mViewWeight.findViewById(R.id.numberPicker);
 
-            //Populate NumberPicker values from minimum and maximum value range
-            //Set the minimum value of NumberPicker
             np.setMinValue(35);
-            //Specify the maximum value/number of NumberPicker
+
             np.setMaxValue(110);
 
-            //Gets whether the selector wheel wraps when reaching the min/max value.
             np.setWrapSelectorWheel(true);
-
-            //Set a value change listener for NumberPicker
-            /*np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-                @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                    //Display the newly selected number from picker
-                    tv.setText("Selected weight: " + newVal);
-                }
-            });*/
 
             final Button mWeightButton = mViewWeight.findViewById(R.id.saveButton);
 
@@ -381,7 +383,7 @@ public class Recollector extends AppCompatActivity {
 
                     save = scheduler.getUserData(0, 0, null, 0, np.getValue());
 
-                    if(save) {
+                    if (save) {
                         Toast.makeText(Recollector.this, "Successfully save",
                                 Toast.LENGTH_SHORT).show();
                         cancelDialog();
@@ -397,8 +399,82 @@ public class Recollector extends AppCompatActivity {
         }
     }
 
-    private void cancelDialog () {
+    private void cancelDialog() {
         dialog.dismiss();
+    }
+
+    private void userPermission() {
+
+        JSONArray jsonArray;
+        JSONObject jsonObject;
+
+        jsonArray = scheduler.askPermissionUser();
+
+        Log.d("debug", String.valueOf(jsonArray.length()));
+
+        int length = jsonArray.length();
+
+        controlScreenPermission = 0;
+
+        while (controlScreenPermission < length) {
+            try {
+                jsonObject = jsonArray.getJSONObject(controlScreenPermission);
+                String accepted = jsonObject.getString("accepted");
+
+                if (accepted.equals("false")) {
+
+                    mAlertBuilder = new AlertDialog.Builder(Recollector.this);
+                    final View mViewPermission = getLayoutInflater().inflate(R.layout.dialog_permission, null);
+
+                    final TextView mPermissionInformation = mViewPermission.findViewById(R.id.textInformation);
+                    final Button mPermissionButton = mViewPermission.findViewById(R.id.savePermissionButton);
+                    final RadioGroup mGroupOptions = mViewPermission.findViewById(R.id.radioSelection);
+                    final RadioButton mOptionYes = mViewPermission.findViewById(R.id.radioSelectionYes);
+                    final RadioButton mOptionNo = mViewPermission.findViewById(R.id.radioSelectionNo);
+
+                    String name = jsonObject.getString("name");
+                    mPermissionInformation.setText(name + " is asking for permission to access your stored data, do you accept?");
+
+                    final String permissionID = jsonObject.getString("id");
+
+                    mPermissionButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            if(mGroupOptions.getCheckedRadioButtonId() == -1) {
+                                Toast.makeText(Recollector.this, "Select one option",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            else if (mOptionYes.isChecked()) {
+
+                                scheduler.setPermissionUser(Integer.parseInt(permissionID));
+                            }
+
+                            Toast.makeText(Recollector.this, "Successfully save",
+                                    Toast.LENGTH_SHORT).show();
+                            cancelDialog();
+                        }
+                    });
+
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAlertBuilder.setView(mViewPermission);
+                            mAlertBuilder.setCancelable(false);
+
+                            dialog = mAlertBuilder.create();
+                            dialog.show();
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            controlScreenPermission = controlScreenPermission + 1;
+        }
     }
 
     public class Localizacion implements LocationListener {
@@ -407,6 +483,7 @@ public class Recollector extends AppCompatActivity {
         public Recollector getMainActivity() {
             return mainActivity;
         }
+
         public void setMainActivity(Recollector mainActivity) {
             this.mainActivity = mainActivity;
         }
@@ -445,17 +522,6 @@ public class Recollector extends AppCompatActivity {
                     break;
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-
-        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 120000,
-                120000, alarmIntent);
-
     }
 
 }

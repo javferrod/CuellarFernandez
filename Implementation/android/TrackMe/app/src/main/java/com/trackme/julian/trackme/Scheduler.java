@@ -1,9 +1,16 @@
 package com.trackme.julian.trackme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Scheduler {
 
@@ -21,6 +28,9 @@ public class Scheduler {
     private int hearthRate = 0;
 
     private boolean saveCorrect = false;
+    private boolean permissionGet = false;
+
+    private JSONArray jsonArray;
 
     Router router;
 
@@ -210,27 +220,50 @@ public class Scheduler {
 
         hearthRate = getHearthRate();
 
-        Log.d("debug", "Latitude: " + latitude);
-        Log.d("debug", "Longitude: " + longitude);
-
         if (newWeight == true) {
             weight = getWeight();
-            Log.d("debug", "EL PESO SE HA MANDADO " + weight);
             router.postUserData(latitude, longitude, hearthRate, weight);
         } else {
             router.postUserData(latitude, longitude, hearthRate, 0);
         }
     }
 
-    public void askPermissionUser() {
+    public JSONArray askPermissionUser() {
 
-        getPermissionUser();
+        if (permissionGet == false) {
+            getPermissionUser();
+            permissionGet = true;
+        } else {
+
+            SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+
+            JSONObject jsonObject = null;
+            jsonArray = null;
+            try {
+                jsonObject = new JSONObject(sharpref.getString("permissionsUser", null));
+                jsonArray = jsonObject.getJSONArray("permissions");
+
+                Log.d("debug", jsonArray.getString(0));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            permissionGet = false;
+
+        }
+
+        return jsonArray;
     }
 
-    private void getPermissionUser () {
+    private void getPermissionUser() {
 
         router.getPermissionsUser();
-
     }
+
+    public void setPermissionUser(int permissionID) {
+
+        router.setPermissionUser(permissionID);
+    }
+
 
 }

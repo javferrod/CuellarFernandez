@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,7 +21,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class InitialScreen extends AppCompatActivity {
 
     AlertDialog.Builder mBuilder;
     AlertDialog dialog;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         router = Router.getInstance(getApplicationContext());
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.initial_screen);
 
         Button mShowDialog = findViewById(R.id.logIn);
         mShowDialog.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
                 else {
 
-                    Toast.makeText(MainActivity.this, "Autologin successfully",
+                    Toast.makeText(InitialScreen.this, "Autologin successfully",
                             Toast.LENGTH_SHORT).show();
 
                     Intent ListSong = new Intent(getApplicationContext(), Recollector.class);
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mShowSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBuilder = new AlertDialog.Builder(MainActivity.this);
+                mBuilder = new AlertDialog.Builder(InitialScreen.this);
                 View mViewSignUp = getLayoutInflater().inflate(R.layout.dialog_register, null);
                 final EditText mNameSignUp = mViewSignUp.findViewById(R.id.textName);
                 final EditText mBirthdateSingUp = mViewSignUp.findViewById(R.id.textBirthdate);
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         actualMonth = c.get(Calendar.MONTH);
                         actualYear = c.get(Calendar.YEAR);
 
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(InitialScreen.this, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 mBirthdateSingUp.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                                 || mResidence.getText().toString().isEmpty() || mEmailSignUp.getText().toString().isEmpty() || mPasswordSignUp.getText().toString().isEmpty() ||
                                 mGenderGroup.getCheckedRadioButtonId() == -1) {
 
-                            Toast.makeText(MainActivity.this, "Please fill any empty fields",
+                            Toast.makeText(InitialScreen.this, "Please fill any empty fields",
                                     Toast.LENGTH_SHORT).show();
 
                         } else {
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
 
-                            Toast.makeText(MainActivity.this, "Successfully registered",
+                            Toast.makeText(InitialScreen.this, "Successfully registered",
                                     Toast.LENGTH_SHORT).show();
                             cancelDialog();
                         }
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void requestPermission() {
 
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
+        ActivityCompat.requestPermissions(InitialScreen.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
 
     }
 
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void login () {
 
-        mBuilder = new AlertDialog.Builder(MainActivity.this);
+        mBuilder = new AlertDialog.Builder(InitialScreen.this);
         View mViewLogIn = getLayoutInflater().inflate(R.layout.dialog_login, null);
         final EditText mEmail = mViewLogIn.findViewById(R.id.textEmail);
         final EditText mPassword = mViewLogIn.findViewById(R.id.textPassword);
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mEmail.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please fill any empty fields",
+                    Toast.makeText(InitialScreen.this, "Please fill any empty fields",
                             Toast.LENGTH_SHORT).show();
                 } else {
 

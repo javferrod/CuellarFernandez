@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="154dp"
+        android:fontFamily="@font/bitter"
         android:text="@string/information"
         android:textAlignment="center"
         android:textSize="25sp"
@@ -27,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:orientation="horizontal"
-        android:paddingLeft="110dp"
+        android:paddingLeft="85dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInformation">
@@ -48,11 +49,12 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/logInButton"
+        android:id="@+id/savePermissionButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:background="@color/colorAccent"
+        android:fontFamily="@font/bitter"
         android:text="@string/save"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
