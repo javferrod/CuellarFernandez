@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const R = require('ramda');
-
 export const QUERY_SUCCESS = 'QUERY_SUCCESS';
 export const QUERY_ERROR = 'QUERY_ERROR';
 export const QUERY_LOADING = 'QUERY_LOADING';
