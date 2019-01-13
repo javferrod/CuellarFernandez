@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -46,48 +47,16 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sharpref = getApplicationContext().getSharedPreferences("app_data", Context.MODE_PRIVATE);
 
                 if (sharpref.contains("tokenUser") == false) {
-                    mBuilder = new AlertDialog.Builder(MainActivity.this);
-                    View mViewLogIn = getLayoutInflater().inflate(R.layout.dialog_login, null);
-                    final EditText mEmail = mViewLogIn.findViewById(R.id.textEmail);
-                    final EditText mPassword = mViewLogIn.findViewById(R.id.textPassword);
-                    final Button mLogin = mViewLogIn.findViewById(R.id.logInButton);
 
+                    login();
+                }
 
-                    mLogin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (mEmail.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
-                                Toast.makeText(MainActivity.this, "Please fill any empty fields",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
+                else if (sharpref.getString("sessionOpen", "0").equals("0")) {
 
-                                router.logInUser(mEmail.getText().toString(), mPassword.getText().toString());
+                    login();
+                }
 
-                                new CountDownTimer(750, 1) {
-
-                                    public void onTick(long millisUntilFinished) {
-                                    }
-
-                                    public void onFinish() {
-
-                                        boolean logInCorrect;
-
-                                        logInCorrect = router.getLogInCorrect();
-
-                                        if (logInCorrect) {
-                                            Intent ListSong = new Intent(getApplicationContext(), Recollector.class);
-                                            startActivity(ListSong);
-                                        }
-                                    }
-                                }.start();
-                            }
-                        }
-                    });
-
-                    mBuilder.setView(mViewLogIn);
-                    dialog = mBuilder.create();
-                    dialog.show();
-                } else {
+                else {
 
                     Toast.makeText(MainActivity.this, "Autologin successfully",
                             Toast.LENGTH_SHORT).show();
@@ -189,5 +158,61 @@ public class MainActivity extends AppCompatActivity {
 
     private void cancelDialog() {
         dialog.dismiss();
+    }
+
+    private void login () {
+
+        mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mViewLogIn = getLayoutInflater().inflate(R.layout.dialog_login, null);
+        final EditText mEmail = mViewLogIn.findViewById(R.id.textEmail);
+        final EditText mPassword = mViewLogIn.findViewById(R.id.textPassword);
+        final CheckBox mSessionOpen = mViewLogIn.findViewById(R.id.checkSessionOpen);
+        final Button mLogin = mViewLogIn.findViewById(R.id.logInButton);
+
+
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mEmail.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please fill any empty fields",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+
+                    router.logInUser(mEmail.getText().toString(), mPassword.getText().toString());
+
+                    new CountDownTimer(750, 1) {
+
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+
+                            boolean logInCorrect;
+
+                            logInCorrect = router.getLogInCorrect();
+
+                            if (logInCorrect) {
+
+                                if(mSessionOpen.isChecked()) {
+
+                                    SharedPreferences sharpref = getApplicationContext().getSharedPreferences("app_data", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor edit = sharpref.edit();
+
+                                    edit.putString("sessionOpen", "1");
+                                    edit.apply();
+                                }
+
+                                Intent ListSong = new Intent(getApplicationContext(), Recollector.class);
+                                startActivity(ListSong);
+                            }
+                        }
+                    }.start();
+                }
+            }
+        });
+
+        mBuilder.setView(mViewLogIn);
+        dialog = mBuilder.create();
+        dialog.show();
     }
 }

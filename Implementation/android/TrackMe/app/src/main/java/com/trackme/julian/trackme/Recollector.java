@@ -1,6 +1,7 @@
 package com.trackme.julian.trackme;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -69,6 +71,8 @@ public class Recollector extends AppCompatActivity {
     Handler mHandler;
 
     Scheduler scheduler;
+
+    private AlarmManager alarmMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +175,10 @@ public class Recollector extends AppCompatActivity {
         };
 
         timer.schedule(task, 1, 30000);
+    }
+
+    public void track () {
+
     }
 
     public void setLocation(Location loc) {
@@ -438,4 +446,16 @@ public class Recollector extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 120000,
+                120000, alarmIntent);
+
+    }
+
 }

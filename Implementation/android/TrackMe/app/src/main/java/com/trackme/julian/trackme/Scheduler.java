@@ -22,6 +22,8 @@ public class Scheduler {
 
     private boolean saveCorrect = false;
 
+    Router router;
+
 
     public static Scheduler getInstance(Context context) {
 
@@ -35,6 +37,7 @@ public class Scheduler {
     protected Scheduler(Context context) {
 
         this.context = context;
+        this.router = Router.getInstance(context);
     }
 
 
@@ -195,8 +198,6 @@ public class Scheduler {
 
     private void sendUserData(boolean newWeight) {
 
-        Router router = Router.getInstance(context);
-
         double latitude;
         double longitude;
 
@@ -221,5 +222,15 @@ public class Scheduler {
         }
     }
 
+    public void askPermissionUser() {
+
+        getPermissionUser();
+    }
+
+    private void getPermissionUser () {
+
+        router.getPermissionsUser();
+
+    }
 
 }
