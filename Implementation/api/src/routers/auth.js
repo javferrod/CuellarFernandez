@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { saveUser, saveClient, getToken, generateToken, getUserByToken } from '../database';
+import { saveUser, saveClient, getToken, generateToken, getUserByToken, deleteToken} from '../database';
 import R from 'ramda';
 
 
@@ -16,8 +16,12 @@ authRouter.post('/login', async (ctx, next) => {
         return;
     }
 
-    if(isTokenNil(tokenEntry) || isTokenExpired(tokenEntry))
+    if(isTokenNil(tokenEntry))
         token = R.head(await generateToken(user, password));
+    else if(isTokenExpired(tokenEntry)){
+        await deleteToken(tokenEntry);
+        token = R.head(await generateToken(user, password));
+    }
     else
         token = extractToken(tokenEntry);
 
@@ -53,8 +57,18 @@ authRouter.post('/register-client', async (ctx, next) => {
         ctx.response.status = 200;
 });
 
+
+/*
+* Intercepts all the request, auth the user 
+* and sustitutes the user/pssw for the id
+*/
 const authMiddleware = async (ctx, next) => {
     const { token } = ctx.request.body;
+
+    if(!ctx.is('application/json')){
+        await next();
+        return;
+    }
 
     if(R.isNil(token)){
         ctx.response.status = 403;
@@ -73,6 +87,9 @@ const authMiddleware = async (ctx, next) => {
     await next();
 }
 
+export { authRouter, authMiddleware };
+
+// HELPERS
 
 const passwordWrong = R.isEmpty;
 
@@ -105,5 +122,3 @@ const has = props => R.pipe(
     R.length,
     R.equals(R.length(props))
 );
-
-export { authRouter, authMiddleware };

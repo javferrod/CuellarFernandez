@@ -11,12 +11,6 @@ permissionManager.post('/', async (ctx, next) => {
     ctx.response.body = await getPermissions(auth);
 })
 
-permissionManager.post('/client', async (ctx, next) => {
-    const { auth } = ctx.request.body;
-
-    ctx.response.body = { permissions: await retrieveUserPermissions(auth) };
-})
-
 permissionManager.post('/request', async (ctx, next) => {
     const { auth, codice } = ctx.request.body;
     
@@ -33,6 +27,13 @@ permissionManager.post('/request', async (ctx, next) => {
         ctx.responde.status = 500;
     else
         ctx.response.status = 200;
+})
+
+// Returns the list of permissions of a user
+permissionManager.post('/client', async (ctx, next) => {
+    const { auth } = ctx.request.body;
+
+    ctx.response.body = { permissions: await retrieveUserPermissions(auth) };
 })
 
 permissionManager.post('/accept', async (ctx, next) => {

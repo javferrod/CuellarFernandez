@@ -15,6 +15,8 @@ async function updatePermissionStatus(permissionID, userID){
 
 export { updatePermissionStatus }
 
+// HELPERS
+
 const filterByPermissionID = R.curry((permissionID, query) => {
     query.where(`${PERMISSIONS}.id`, permissionID);
     return query;

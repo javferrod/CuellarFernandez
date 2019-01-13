@@ -33,8 +33,8 @@ async function saveClient(username, password, name){
 
 /*
 * parameter is a json with the correct keys 
-* (hearthrate, weight, latitude or longitude)
-* and insert them into the database. 
+* (hearthrate, weight, latitude or longitude).
+* Insert them into the database. 
 */
 async function saveParameters(parameters, userID){
     let get = getParameters(userID);

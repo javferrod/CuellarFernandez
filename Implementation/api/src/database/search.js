@@ -5,7 +5,11 @@ import { knex } from './init';
 import { USERS, TEMPORAL_PARAMETERS, PERMISSIONS } from './names';
 import { filterByUser, leftJoin } from './common';
 
-
+/*
+* The search functions relies heavily on the helpers.
+* The helpers functions are created to be chainable
+* and reusable.
+*/
 
 async function searchByID(userID){
    
@@ -80,7 +84,6 @@ async function retrieveUserPermissions(userID){
 export { searchByID, searchByCodice, searchByParameters, getPermissions, getID, havePermission, retrieveUserPermissions }
 
 //HELPERS
-
  
 const filterRanges = R.curry((parameters, query) => {
     const { weight, hearthrate } = parameters;

@@ -9,15 +9,17 @@ var queryManager = new Router({ prefix: '/query' });
 
 queryManager.post('/codice', async (ctx, next) => {
     const { auth, codice } = ctx.request.body;
+    
+    if(! await havePermission(auth, codice)){
+       ctx.response.status = 403; 
+       return;
+    }
+
     let individual = await searchByCodice(codice);
 
     if(R.isEmpty(individual)){
         ctx.response.body = [];
         return;
-    }
-
-    if(! await havePermission(auth, codice)){
-       ctx.response.status = 403; 
     }
 
     ctx.response.body = {
@@ -33,17 +35,22 @@ queryManager.post('/codice', async (ctx, next) => {
 })
 
 /*
-query : {
-    location: {lat, long},
-    residence: {lat, long},
-    age: {min, max},
-    genre: {m/f},
-    weight: {min, max}
-    hearthrate: {min, max}
-}
+* QUERY FORMAT
+* query : {
+*    location: {lat, long},
+*    residence: {lat, long},
+*    age: {min, max},
+*    genre: {m/f},
+*    weight: {min, max}
+*    hearthrate: {min, max}
+* }
 */
 
-
+/*
+* Gets the entries from the database, then 
+* the resul is grouped by users and
+* filtered by location in memory. 
+*/
 queryManager.post('/', async (ctx, next) => {
     const { query } = ctx.request.body;
 
@@ -68,6 +75,8 @@ queryManager.post('/', async (ctx, next) => {
 
 export default queryManager;
 
+// HELPERS
+
 
 const groupByUser = R.groupBy(R.prop('id'));
 const ungroup = R.pipe(R.values, R.flatten);
@@ -80,7 +89,7 @@ const countUsers = R.pipe(
 const getLocations = projectProps(['time', 'latitude', 'longitude']);
 const getWeight = projectProps(['time', 'weight']);
 const getHearthRate = projectProps(['time', 'hearthrate']);
-const getBirthDates = R.pipe(projectProps(['id', 'birthdate']), onePerUser());
+const getBirthDates = R.pipe(projectProps(['id', 'birthdate']), onePerUser()); 
 const getGenders = R.pipe(projectProps(['id', 'gender']), onePerUser());
 
 

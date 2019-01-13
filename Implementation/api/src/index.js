@@ -1,8 +1,10 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
+import serve from 'koa-static';
 import { authRouter, dataRecollector, queryManager, permissionManager, authMiddleware } from './routers';
 import { connectToDatabase } from './database';
+
 
 const cors = require('@koa/cors');
 
@@ -10,10 +12,11 @@ const cors = require('@koa/cors');
 var app = new Koa();
 var router = new Router();
 
-connectToDatabase();
+connectToDatabase()
 
 app
   .use(cors())
+  .use(serve('front'))
   .use(bodyParser())
   .use(router.routes())
   .use(authRouter.routes())
