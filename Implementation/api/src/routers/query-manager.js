@@ -8,7 +8,7 @@ const MIN_USERS = 2;
 var queryManager = new Router({ prefix: '/query' });
 
 queryManager.post('/codice', async (ctx, next) => {
-    const { id, codice } = ctx.request.body;
+    const { auth, codice } = ctx.request.body;
     let individual = await searchByCodice(codice);
 
     if(R.isEmpty(individual)){
@@ -16,7 +16,7 @@ queryManager.post('/codice', async (ctx, next) => {
         return;
     }
 
-    if(! await havePermission(id, codice)){
+    if(! await havePermission(auth, codice)){
        ctx.response.status = 403; 
     }
 
