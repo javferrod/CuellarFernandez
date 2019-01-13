@@ -1,0 +1,61 @@
+\subsection{API}
+The API code can be found in Implementation/API/src. The code are divided in the following structure:
+\begin{itemize}
+    \item \textbf{database}: Since the main mission of the API is to store and query data, this folder comprises the great majority of the code . Below the main files are stated.
+    \begin{itemize}
+        \item \textbf{auth}: Insert and deletions related with the authentication. Also contains the code responsible of the generation of the tokens.
+        \item \textbf{init}: Connection to the database and creation of the tables if needed.
+        \item \textbf{insert}: Insert related logic.
+        \item \textbf{names}: Names of the tables, shared across the database functions.
+        \item \textbf{populate}: Functions to generate fake data and insert it in the database.
+        \item \textbf{search}: Functions to query the database.
+        \item \textbf{update}: Functions to update the entries of the database.
+    \end{itemize}
+    \item \textbf{routers}: The functions contained in this folder handles the HTTP requests. It is primarily responsible for adapting incoming and outgoing data.
+\end{itemize}
+
+Logically speaking, each \textit{resource} of the application are handled by a different router. These routers handles the HTTP requests, checks the presence of the needed parameters and then calls the needed function of the database package.
+
+Worth mentioning that the authentication is carried out by a middleware which can be found in the auth router. 
+
+\subsection{Dashboard}
+The Dashboard code can be found in Implementation/frontend/src. The structure of the code follows the Redux guidelines.
+\begin{itemize}
+    \item \textbf{actions}: Functions that dispatch changes to the global store. All the request to the backend are carried out here.
+    \item \textbf{components}: Code that handles the frontend, all the React code can be found here. 
+        \begin{itemize}
+            \item \textbf{auth}: Login related components.
+            \item \textbf{data-display}: Components used to display the data. There are maps, graphs and cards.
+            \item \textbf{permissions}: Permissions related components.
+            \item \textbf{query}: Query related components, filters included. To display the data leverages on data-display package.
+            \item \textbf{search}: Search related components. To display the data leverages on data-display package.
+        \end{itemize}
+    \item \textbf{reducers}: Handles the actions and performs the needed changes in the global state. Each reducer handles its part of the state.
+\end{itemize}
+
+The functioning of the frontend is rather standard and it is guided by Redux methodology. There are three main components: QueryPage, SearchPage and PermissionsPage. 
+
+These components have a portion of the global state assigned as read-only and a set of actions that can fire. Both, state and actions are propagated as needed to smaller components. 
+
+When one action is fired, the reducers takes the action and performs the needed changes on the state, which are assigned again to the main components. Then, changes in the frontend are rendered thanks to React.
+
+
+\subsection{Mobile Application}
+
+The Mobile Application code can be found in Implementation/android/TrackMe-User (there is an app for development that allows you to see what data is being processed and collected) . The structure of the code follow a simple structure:
+
+\begin{itemize}
+    \item \textbf{java classes}: 4 main classes are presented:
+    \begin{itemize}
+        \item \textbf{InitialScreen} : Controls the entry screen and performs the log in and registration functions.
+        \item \textbf{Recollector} : It performs the main functions of \companyName, is the class that controls all the parameters of the service and works with the main interface of the application.
+        \item \textbf{Scheduler} : Intermediate class between the Collector and the Router. It is the one that carries out the movement of data between the classes and stores them.
+        \item \textbf{Router} : It is the class that connects the application with the \companyName API, it is the only entry/out point of the application.
+    \end{itemize}
+    
+    \item \textbf{layouts}: They provide the user interface, the java classes are connected to them and perform the internal functions.
+\end{itemize}
+
+The operation of the application starts with the start screen that is moved by the InitialScreen class, from here you control the Login and Sing up of the application.
+
+Once the Login is done correctly, the Recollector class is emitted, which is assigned to the main screen of the application. This Recollector class controls the timers for data collection, applying the different operations once they are finished. Once received the data are sent to the Scheduler which collects the data stores them and makes them reach the Router who with POST operations connects to the API and sends the different data.

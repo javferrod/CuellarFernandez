@@ -1,0 +1,97 @@
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    \textbf{ID} & \textbf{Method} & \textbf{URL} & \textbf{Parameters} & \textbf{Return} & \textbf{Description}\\
+    \midrule
+    
+    \silabel{si:emergency-alarm} & POST &
+    /ambulance
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    location, phone number, phone number of a family member, triggered parameter 
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+     estimated time 
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Call when an emergency service is needed, the important data of the customer is send to the Emergency system
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of Emergency API}
+  \label{table:api-emergency}
+\end{table}
+
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    \textbf{ID} & \textbf{Method} & \textbf{URL} & \textbf{Parameters} & \textbf{Return} & \textbf{Description} \\
+    \midrule
+    
+    \silabel{si:pay-create-card} & POST &
+    /v1/tokens
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Card Nº, Card expiration, CVC
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Card ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a card to be used in \siref{si:pay-create-customer}. One time use.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-create-customer} & POST &
+    /v1/customer
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Card ID, email
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Customer ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a client in the payment system, returns the ID that identifies the client in the payment system.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-subscribe-customer} & POST &
+    /v1/subscriptions
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Customer ID, Plan ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Starts charging the client the amont indicated by the Plan ID
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:pay-cancel-customer} & DELETE &
+    /v1/subscriptions
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Subscription ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Register a client in the payment system, returns the ID that identifies the client in the payment system.
+    \end{tabular} \\
+    
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of Payment API}
+  \label{table:api-pay}
+\end{table}
