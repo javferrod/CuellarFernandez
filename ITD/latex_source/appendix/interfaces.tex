@@ -1,0 +1,54 @@
+\begin{table}[H]
+  \centering
+    \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{cccp{4cm}p{2cm}p{9cm}}
+    \toprule
+    \textbf{ID} & \textbf{Method} & \textbf{URL} & \textbf{Parameters} & \textbf{Return} & \textbf{Description} \\
+    \midrule
+    
+    \silabel{si:api-login} & POST &
+    /login
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Username, password
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Client token
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Returns a token that will be use to authenticate the user in the next API calls.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:api-query} & POST &
+    /query
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Client token, query
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Data batch
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Return a data batch containing all the entries that corresponds to the query.
+    \end{tabular} \\
+    \hline
+    
+    \silabel{si:api-search} & POST &
+    /search-user
+    &
+    \begin{tabular}{@{}p{4cm}@{}}
+    Client token, User ID
+    \end{tabular} &
+    \begin{tabular}{@{}p{2cm}@{}}
+    Data of the user
+    \end{tabular} &
+    \begin{tabular}{@{}p{9cm}@{}}
+    Returns the available data of the searched user if the client has permission
+    \end{tabular} \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+  \caption{Software interfaces of \companyName{} API for the client}
+  \label{table:api-client}
+\end{table}

@@ -1,0 +1,157 @@
+\input{commandsFile}
+\begin{document}
+
+%TITLE PAGE
+
+\begin{titlepage}
+
+
+%LOGO
+
+{\begin{table}[t!]
+\centering
+\begin{tabu} to \textwidth { X[1.3,r,p] X[1.7,l,p] }
+\vspace{-1.3cm}
+\textcolor{blue}
+{\textbf{\small{TrackMe project Julián Cuéllar Mangut Javier Fernández Rodríguez}}} & \includegraphics[scale=0.5]{images/PolimiLogo}
+\end{tabu}
+\end{table}}~\\ [7cm]
+
+%TITLE 
+
+\begin{flushleft}
+
+%Replace the text string with your title
+{\textcolor{blue}{\textbf{\Huge{Implementation and Test deliverable}}}} \\ [1cm]
+
+\end{flushleft}
+
+\end{titlepage}
+
+%Define deliverable specific info
+%Replace cell contents where needed
+\begin{table}[h!]
+\begin{tabu} to \textwidth { X[0.3,r,p] X[0.7,l,p] }
+\hline
+
+\textbf{Deliverable:} & DD\\
+\textbf{Title:} & Design Document \\
+\textbf{Authors:} & Julián Cuéllar Mangut, Javier Fernández Rodríguez\\
+\textbf{Version:} & 1.0 \\ 
+\textbf{Date:} & 13-January-2019 \\
+\textbf{Download page:} & https://github.com/javferrod/CuellarFernandez\\
+\textbf{Copyright:} & Copyright © 2018, Julián Cuéllar, Javier Fernández \\
+\hline
+\end{tabu}
+\end{table}
+
+\begin{table}[h!]
+\begin{tabu} to \textwidth {X[0,3,r,p] X[0,2,r,p] X[0,7,2,p] }
+\hline
+
+\textbf{Revision history:} &  &  \\
+& \textbf{V 1.0:} & First version of the document. \\
+
+\hline
+\label{Revision-history}
+\end{tabu}
+\end{table}
+
+
+
+
+\setcounter{page}{2}
+
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+\label{sect:contents}
+\newpage
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Introduction}
+\label{sect:introduction}
+\input{Files/introduction}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Functions Implemented}
+\label{sect:functionsImplemented}
+\input{Files/functionsImplemented.tex}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Frameworks Adopted}
+\label{sect:frameworksAdopted}
+\input{Files/frameworksAdopted.tex}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Structure of the Source Code}
+\label{sect:sourceCode}
+\input{Files/sourceCode.tex}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Testing}
+\label{sect:testing}
+\input{Files/testing.tex}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\section{Installation Instructions}
+\label{sect:installationInstructions}
+\input{Files/installationInstructions.tex}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{ieeetr}
+\bibliography{main}
+\label{sect:references}
+%------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\begin{appendices}
+\section{Goals}
+\label{sec:goals-appendix}
+\input{appendix/goals.tex}
+\clearpage
+\section{Use cases}
+\label{sec:use-case-appendix}
+\input{appendix/use-case}
+\clearpage
+\section{Requirements}
+\label{sec:requirements-appendix}
+\input{appendix/requirements}
+\clearpage
+\section{Dependencies}
+\label{sec:dependencies-appendix}
+\input{appendix/dependencies}
+\clearpage
+\section{User interfaces}
+\label{sec:user-interfaces-appendix}
+\input{appendix/user-interfaces}
+\clearpage
+\section{Software interfaces}
+\label{sec:interfaces-appendix}
+\input{appendix/interfaces}
+\clearpage
+\section{Parameters}
+\label{sec:parameters-appendix}
+\input{appendix/parameters}
+\clearpage
+\section{Inputs and intervals associated to parameters}
+\label{sec:parameters-others-appendix}
+\input{appendix/parameters-others}
+
+
+\end{appendices}
+
+\end{document}
