@@ -18,6 +18,8 @@ public class Scheduler {
 
     private Context context;
 
+    private String tokenUser;
+
     private double latitude = 0;
     private double longitude = 0;
 
@@ -35,25 +37,26 @@ public class Scheduler {
     Router router;
 
 
-    public static Scheduler getInstance(Context context) {
+    public static Scheduler getInstance(Context context, String tokenUser) {
 
         if (instance == null) {
-            instance = new Scheduler(context);
+            instance = new Scheduler(context, tokenUser);
         }
 
         return instance;
     }
 
-    protected Scheduler(Context context) {
+    protected Scheduler(Context context, String tokenUser) {
 
         this.context = context;
-        this.router = Router.getInstance(context);
+        this.tokenUser = tokenUser;
+        this.router = Router.getInstance(context, tokenUser);
     }
 
 
     private void setLatitude(double latitude) {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
 
         edit.putString("latitudeData", String.valueOf(latitude));
@@ -65,7 +68,7 @@ public class Scheduler {
 
     private double getLatitude() {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
 
         double latitude = 0;
 
@@ -80,7 +83,7 @@ public class Scheduler {
 
     private void setLongitude(double longitude) {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
 
         edit.putString("longitudeData", String.valueOf(longitude));
@@ -92,7 +95,7 @@ public class Scheduler {
 
     private double getLongitude() {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
 
         double longitude = 0;
 
@@ -117,7 +120,7 @@ public class Scheduler {
 
     private void setWeight(int weight) {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
 
         edit.putString("weightData", String.valueOf(weight));
@@ -129,7 +132,7 @@ public class Scheduler {
 
     private int getWeight() {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
 
         int weight = 0;
 
@@ -144,7 +147,7 @@ public class Scheduler {
 
     private void setHearthRate(int hearthRate) {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
 
         edit.putString("hearthRateData", String.valueOf(hearthRate));
@@ -156,7 +159,7 @@ public class Scheduler {
 
     private int getHearthRate() {
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+        SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
 
         int hearthRate = 0;
 
@@ -235,7 +238,7 @@ public class Scheduler {
             permissionGet = true;
         } else {
 
-            SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+            SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
 
             JSONObject jsonObject = null;
             jsonArray = null;

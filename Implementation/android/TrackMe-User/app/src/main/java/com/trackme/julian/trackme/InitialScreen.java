@@ -34,7 +34,7 @@ public class InitialScreen extends AppCompatActivity {
 
         requestPermission();
 
-        router = Router.getInstance(getApplicationContext());
+        router = Router.getInstance(getApplicationContext(), null);
 
         setContentView(R.layout.initial_screen);
 
@@ -98,7 +98,7 @@ public class InitialScreen extends AppCompatActivity {
                         DatePickerDialog datePickerDialog = new DatePickerDialog(InitialScreen.this, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                mBirthdateSingUp.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                                mBirthdateSingUp.setText((month + 1) + "/" + dayOfMonth + "/" + year);
                             }
                         }
                                 , actualYear, actualMonth, actualDay);

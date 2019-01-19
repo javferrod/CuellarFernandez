@@ -46,14 +46,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Recollector extends AppCompatActivity {
-
-    TextView mensaje3;
 
     TextView last_record;
 
@@ -80,19 +80,21 @@ public class Recollector extends AppCompatActivity {
 
     Scheduler scheduler;
 
+    String tokenUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recollector);
 
-        mensaje3 = findViewById(R.id.mensaje_id3);
+        SharedPreferences sharpref = getApplicationContext().getSharedPreferences("app_data", Context.MODE_PRIVATE);
 
-        scheduler = Scheduler.getInstance(getApplicationContext());
+        tokenUser = sharpref.getString("tokenUser", null);
+
+        scheduler = Scheduler.getInstance(getApplicationContext(), tokenUser);
 
         setContentView(R.layout.drawer);
 
         last_record = findViewById(R.id.last_record);
-
 
         int icono = R.drawable.logomini;
         Intent intent = new Intent(Recollector.this, Recollector.class);
@@ -177,7 +179,7 @@ public class Recollector extends AppCompatActivity {
             }
         };
 
-        timer.schedule(task, 1, 300000);
+        timer.schedule(task, 25000, 300000);
         timer.schedule(taskPermission, 60000, 60000);
         timer.schedule(taskGetPermission, 30000, 60000);
     }
@@ -228,8 +230,6 @@ public class Recollector extends AppCompatActivity {
         int number;
         int counter = 0;
 
-        final int number_text;
-
         do {
             number = (int) (Math.random() * 55 + 55);
             counter = counter + 1;
@@ -238,23 +238,17 @@ public class Recollector extends AppCompatActivity {
 
         if (counter_HearthRate < danger_HearthRate) {
 
-            number_text = number;
-
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mensaje3.setText("Hearth rate: " + number_text + " bpm");
                     counter_HearthRate = counter_HearthRate + 1;
                 }
             });
         } else {
 
-            number_text = number - 55;
-
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mensaje3.setText("Danger! Hearth rate very low: " + number_text + " bpm");
                     counter_HearthRate = 0;
                 }
             });
@@ -271,7 +265,7 @@ public class Recollector extends AppCompatActivity {
 
         c = Calendar.getInstance();
 
-        SharedPreferences sharpref = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharpref = getApplicationContext().getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharpref.edit();
 
         String date = dateformat2.format(c.getTime());
@@ -350,8 +344,17 @@ public class Recollector extends AppCompatActivity {
 
         JSONArray jsonArray;
         JSONObject jsonObject;
+        Set permissionList = new HashSet<String>();
 
         jsonArray = scheduler.askPermissionUser();
+
+        SharedPreferences sharpref = getApplicationContext().getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharpref.edit();
+
+        if(sharpref.contains("permissionAsk")) {
+             permissionList = sharpref.getStringSet("permissionAsk", null);
+
+        }
 
         if (jsonArray != null) {
 
@@ -363,52 +366,56 @@ public class Recollector extends AppCompatActivity {
                 try {
                     jsonObject = jsonArray.getJSONObject(controlScreenPermission);
                     String accepted = jsonObject.getString("accepted");
+                    final String permissionID = jsonObject.getString("id");
 
                     if (accepted.equals("false")) {
 
-                        mAlertBuilder = new AlertDialog.Builder(Recollector.this);
-                        final View mViewPermission = getLayoutInflater().inflate(R.layout.dialog_permission, null);
+                        if(permissionList == null || !permissionList.contains(permissionID)) {
+                            mAlertBuilder = new AlertDialog.Builder(Recollector.this);
+                            final View mViewPermission = getLayoutInflater().inflate(R.layout.dialog_permission, null);
 
-                        final TextView mPermissionInformation = mViewPermission.findViewById(R.id.textInformation);
-                        final Button mPermissionButton = mViewPermission.findViewById(R.id.savePermissionButton);
-                        final RadioGroup mGroupOptions = mViewPermission.findViewById(R.id.radioSelection);
-                        final RadioButton mOptionYes = mViewPermission.findViewById(R.id.radioSelectionYes);
-                        final RadioButton mOptionNo = mViewPermission.findViewById(R.id.radioSelectionNo);
+                            final TextView mPermissionInformation = mViewPermission.findViewById(R.id.textInformation);
+                            final Button mPermissionButton = mViewPermission.findViewById(R.id.savePermissionButton);
+                            final RadioGroup mGroupOptions = mViewPermission.findViewById(R.id.radioSelection);
+                            final RadioButton mOptionYes = mViewPermission.findViewById(R.id.radioSelectionYes);
+                            final RadioButton mOptionNo = mViewPermission.findViewById(R.id.radioSelectionNo);
 
-                        String name = jsonObject.getString("name");
-                        mPermissionInformation.setText(name + " is asking for permission to access your stored data, do you accept?");
+                            String name = jsonObject.getString("name");
+                            mPermissionInformation.setText(name + " is asking for permission to access your stored data, do you accept?");
+                            permissionList.add(permissionID);
+                            edit.putStringSet("permissionAsk", permissionList);
+                            edit.apply();
 
-                        final String permissionID = jsonObject.getString("id");
+                            mPermissionButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
 
-                        mPermissionButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                                    if (mGroupOptions.getCheckedRadioButtonId() == -1) {
+                                        Toast.makeText(Recollector.this, "Select one option",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else if (mOptionYes.isChecked()) {
 
-                                if (mGroupOptions.getCheckedRadioButtonId() == -1) {
-                                    Toast.makeText(Recollector.this, "Select one option",
+                                        scheduler.setPermissionUser(Integer.parseInt(permissionID));
+                                    }
+
+                                    Toast.makeText(Recollector.this, "Successfully save",
                                             Toast.LENGTH_SHORT).show();
-                                } else if (mOptionYes.isChecked()) {
-
-                                    scheduler.setPermissionUser(Integer.parseInt(permissionID));
+                                    cancelDialog();
                                 }
-
-                                Toast.makeText(Recollector.this, "Successfully save",
-                                        Toast.LENGTH_SHORT).show();
-                                cancelDialog();
-                            }
-                        });
+                            });
 
 
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAlertBuilder.setView(mViewPermission);
-                                mAlertBuilder.setCancelable(false);
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAlertBuilder.setView(mViewPermission);
+                                    mAlertBuilder.setCancelable(false);
 
-                                dialog = mAlertBuilder.create();
-                                dialog.show();
-                            }
-                        });
+                                    dialog = mAlertBuilder.create();
+                                    dialog.show();
+                                }
+                            });
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
