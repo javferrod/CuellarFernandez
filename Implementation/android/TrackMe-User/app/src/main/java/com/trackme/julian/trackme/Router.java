@@ -24,23 +24,25 @@ public class Router {
 
     private boolean logInCorrect;
 
+    private static String tokenUser;
+
     RequestQueue requestQueue;
 
     private static Router instance = null;
 
-    public static Router getInstance(Context context) {
+    public static Router getInstance(Context context, String token) {
 
-        if (instance == null) {
-            instance = new Router(context);
+        if (instance == null || tokenUser == null) {
+            instance = new Router(context, token);
         }
 
         return instance;
     }
 
-    private Router(Context context) {
+    private Router(Context context, String token) {
 
         this.context = context;
-
+        this.tokenUser = token;
         requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -149,15 +151,13 @@ public class Router {
         JSONObject json = new JSONObject();
         JSONObject manJson = new JSONObject();
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
-
         try {
             manJson.put("latitude", latitude);
             manJson.put("longitude", longitude);
             manJson.put("hearthrate", hearthRate);
             if (weight != 0)
                 manJson.put("weight", weight);
-            json.put("token", sharpref.getString("tokenUser", null));
+            json.put("token", tokenUser);
             json.put("parameters", manJson);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -177,7 +177,6 @@ public class Router {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d("debug", "ERROR RESPONSE POST USER DATA");
-                            Log.d("debug", String.valueOf(error.networkResponse));
                         }
                     });
 
@@ -191,10 +190,8 @@ public class Router {
 
         JSONObject json = new JSONObject();
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
-
         try {
-            json.put("token", sharpref.getString("tokenUser", null));
+            json.put("token", tokenUser);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -208,7 +205,7 @@ public class Router {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
+                            SharedPreferences sharpref = context.getSharedPreferences("app_data" + tokenUser, Context.MODE_PRIVATE);
                             SharedPreferences.Editor edit = sharpref.edit();
 
                             edit.putString("permissionsUser", String.valueOf(response.toString()));
@@ -231,10 +228,8 @@ public class Router {
 
         JSONObject json = new JSONObject();
 
-        SharedPreferences sharpref = context.getSharedPreferences("app_data", Context.MODE_PRIVATE);
-
         try {
-            json.put("token", sharpref.getString("tokenUser", null));
+            json.put("token", tokenUser);
             json.put("permissionID", permissionID);
         } catch (JSONException e) {
             e.printStackTrace();
