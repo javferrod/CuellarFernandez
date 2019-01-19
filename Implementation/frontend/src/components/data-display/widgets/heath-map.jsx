@@ -49,7 +49,7 @@ const adequate = R.pipe(
     R.pipe(
       R.pick(['latitude', 'longitude']),
       R.values,
-      values => [parseFloat(values[0], parseFloat(values[1]))],
+      values => [parseFloat(values[0]), parseFloat(values[1])],
     ),
   ),
 );
